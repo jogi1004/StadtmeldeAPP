@@ -2,4 +2,8 @@
     <string name="app_name">CityCare</string>
     <string name="profilDescription">Profil</string>
     <string name="nameDummy">Stefan Konrath</string>
+    <string name="hauptstrasse_15">Hauptstraße 15</string>
+    <string name="hauptstrasse_15_bexbach">Hauptstraße 15, Bexbach</string>
+    <string name="_5_4844_23_444">5.4844, 23.444</string>
+    <string name="etwas_hier_melden">Etwas hier melden</string>
 </resources>

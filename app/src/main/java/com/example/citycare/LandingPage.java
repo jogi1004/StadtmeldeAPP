@@ -2,6 +2,8 @@ package com.example.citycare;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.app.Dialog;
@@ -12,6 +14,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -40,6 +44,9 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
+import java.util.Locale;
+
 
 public class LandingPage extends AppCompatActivity implements MapListener {
 
@@ -49,6 +56,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     MyLocationNewOverlay mMyLocationOverlay;
 
     private Dialog profileDialog;
+    private Dialog poiInformationDialog;
     private FloatingActionButton profilFAB, addFAB, allReportsFAB, settingsFAB;
     private Boolean areFabsVisible;
 
@@ -67,6 +75,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         initPermissions();
         initFABMenu();
         initProfilDialog();
+        initPoiInformationsDialog();
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -150,6 +159,42 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
         mMap.getOverlays().add(poiMarker);
 
+
+        try{
+            Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
+            List<Address> addresses = geo.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            if (addresses.isEmpty()) {
+                Toast toast = new Toast(this);
+                toast.setText("Waiting for Location");
+                toast.show();
+            }
+            else {
+                if (addresses.size() > 0) {
+
+                    //TextView adress = poiInformationDialog.findViewById(R.id.adress);
+                    //adress.setText(addresses.get(0).getFeatureName());
+                    //addresses.get(0).get
+
+                    Toast toast = new Toast(this);
+                    toast.setText(//addresses.get(0).getFeatureName() + ", " //Hausnummer
+                                     addresses.get(0).getLocality() +", " //Bexbach
+                                    + addresses.get(0).getAdminArea() + ", " //Saarland
+                                    + addresses.get(0).getCountryName() + ", " //Deutschland
+                                    + addresses.get(0).getSubLocality() + ", " //Frankenholz
+                                    + addresses.get(0).getAddressLine(0) + ", " //Straße
+                    );
+                    toast.show();
+
+
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        poiInformationDialog.show();
+
     }
 
     @SuppressLint("MissingPermission")
@@ -190,6 +235,16 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
+    private void initPoiInformationsDialog(){
+        poiInformationDialog = new Dialog(this);
+        poiInformationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        poiInformationDialog.setContentView(R.layout.poi_informations);
+        profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Window window = profileDialog.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+    }
     private void initFABMenu(){
         profilFAB = findViewById(R.id.profil);
         addFAB = findViewById(R.id.addReports);
