@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CityCare</string>
+    <string name="profilDescription">Profil</string>
+    <string name="nameDummy">Stefan Konrath</string>
 </resources>
