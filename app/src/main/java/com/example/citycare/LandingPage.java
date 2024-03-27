@@ -1,6 +1,7 @@
 package com.example.citycare;
 
-import android.app.Dialog;
+import  android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -29,11 +30,8 @@ public class LandingPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.landing_page);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+
 
         initFABMenu();
         initProfilDialog();
@@ -45,9 +43,16 @@ public class LandingPage extends AppCompatActivity {
         profileDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         profileDialog.setContentView(R.layout.profile_dialog);
         profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        profileDialog.setOnDismissListener(dialog -> {
+            profilFAB.setVisibility(View.GONE);
+            areFabsVisible=false;
+        });
 
         Window window = profileDialog.getWindow();
         window.setGravity(Gravity.TOP);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        /*window.setBackgroundDrawable(new ColorDrawable(Color.argb(199,76,149,108)));*/
+        window.setDimAmount(0.0f);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
