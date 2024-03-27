@@ -4,7 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -31,6 +38,8 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 public class LandingPage extends AppCompatActivity implements MapListener {
 
@@ -38,6 +47,11 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
+
+    private Dialog profileDialog;
+    private FloatingActionButton profilFAB, addFAB, allReportsFAB, settingsFAB;
+    private Boolean areFabsVisible;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +65,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         });
 
         initPermissions();
+        initFABMenu();
+        initProfilDialog();
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -159,5 +175,63 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
+
+    }
+
+
+    private void initProfilDialog(){
+        profileDialog = new Dialog(this);
+        profileDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        profileDialog.setContentView(R.layout.profile_dialog);
+        profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Window window = profileDialog.getWindow();
+        window.setGravity(Gravity.TOP);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+    }
+
+    private void initFABMenu(){
+        profilFAB = findViewById(R.id.profil);
+        addFAB = findViewById(R.id.addReports);
+        allReportsFAB = findViewById(R.id.allReports);
+        settingsFAB = findViewById(R.id.setting);
+        FloatingActionButton menuFAB = findViewById(R.id.menu);
+
+
+        //Hide Buttons
+        addFAB.setVisibility(View.GONE);
+        profilFAB.setVisibility(View.GONE);
+        allReportsFAB.setVisibility(View.GONE);
+        settingsFAB.setVisibility(View.GONE);
+        areFabsVisible = false;
+
+        menuFAB.setOnClickListener(v->toggleFABMenu());
+        profilFAB.setOnClickListener(v -> {
+            profileDialog.show();
+            //Hide all other FAB Buttons
+            addFAB.setVisibility(View.GONE);
+            allReportsFAB.setVisibility(View.GONE);
+            settingsFAB.setVisibility(View.GONE);
+
+        });
+    }
+    private void toggleFABMenu(){
+        if(!areFabsVisible){
+            //show
+            profilFAB.show();
+            addFAB.show();
+            allReportsFAB.show();
+            settingsFAB.show();
+
+            areFabsVisible = true;
+        }else{
+            //hide
+            profilFAB.hide();
+            addFAB.hide();
+            allReportsFAB.hide();
+            settingsFAB.hide();
+
+            areFabsVisible = false;
+        }
     }
 }
