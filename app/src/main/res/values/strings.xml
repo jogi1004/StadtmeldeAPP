@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">CityCare</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="logodescription">Das Logo der App zeigt eine Stadt die von einer Glocke eingeschlossen wird.</string>
+    <string name="welcome">Willkommen</string>
+    <string name="welcometext">Bei CityCare können Sie, ganz einfach Schäden in ihrer Umgebung melden.</string>
+    <string name="register">Registrierung</string>
+    <string name="registertxt">Registriere dich mit einem Usernamen \nund einem Passwort. </string>
+    <string name="backButton">Eine Seite zurück.</string>
+    <string name="signIntxt">Anmelden</string>
+    <string name="signUptxt">Registrieren</string>
+    <string name="username">Username</string>
+    <string name="password">Passwort</string>
+    <string name="passwordrepeat">Bestätige dein Passwort</string>
+    <string name="alreadyAccount">Du hast bereits \neinen Account?</string>
 </resources>

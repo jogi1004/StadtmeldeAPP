@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="rectangle_green_signin">#4C956C</color>
+    <color name="dark_green">#2C6E49</color>
+    <color name="hint_color">#4B4B4B</color>
 </resources>
