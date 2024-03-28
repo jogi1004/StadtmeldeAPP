@@ -31,7 +31,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.Fragment;
 
+import com.example.citycare.Dialogs.FragmentDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
@@ -68,6 +70,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
     public ProfilDialog profileDialog;
+    public FragmentDialog fragmentDialog;
     public PoiInformationDialog poiInformationDialog;
 
 
@@ -83,8 +86,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         dimm = findViewById(R.id.dimm);
 
         initPermissions();
-        poiInformationDialog = new PoiInformationDialog(this,this);
         profileDialog = new ProfilDialog(this, this);
+        fragmentDialog = new FragmentDialog(this, this);
+        poiInformationDialog = new PoiInformationDialog(this,this, fragmentDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog);
 
     }
