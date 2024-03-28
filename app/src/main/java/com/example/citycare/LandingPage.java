@@ -138,18 +138,10 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMyLocationOverlay.enableMyLocation();
         mMyLocationOverlay.enableFollowLocation();
         mMyLocationOverlay.setDrawAccuracyEnabled(true);
-        mMyLocationOverlay.runOnFirstFix(new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        controller.setCenter(mMyLocationOverlay.getMyLocation());
-                        controller.animateTo(mMyLocationOverlay.getMyLocation());
-                    }
-                });
-            }
-        });
+        mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
+            controller.setCenter(mMyLocationOverlay.getMyLocation());
+            controller.animateTo(mMyLocationOverlay.getMyLocation());
+        }));
         controller.setZoom(18.0);
         mMap.getOverlays().add(0, mapEventsOverlay); // Das Overlay an den Anfang der Liste hinzufügen
         mMap.getOverlays().add(mMyLocationOverlay);
