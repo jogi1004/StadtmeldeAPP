@@ -232,6 +232,10 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         profileDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         profileDialog.setContentView(R.layout.profile_dialog);
         profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        profileDialog.setOnDismissListener(dialog -> {
+            profilFAB.setVisibility(View.GONE);
+            areFabsVisible=false;
+        });
 
         Window window = profileDialog.getWindow();
         window.setGravity(Gravity.TOP);
