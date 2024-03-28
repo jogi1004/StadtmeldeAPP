@@ -6,4 +6,6 @@
     <color name="illu_green">#4C956C</color>
     <color name="dark_green">#2C6E49</color>
     <!--<color name="light_green">#4c956cC7</color>-->
+    <color name="rectangle_green_signin">#4C956C</color>
+    <color name="hint_color">#4B4B4B</color>
 </resources>
