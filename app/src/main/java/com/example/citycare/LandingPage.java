@@ -15,10 +15,12 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
+    FrameLayout dimm;
 
     private Dialog profileDialog;
     private Dialog poiInformationDialog;
@@ -228,6 +231,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
 
     private void initProfilDialog(){
+
+        dimm = findViewById(R.id.dimm);
+
         profileDialog = new Dialog(this);
         profileDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         profileDialog.setContentView(R.layout.profile_dialog);
@@ -235,6 +241,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         profileDialog.setOnDismissListener(dialog -> {
             profilFAB.setVisibility(View.GONE);
             areFabsVisible=false;
+            dimm.setVisibility(View.GONE);
         });
 
         Window window = profileDialog.getWindow();
@@ -273,6 +280,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         menuFAB.setOnClickListener(v->toggleFABMenu());
         profilFAB.setOnClickListener(v -> {
             profileDialog.show();
+            dimm.setVisibility(View.VISIBLE);
+            Log.d("dimm", "dimmed " + dimm.getVisibility());
             //Hide all other FAB Buttons
             addFAB.setVisibility(View.GONE);
             allReportsFAB.setVisibility(View.GONE);
