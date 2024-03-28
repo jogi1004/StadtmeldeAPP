@@ -105,10 +105,10 @@
 
         <Button
             android:id="@+id/SignUpButton"
+            style="@style/ButtonWithRoundedCorners"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
-            android:backgroundTint="@color/dark_green"
             android:text="@string/signIntxt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

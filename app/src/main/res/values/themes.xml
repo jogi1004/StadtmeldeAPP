@@ -2,8 +2,17 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.CityCare" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="background">@color/white</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
     </style>
 
     <style name="Theme.CityCare" parent="Base.Theme.CityCare" />
+
+    <style name="ButtonWithRoundedCorners" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/corner_radius_button</item>
+        <item name="android:textAlignment">center</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
 </resources>

@@ -5,4 +5,11 @@
     <color name="rectangle_green_signin">#4C956C</color>
     <color name="dark_green">#2C6E49</color>
     <color name="hint_color">#4B4B4B</color>
+
+    <!-- Base Theme Farben -->
+    <color name="primarycolor">#FFFFFF</color>
+    <color name="primarycolordark">#FF000000</color>
+    <color name="colorPrimary">#4C956C</color>
+    <color name="colorPrimaryVariant">#2C6E49</color>
+
 </resources>
