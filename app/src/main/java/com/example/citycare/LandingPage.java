@@ -1,6 +1,7 @@
 package com.example.citycare;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -149,16 +150,24 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.addMapListener(this);
     }
 
+    @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
-        if(poiMarker != null){
-            mMap.getOverlays().remove(poiMarker);
-        }
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
         //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
         mMap.getOverlays().add(poiMarker);
 
+        poiInformationDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                mMap.getOverlays().remove(poiMarker);
+            }
+        });
+
+        TextView adress = poiInformationDialog.findViewById(R.id.adress);
+        TextView adressInfos = poiInformationDialog.findViewById(R.id.adressInfos);
+        TextView koords = poiInformationDialog.findViewById(R.id.koords);
 
         try{
             Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
@@ -169,24 +178,14 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                 toast.show();
             }
             else {
-                if (addresses.size() > 0) {
-
-                    //TextView adress = poiInformationDialog.findViewById(R.id.adress);
-                    //adress.setText(addresses.get(0).getFeatureName());
-                    //addresses.get(0).get
-
-                    Toast toast = new Toast(this);
-                    toast.setText(//addresses.get(0).getFeatureName() + ", " //Hausnummer
-                                     addresses.get(0).getLocality() +", " //Bexbach
-                                    + addresses.get(0).getAdminArea() + ", " //Saarland
-                                    + addresses.get(0).getCountryName() + ", " //Deutschland
-                                    + addresses.get(0).getSubLocality() + ", " //Frankenholz
-                                    + addresses.get(0).getAddressLine(0) + ", " //Straße
-                    );
-                    toast.show();
-
-
+                String address[] = addresses.get(0).getAddressLine(0).split(", ");
+                adress.setText(address[0]);
+                if(addresses.get(0).getSubLocality() == null){
+                    adressInfos.setText(address[0] + ", " + addresses.get(0).getLocality());
+                }else {
+                    adressInfos.setText(address[0] + ", " + addresses.get(0).getSubLocality());
                 }
+                koords.setText(addresses.get(0).getLatitude() + ", " + addresses.get(0).getLongitude());
             }
         }
         catch (Exception e) {
@@ -239,12 +238,14 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiInformationDialog = new Dialog(this);
         poiInformationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         poiInformationDialog.setContentView(R.layout.poi_informations);
-        profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        poiInformationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        poiInformationDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        Window window = profileDialog.getWindow();
+        Window window = poiInformationDialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
     }
+
     private void initFABMenu(){
         profilFAB = findViewById(R.id.profil);
         addFAB = findViewById(R.id.addReports);
