@@ -14,6 +14,7 @@ import android.view.WindowManager;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 
@@ -41,20 +42,12 @@ public class PoiInformationDialog extends Dialog{
 
         ConstraintLayout reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v-> {
-            showFragmentDialog();
+            fragmentDialog.showFragmentDialog();
+            dismiss();
+            landingpage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
         });
 
     }
 
-    private void showFragmentDialog(){
-        Window window = fragmentDialog.getWindow();
-        assert window != null;
-        window.setGravity(Gravity.TOP);
-        window.setDimAmount(0.0f);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        dismiss();
-        landingpage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
-        fragmentDialog.show();
-    }
 
 }

@@ -6,8 +6,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -37,5 +39,14 @@ public class FragmentDialog extends Dialog {
         setOnDismissListener(v->{
             dimm.setVisibility(View.GONE);
         });
+    }
+
+    public void showFragmentDialog(){
+        Window window = getWindow();
+        assert window != null;
+        window.setGravity(Gravity.TOP);
+        window.setDimAmount(0.0f);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        show();
     }
 }
