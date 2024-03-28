@@ -5,14 +5,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".RegisterPage">
+    tools:context=".SignInPage">
+
+    <TextView
+        android:id="@+id/RegisterButtonView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25sp"
+        android:layout_marginEnd="30sp"
+        android:text="@string/signUptxt"
+        android:textColor="@color/dark_green"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:clickable="true"
+        android:focusable="true"/>
 
     <ImageButton
         android:id="@+id/backButton"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:background="@color/white"
         android:contentDescription="@string/backButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:layout_marginTop="100dp"
-        android:text="@string/register"
+        android:text="@string/signIntxt"
         android:textColor="@color/dark_green"
         android:textSize="35sp"
         android:textStyle="bold"
@@ -38,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="52dp"
         android:layout_marginTop="20dp"
-        android:text="@string/registertxt"
+        android:text="@string/signupTxt"
         android:textColor="@color/dark_green"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,31 +102,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/usernameEditText" />
 
-        <EditText
-            android:id="@+id/passwordRepeatEditText"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="80dp"
-            android:background="@color/white"
-            android:hint="@string/passwordrepeat"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:textColorHint="@color/hint_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/passwordEditText" />
 
         <Button
-            android:id="@+id/RegisterButton"
+            android:id="@+id/SignUpButton"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:backgroundTint="@color/dark_green"
-            android:text="@string/signUptxt"
+            android:text="@string/signIntxt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/passwordRepeatEditText" />
+            app:layout_constraintTop_toTopOf="@+id/passwordEditText" />
 
         <View
             android:id="@+id/view"
@@ -121,33 +122,29 @@
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:background="@color/white"
-            app:layout_constraintTop_toBottomOf="@id/RegisterButton"
+            app:layout_constraintTop_toBottomOf="@id/SignUpButton"
             tools:layout_editor_absoluteX="15dp" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="68dp"
-            android:layout_marginTop="48dp"
-            android:text="@string/alreadyAccount"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintTop_toTopOf="@id/view">
 
-        <Button
-            android:id="@+id/SignInButtonRegisterView"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.71"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/signIntxt"
-            android:backgroundTint="@color/dark_green"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            <Button
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/white"
+                android:text="@string/Googletxt"
+                android:textColor="@color/dark_green"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

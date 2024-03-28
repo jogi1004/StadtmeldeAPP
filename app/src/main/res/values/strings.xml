@@ -17,4 +17,7 @@
     <string name="password">Passwort</string>
     <string name="passwordrepeat">Bestätige dein Passwort</string>
     <string name="alreadyAccount">Du hast bereits \neinen Account?</string>
+    <string name="signupTxt">Melde dich mit deinem Usernamen \nund deinem Passwort an.</string>
+    <string name="Googletxt">Anmelden mit Google</string>
+    <string name="Facebooktxt">Anmelden mit Facebook</string>
 </resources>
