@@ -67,7 +67,8 @@
 
         <Button
             android:id="@+id/signInButton"
-            android:layout_width="130dp"
+            style="@style/ButtonWithRoundedCorners"
+            android:layout_width="150dp"
             android:layout_height="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +83,8 @@
 
         <Button
             android:id="@+id/signUpButton"
-            android:layout_width="wrap_content"
+            style="@style/ButtonWithRoundedCorners"
+            android:layout_width="150dp"
             android:layout_height="60dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -90,10 +92,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.788"
-            android:backgroundTint="@color/white"
             android:text="@string/signUptxt"
             android:textStyle="bold"
-            android:textColor="@color/rectangle_green_signin"/>
+           />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
