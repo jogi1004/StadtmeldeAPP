@@ -34,17 +34,4 @@ public class PoiInformationDialog extends Dialog{
 
 
     }
-
-    private void initPoiInformationsDialog(){
-        poiInformationDialog = new Dialog(context);
-        poiInformationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        poiInformationDialog.setContentView(R.layout.poi_informations);
-        poiInformationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        poiInformationDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
-        Window window = poiInformationDialog.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-
-    }
 }
