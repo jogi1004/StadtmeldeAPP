@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:background="@drawable/profile_dialog_background"
+    android:background="@drawable/bg_profile_dialog"
     >
 
     <LinearLayout
@@ -38,7 +38,7 @@
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:layout_gravity="center"
-            android:src="@drawable/dummer"
+            android:src="@drawable/png_dummy"
             app:civ_border_color="@color/black"
             app:civ_border_width="1dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -79,31 +79,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/profil_placeholder" />
+                android:background="@drawable/bg_placeholder_profile" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/profil_placeholder" />
+                android:background="@drawable/bg_placeholder_profile" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/profil_placeholder" />
+                android:background="@drawable/bg_placeholder_profile" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/profil_placeholder" />
+                android:background="@drawable/bg_placeholder_profile" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/profil_placeholder"
+                android:background="@drawable/bg_placeholder_profile"
                 />
         </LinearLayout>
 

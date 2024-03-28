@@ -6,20 +6,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
-import com.example.citycare.FAB.MyFloatingActionButtons;
-import com.example.citycare.LandingPage;
+
 import com.example.citycare.R;
 
 public class ProfilDialog extends Dialog {
 
-    Dialog profileDialog;
     Context context;
     FrameLayout dimm;
 
@@ -33,9 +27,8 @@ public class ProfilDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        profileDialog = new Dialog(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.profile_dialog);
+        setContentView(R.layout.dialog_profile);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
