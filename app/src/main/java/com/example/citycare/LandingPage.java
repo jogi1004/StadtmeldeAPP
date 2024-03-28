@@ -73,7 +73,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.landing_page);
-
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        decorView.setSystemUiVisibility(uiOptions);
 
         initPermissions();
         initFABMenu();
@@ -233,6 +235,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         Window window = profileDialog.getWindow();
         window.setGravity(Gravity.TOP);
+        window.setDimAmount(0.0f);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
     }
 

@@ -2,15 +2,14 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.CityCare" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <item name="colorPrimary">@color/illu_green</item>
-        <item name="colorPrimaryDark">@color/illu_green</item>
-        <item name="colorAccent">@color/dark_green</item>
-
-        <item name="android:colorBackground">@color/illu_green</item>
+        <!--<item name="android:colorBackground">@color/illu_green</item>-->
 
         <item name="background">@color/white</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorAccent">@color/dark_green</item>
+        <item name="colorPrimary">@color/dark_green</item>
+        <item name="colorPrimaryDark">@color/white</item>
+
+        <!--<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>-->
     </style>
 
     <style name="Theme.CityCare" parent="Base.Theme.CityCare" />
