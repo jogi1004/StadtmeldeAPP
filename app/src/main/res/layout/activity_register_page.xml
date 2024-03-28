@@ -59,11 +59,12 @@
 
         <EditText
             android:id="@+id/usernameEditText"
+            style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="44dp"
-            android:background="@color/white"
             android:hint="@string/username"
+            android:inputType="text"
             android:paddingStart="20sp"
             android:paddingEnd="20dp"
             android:textColorHint="@color/hint_color"
@@ -74,11 +75,12 @@
 
         <EditText
             android:id="@+id/passwordEditText"
+            style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="80dp"
-            android:background="@color/white"
             android:hint="@string/password"
+            android:inputType="textPassword"
             android:paddingStart="20sp"
             android:paddingEnd="20dp"
             android:textColorHint="@color/hint_color"
@@ -89,11 +91,12 @@
 
         <EditText
             android:id="@+id/passwordRepeatEditText"
+            style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="80dp"
-            android:background="@color/white"
             android:hint="@string/passwordrepeat"
+            android:inputType="textPassword"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:textColorHint="@color/hint_color"
@@ -104,6 +107,7 @@
 
         <Button
             android:id="@+id/RegisterButton"
+            style="@style/ButtonWithRoundedCorners"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"

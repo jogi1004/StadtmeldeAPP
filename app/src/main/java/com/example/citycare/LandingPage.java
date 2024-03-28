@@ -32,6 +32,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.citycare.Dialogs.PoiInformationDialog;
+import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -63,12 +66,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
-    FrameLayout dimm;
-
-    private Dialog profileDialog;
-    private Dialog poiInformationDialog;
-    private FloatingActionButton profilFAB, addFAB, allReportsFAB, settingsFAB;
-    private Boolean areFabsVisible;
+    public FrameLayout dimm;
+    public ProfilDialog profileDialog;
+    public PoiInformationDialog poiInformationDialog;
 
 
     @Override
@@ -76,14 +76,17 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.landing_page);
-        View decorView = getWindow().getDecorView();
+        View decorView = this.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         decorView.setSystemUiVisibility(uiOptions);
 
+        dimm = findViewById(R.id.dimm);
+
         initPermissions();
-        initFABMenu();
-        initProfilDialog();
-        initPoiInformationsDialog();
+        poiInformationDialog = new PoiInformationDialog(this,this);
+        profileDialog = new ProfilDialog(this, this);
+        new MyFloatingActionButtons(this, this, false, profileDialog);
+
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -157,12 +160,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
         mMap.getOverlays().add(poiMarker);
 
-        poiInformationDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                mMap.getOverlays().remove(poiMarker);
-            }
-        });
+        poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
 
         TextView adress = poiInformationDialog.findViewById(R.id.adress);
         TextView adressInfos = poiInformationDialog.findViewById(R.id.adressInfos);
@@ -190,7 +188,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         catch (Exception e) {
             e.printStackTrace();
         }
-
+        Window window = poiInformationDialog.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
         poiInformationDialog.show();
 
     }
@@ -219,85 +219,5 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
 
-    }
-
-
-    private void initProfilDialog(){
-
-        dimm = findViewById(R.id.dimm);
-
-        profileDialog = new Dialog(this);
-        profileDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        profileDialog.setContentView(R.layout.profile_dialog);
-        profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        profileDialog.setOnDismissListener(dialog -> {
-            profilFAB.setVisibility(View.GONE);
-            areFabsVisible=false;
-            dimm.setVisibility(View.GONE);
-        });
-
-        Window window = profileDialog.getWindow();
-        window.setGravity(Gravity.TOP);
-        window.setDimAmount(0.0f);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-    }
-
-    private void initPoiInformationsDialog(){
-        poiInformationDialog = new Dialog(this);
-        poiInformationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        poiInformationDialog.setContentView(R.layout.poi_informations);
-        poiInformationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        poiInformationDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-
-        Window window = poiInformationDialog.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-    }
-
-    private void initFABMenu(){
-        profilFAB = findViewById(R.id.profil);
-        addFAB = findViewById(R.id.addReports);
-        allReportsFAB = findViewById(R.id.allReports);
-        settingsFAB = findViewById(R.id.setting);
-        FloatingActionButton menuFAB = findViewById(R.id.menu);
-
-
-        //Hide Buttons
-        addFAB.setVisibility(View.GONE);
-        profilFAB.setVisibility(View.GONE);
-        allReportsFAB.setVisibility(View.GONE);
-        settingsFAB.setVisibility(View.GONE);
-        areFabsVisible = false;
-
-        menuFAB.setOnClickListener(v->toggleFABMenu());
-        profilFAB.setOnClickListener(v -> {
-            profileDialog.show();
-            dimm.setVisibility(View.VISIBLE);
-            Log.d("dimm", "dimmed " + dimm.getVisibility());
-            //Hide all other FAB Buttons
-            addFAB.setVisibility(View.GONE);
-            allReportsFAB.setVisibility(View.GONE);
-            settingsFAB.setVisibility(View.GONE);
-
-        });
-    }
-    private void toggleFABMenu(){
-        if(!areFabsVisible){
-            //show
-            profilFAB.show();
-            addFAB.show();
-            allReportsFAB.show();
-            settingsFAB.show();
-
-            areFabsVisible = true;
-        }else{
-            //hide
-            profilFAB.hide();
-            addFAB.hide();
-            allReportsFAB.hide();
-            settingsFAB.hide();
-
-            areFabsVisible = false;
-        }
     }
 }

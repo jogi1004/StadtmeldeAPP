@@ -9,10 +9,11 @@
 
     <TextView
         android:id="@+id/RegisterButtonView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:gravity="center"
         android:layout_marginTop="25sp"
-        android:layout_marginEnd="30sp"
+        android:layout_marginEnd="40sp"
         android:text="@string/signUptxt"
         android:textColor="@color/dark_green"
         android:textSize="18sp"
@@ -74,11 +75,12 @@
 
         <EditText
             android:id="@+id/usernameEditText"
+            style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="44dp"
-            android:background="@color/white"
             android:hint="@string/username"
+            android:inputType="text"
             android:paddingStart="20sp"
             android:paddingEnd="20dp"
             android:textColorHint="@color/hint_color"
@@ -89,11 +91,12 @@
 
         <EditText
             android:id="@+id/passwordEditText"
+            style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="80dp"
-            android:background="@color/white"
             android:hint="@string/password"
+            android:inputType="textPassword"
             android:paddingStart="20sp"
             android:paddingEnd="20dp"
             android:textColorHint="@color/hint_color"
