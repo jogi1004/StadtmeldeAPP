@@ -70,7 +70,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
     public ProfilDialog profileDialog;
-    public FragmentDialog fragmentDialog;
     public PoiInformationDialog poiInformationDialog;
 
 
@@ -85,10 +84,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         dimm = findViewById(R.id.dimm);
 
+        poiInformationDialog = new PoiInformationDialog(this,this);
         initPermissions();
         profileDialog = new ProfilDialog(this, this);
-        fragmentDialog = new FragmentDialog(this, this);
-        poiInformationDialog = new PoiInformationDialog(this,this, fragmentDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog);
 
     }
@@ -163,12 +161,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiMarker.setPosition(geoPoint);
         //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
         mMap.getOverlays().add(poiMarker);
+        controller.setCenter(geoPoint);
 
         poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
-
-        TextView adress = poiInformationDialog.findViewById(R.id.adress);
-        TextView adressInfos = poiInformationDialog.findViewById(R.id.adressInfos);
-        TextView koords = poiInformationDialog.findViewById(R.id.koords);
 
         try{
             Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
@@ -179,23 +174,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                 toast.show();
             }
             else {
-                String address[] = addresses.get(0).getAddressLine(0).split(", ");
-                adress.setText(address[0]);
-                if(addresses.get(0).getSubLocality() == null){
-                    adressInfos.setText(address[0] + ", " + addresses.get(0).getLocality());
-                }else {
-                    adressInfos.setText(address[0] + ", " + addresses.get(0).getSubLocality());
-                }
-                koords.setText(addresses.get(0).getLatitude() + ", " + addresses.get(0).getLongitude());
+                poiInformationDialog.show();
+                poiInformationDialog.fill(addresses);
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        Window window = poiInformationDialog.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        poiInformationDialog.show();
 
     }
 

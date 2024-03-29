@@ -42,11 +42,11 @@ public class FragmentDialog extends Dialog {
     }
 
     public void showFragmentDialog(){
+        show();
         Window window = getWindow();
         assert window != null;
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        show();
     }
 }
