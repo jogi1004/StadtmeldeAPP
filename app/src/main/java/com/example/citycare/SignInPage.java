@@ -13,12 +13,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.citycare.util.HelperClass;
+
 public class SignInPage extends AppCompatActivity implements View.OnClickListener {
+    HelperClass h = new HelperClass();
     TextView registerView;
     Button SignInButton;
     ImageButton backButton;
     EditText username, password;
-    boolean checkInCorrect = false;
     String usernameContent, passwordContent;
 
     @Override
@@ -43,16 +45,10 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         if(v == SignInButton){
             usernameContent = String.valueOf(username.getText());
-            Log.d("CC",usernameContent +" ");
             passwordContent = String.valueOf(password.getText());
-            Log.d("CC",passwordContent + " ");
-            checkInCorrect = checkLoginData(usernameContent, passwordContent);
-            Log.d("CC", String.valueOf(checkInCorrect));
-            if(checkInCorrect){
+            if(checkLoginData(usernameContent, passwordContent)){
                 Intent i = new Intent(this, LandingPage.class);
                 startActivity(i);
-            } else{
-                Toast.makeText(this, "Fülle zuerst alle Felder aus!", Toast.LENGTH_SHORT).show();
             }
         } else if(v == registerView){
             Intent i = new Intent(this, RegisterPage.class);
@@ -64,6 +60,6 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
     }
 
     private boolean checkLoginData(String usernameContent, String passwordContent) {
-        return !TextUtils.isEmpty(usernameContent.trim()) && !TextUtils.isEmpty(passwordContent.trim());
+        return h.checkUsername(this,usernameContent) && h.checkPassword(this, passwordContent);
     }
 }
