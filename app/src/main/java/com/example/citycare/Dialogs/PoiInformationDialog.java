@@ -13,12 +13,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 
-import com.example.citycare.FAB.MyFloatingActionButtons;
-import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 
 import java.util.List;
@@ -27,18 +27,21 @@ public class PoiInformationDialog extends Dialog{
     FragmentDialog fragmentDialog;
     Activity landingpage;
     Context context;
+    FragmentManager supportFragmentManager;
 
-    public PoiInformationDialog(Context context, Activity landingPage) {
+    public PoiInformationDialog(Context context, Activity landingPage, FragmentManager supportFragmentManager) {
         super(context);
         this.context = context;
         this.landingpage = landingPage;
+        this.supportFragmentManager = supportFragmentManager;
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fragmentDialog = new FragmentDialog(context, landingpage);
+        //fragmentDialog = new FragmentDialog(context, landingpage);
 
         new Dialog(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -49,9 +52,12 @@ public class PoiInformationDialog extends Dialog{
 
         ConstraintLayout reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v-> {
-            fragmentDialog.showFragmentDialog();
+            //fragmentDialog.showFragmentDialog();
+            FragmentDialog dialog = new FragmentDialog();
+            FrameLayout dimm = landingpage.findViewById(R.id.dimm);
+            dialog.showFragmentDialog(supportFragmentManager, dimm);
+            dimm.setVisibility(View.VISIBLE);
             dismiss();
-            landingpage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
         });
 
     }

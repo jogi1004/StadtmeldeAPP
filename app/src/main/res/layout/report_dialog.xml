@@ -19,9 +19,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <fragment
-        android:name="com.example.citycare.damagetypeFragment"
-        android:id="@+id/fragment"
+<!--        android:name="com.example.citycare.damagetypeFragment"-->
+    <FrameLayout
+        android:id="@+id/flFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
@@ -31,5 +31,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9">
 
-    </fragment>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

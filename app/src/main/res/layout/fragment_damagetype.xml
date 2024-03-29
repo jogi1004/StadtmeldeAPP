@@ -5,17 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    tools:context=".damagetypeFragment">
+    tools:context=".damagetypeFragment"
+    tools:background="@color/colorPrimary"
+    tools:alpha="0.7">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout1"
+        android:id="@+id/strassenschaeden"
         android:layout_width="160dp"
         android:layout_height="110dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/report_background"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
+        app:layout_constraintEnd_toStartOf="@+id/vandalismus"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -39,23 +41,23 @@
         android:text="@string/strassenschaeden"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout1"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout1"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+        app:layout_constraintEnd_toEndOf="@+id/strassenschaeden"
+        app:layout_constraintStart_toStartOf="@+id/strassenschaeden"
+        app:layout_constraintTop_toBottomOf="@+id/strassenschaeden" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/vandalismus"
         android:layout_width="160dp"
         android:layout_height="110dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
 
         android:background="@drawable/report_background"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout1"
+        app:layout_constraintBottom_toBottomOf="@+id/strassenschaeden"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout1"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout1">
+        app:layout_constraintStart_toEndOf="@+id/strassenschaeden"
+        app:layout_constraintTop_toTopOf="@+id/strassenschaeden">
 
         <ImageView
             android:layout_width="60dp"
@@ -74,25 +76,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/strassenschaeden"
+        android:text="Vandalismus"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+        app:layout_constraintEnd_toEndOf="@+id/vandalismus"
+        app:layout_constraintStart_toStartOf="@+id/vandalismus"
+        app:layout_constraintTop_toBottomOf="@+id/vandalismus" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout3"
+        android:id="@+id/verschmutzung"
         android:layout_width="160dp"
         android:layout_height="110dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/report_background"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout4"
+        app:layout_constraintEnd_toStartOf="@+id/platzhalter1"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout1">
+        app:layout_constraintTop_toBottomOf="@+id/strassenschaeden">
 
         <ImageView
             android:layout_width="60dp"
@@ -110,26 +112,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/strassenschaeden"
+        android:text="Verschmutzung"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
+        app:layout_constraintEnd_toEndOf="@+id/verschmutzung"
         app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+        app:layout_constraintStart_toStartOf="@+id/verschmutzung"
+        app:layout_constraintTop_toBottomOf="@+id/verschmutzung" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout4"
+        android:id="@+id/platzhalter1"
         android:layout_width="160dp"
         android:layout_height="110dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/report_background"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout3"
+        app:layout_constraintBottom_toBottomOf="@+id/verschmutzung"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout3"
+        app:layout_constraintStart_toEndOf="@+id/verschmutzung"
+        app:layout_constraintTop_toTopOf="@+id/verschmutzung"
         app:layout_constraintVertical_bias="0.0">
 
         <ImageView
@@ -150,25 +152,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/strassenschaeden"
+        android:text="Platzhalter"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout4"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout4"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
+        app:layout_constraintEnd_toEndOf="@+id/platzhalter1"
+        app:layout_constraintStart_toStartOf="@+id/platzhalter1"
+        app:layout_constraintTop_toBottomOf="@+id/platzhalter1" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout5"
+        android:id="@+id/platzhalter2"
         android:layout_width="160dp"
         android:layout_height="110dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/report_background"
-        app:layout_constraintEnd_toStartOf="@+id/constraintLayout6"
+        app:layout_constraintEnd_toStartOf="@+id/platzhalter3"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/verschmutzung">
 
         <ImageView
             android:layout_width="60dp"
@@ -186,26 +188,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/strassenschaeden"
+        android:text="Platzhalter"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout5"
+        app:layout_constraintEnd_toEndOf="@+id/platzhalter2"
         app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
+        app:layout_constraintStart_toStartOf="@+id/platzhalter2"
+        app:layout_constraintTop_toBottomOf="@+id/platzhalter2" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout6"
+        android:id="@+id/platzhalter3"
         android:layout_width="160dp"
         android:layout_height="110dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/report_background"
-        app:layout_constraintBottom_toBottomOf="@+id/constraintLayout5"
+        app:layout_constraintBottom_toBottomOf="@+id/platzhalter2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/constraintLayout5"
-        app:layout_constraintTop_toTopOf="@+id/constraintLayout5"
+        app:layout_constraintStart_toEndOf="@+id/platzhalter2"
+        app:layout_constraintTop_toTopOf="@+id/platzhalter2"
         app:layout_constraintVertical_bias="0.0">
 
         <ImageView
@@ -226,11 +228,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/strassenschaeden"
+        android:text="Platzhalter"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/constraintLayout6"
-        app:layout_constraintStart_toStartOf="@+id/constraintLayout6"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout6" />
+        app:layout_constraintEnd_toEndOf="@+id/platzhalter3"
+        app:layout_constraintStart_toStartOf="@+id/platzhalter3"
+        app:layout_constraintTop_toBottomOf="@+id/platzhalter3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

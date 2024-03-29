@@ -32,8 +32,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.example.citycare.Dialogs.FragmentDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
@@ -84,10 +84,22 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         dimm = findViewById(R.id.dimm);
 
-        poiInformationDialog = new PoiInformationDialog(this,this);
+        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         initPermissions();
         profileDialog = new ProfilDialog(this, this);
         new MyFloatingActionButtons(this, this, false, profileDialog);
+
+
+
+
+        Fragment damageTypeF = new damagetypeFragment();
+        Fragment damageTitleF = new damagetitleFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+
+
+
 
     }
 
