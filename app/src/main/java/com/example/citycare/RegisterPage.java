@@ -11,12 +11,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.citycare.util.HelperClass;
+
 public class RegisterPage extends AppCompatActivity implements View.OnClickListener {
 
+    HelperClass h = new HelperClass();
     ImageButton backButton;
     Button SignIn, register;
     EditText username, password, passwordRepeat;
-    boolean SignUpDataCorrect = false;
     String usernameContent, passwordContent, passwordRepeatContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +49,15 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
             usernameContent = String.valueOf(username.getText());
             passwordContent = String.valueOf(password.getText());
             passwordRepeatContent = String.valueOf(passwordRepeat.getText());
-            SignUpDataCorrect = checkSignUpData(usernameContent, passwordContent, passwordRepeatContent);
-            if (SignUpDataCorrect) {
+            if (checkSignUpData(usernameContent, passwordContent, passwordRepeatContent)) {
                 Intent i = new Intent(this, LandingPage.class);
                 startActivity(i);
-            } else {
-                Toast.makeText(this, "Fülle bitte alle Felder aus!", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
 
     private boolean checkSignUpData(String usernameContent, String passwordContent, String passwordRepeatContent) {
-        return !TextUtils.isEmpty(usernameContent.trim()) && !TextUtils.isEmpty(passwordContent.trim()) && !TextUtils.isEmpty(passwordRepeatContent.trim()) && passwordContent.contentEquals(passwordRepeatContent);
+        return h.checkUsername(this, usernameContent) && h.checkPassword(this, passwordContent) && h.checkPasswordEquality(this,passwordContent, passwordRepeatContent);
     }
 }

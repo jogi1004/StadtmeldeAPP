@@ -31,4 +31,5 @@
     <string name="strassenschaeden">Straßenschäden</string>
     <string name="meldeort">Meldeort</string>
     <string name="einstellungentxt">Einstellungen</string>
+    <string name="reports">Aktuelle Meldungen</string>
 </resources>
