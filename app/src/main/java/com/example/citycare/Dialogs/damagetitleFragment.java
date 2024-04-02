@@ -1,4 +1,4 @@
-package com.example.citycare;
+package com.example.citycare.Dialogs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.citycare.R;
 
 public class damagetitleFragment extends Fragment {
 

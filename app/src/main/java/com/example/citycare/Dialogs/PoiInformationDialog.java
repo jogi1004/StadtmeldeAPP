@@ -41,8 +41,6 @@ public class PoiInformationDialog extends Dialog{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //fragmentDialog = new FragmentDialog(context, landingpage);
-
         new Dialog(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.poi_informations);
@@ -52,7 +50,6 @@ public class PoiInformationDialog extends Dialog{
 
         ConstraintLayout reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v-> {
-            //fragmentDialog.showFragmentDialog();
             FragmentDialog dialog = new FragmentDialog();
             FrameLayout dimm = landingpage.findViewById(R.id.dimm);
             dialog.showFragmentDialog(supportFragmentManager, dimm);
@@ -67,7 +64,6 @@ public class PoiInformationDialog extends Dialog{
     public void fill(List<Address> addresses) {
 
         TextView adress = findViewById(R.id.adress);
-        Log.d("Doch?", "EHM: " + adress.getText());
         TextView adressInfos = findViewById(R.id.adressInfos);
         TextView koords = findViewById(R.id.koords);
 

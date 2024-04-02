@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-<!--        android:name="com.example.citycare.damagetypeFragment"-->
+<!--        android:name="com.example.citycare.Dialogs.damagetypeFragment"-->
     <FrameLayout
         android:id="@+id/flFragment"
         android:layout_width="match_parent"

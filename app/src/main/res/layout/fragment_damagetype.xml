@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    tools:context=".damagetypeFragment"
+    tools:context=".Dialogs.damagetypeFragment"
     tools:background="@color/colorPrimary"
     tools:alpha="0.7">
 
@@ -41,6 +41,7 @@
         android:text="@string/strassenschaeden"
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/strassenschaeden"
         app:layout_constraintStart_toStartOf="@+id/strassenschaeden"
         app:layout_constraintTop_toBottomOf="@+id/strassenschaeden" />
@@ -79,6 +80,7 @@
         android:text="Vandalismus"
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/vandalismus"
         app:layout_constraintStart_toStartOf="@+id/vandalismus"
         app:layout_constraintTop_toBottomOf="@+id/vandalismus" />
@@ -115,6 +117,7 @@
         android:text="Verschmutzung"
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/verschmutzung"
         app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="@+id/verschmutzung"
@@ -155,6 +158,7 @@
         android:text="Platzhalter"
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/platzhalter1"
         app:layout_constraintStart_toStartOf="@+id/platzhalter1"
         app:layout_constraintTop_toBottomOf="@+id/platzhalter1" />
@@ -191,6 +195,7 @@
         android:text="Platzhalter"
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/platzhalter2"
         app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="@+id/platzhalter2"
@@ -231,6 +236,7 @@
         android:text="Platzhalter"
         android:textColor="@color/white"
         android:textStyle="bold"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/platzhalter3"
         app:layout_constraintStart_toStartOf="@+id/platzhalter3"
         app:layout_constraintTop_toBottomOf="@+id/platzhalter3" />

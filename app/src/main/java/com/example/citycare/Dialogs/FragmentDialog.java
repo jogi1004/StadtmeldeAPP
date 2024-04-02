@@ -1,6 +1,5 @@
 package com.example.citycare.Dialogs;
 
-import static com.example.citycare.R.layout.landing_page;
 import static com.example.citycare.R.layout.report_dialog;
 
 import android.annotation.SuppressLint;
@@ -25,8 +24,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
-import com.example.citycare.damagetitleFragment;
-import com.example.citycare.damagetypeFragment;
 
 public class FragmentDialog extends DialogFragment {
 
