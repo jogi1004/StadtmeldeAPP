@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:background="@drawable/profile_dialog_background"
-    android:maxHeight="500dp"
+    android:background="@drawable/bg_profile_dialog"
     >
 
     <LinearLayout
