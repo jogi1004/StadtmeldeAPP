@@ -23,6 +23,7 @@ import com.example.citycare.R;
 
 import java.util.List;
 
+
 public class PoiInformationDialog extends Dialog{
     FragmentDialog fragmentDialog;
     Activity landingpage;
@@ -43,7 +44,7 @@ public class PoiInformationDialog extends Dialog{
 
         new Dialog(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.poi_informations);
+        setContentView(R.layout.dialog_poi_information);
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -58,7 +59,6 @@ public class PoiInformationDialog extends Dialog{
         });
 
     }
-
 
     @SuppressLint("SetTextI18n")
     public void fill(List<Address> addresses) {
@@ -81,4 +81,5 @@ public class PoiInformationDialog extends Dialog{
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
         show();
     }
+
 }

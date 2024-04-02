@@ -46,7 +46,7 @@
             app:fabCustomSize="75dp"
             android:clickable="true"
             style="@style/Widget.Design.FloatingActionButton"
-            android:src="@drawable/baseline_density_medium_24"
+            android:src="@drawable/ic_menu"
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +63,7 @@
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="90"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/einstellungen"
+            android:src="@drawable/ic_settings"
             tools:ignore="MissingConstraints" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/allReports"
@@ -74,7 +74,7 @@
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="30"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/einstellungen"
+            android:src="@drawable/ic_settings"
             tools:ignore="MissingConstraints" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/profil"
@@ -85,7 +85,7 @@
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="270"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/einstellungen"
+            android:src="@drawable/ic_settings"
             tools:ignore="MissingConstraints" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addReports"
@@ -96,7 +96,7 @@
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="330"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/einstellungen"
+            android:src="@drawable/ic_settings"
             tools:ignore="MissingConstraints" />
 
 

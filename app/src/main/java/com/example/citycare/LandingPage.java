@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -22,6 +23,10 @@ import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.damagetitleFragment;
 import com.example.citycare.Dialogs.damagetypeFragment;
+
+import com.example.citycare.Dialogs.PoiInformationDialog;
+import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -55,13 +60,14 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public FrameLayout dimm;
     public ProfilDialog profileDialog;
     public PoiInformationDialog poiInformationDialog;
+    public SettingDialog settingDialog;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.landing_page);
+        setContentView(R.layout.activity_landing_page);
         View decorView = this.getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         decorView.setSystemUiVisibility(uiOptions);
@@ -71,7 +77,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         initPermissions();
         profileDialog = new ProfilDialog(this, this);
-        new MyFloatingActionButtons(this, this, false, profileDialog);
+        settingDialog = new SettingDialog(this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, poiInformationDialog);
 
     }
 

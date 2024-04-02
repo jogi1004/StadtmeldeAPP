@@ -15,13 +15,13 @@
     <style name="Theme.CityCare" parent="Base.Theme.CityCare" />
 
     <style name="ButtonWithRoundedCorners" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/corner_radius_button</item>
+        <item name="android:background">@drawable/btn_corner_radius</item>
         <item name="android:textAlignment">center</item>
         <item name="textAllCaps">false</item>
         <item name="android:textSize">20dp</item>
     </style>
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
-        <item name="android:background">@drawable/edittextcorner</item>
+        <item name="android:background">@drawable/bg_edittextcorner</item>
     </style>
 
 </resources>
