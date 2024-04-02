@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -55,6 +56,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public FrameLayout dimm;
     public ProfilDialog profileDialog;
     public PoiInformationDialog poiInformationDialog;
+    public SettingDialog settingDialog;
 
 
     @Override
@@ -71,7 +73,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this,this);
         profileDialog = new ProfilDialog(this, this);
-        new MyFloatingActionButtons(this, this, false, profileDialog);
+        settingDialog = new SettingDialog(this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, poiInformationDialog);
 
     }
 
