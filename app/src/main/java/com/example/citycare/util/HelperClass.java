@@ -3,6 +3,7 @@ package com.example.citycare.util;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
+//TODO Längenüberprüfung Passwort zwischen 6 und 20 Zeichen
 
 public class HelperClass {
     public boolean checkUsername(Context c, String username) {
@@ -35,8 +36,8 @@ public class HelperClass {
        return false;
     }
 
-    private boolean hasSpecialCharacter(String username) {
-        for (char c : username.toCharArray()) {
+    private boolean hasSpecialCharacter(String password) {
+        for (char c : password.toCharArray()) {
             if (!Character.isLetterOrDigit(c)) {
                 return true;
             }

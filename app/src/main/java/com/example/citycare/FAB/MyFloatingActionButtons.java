@@ -1,6 +1,7 @@
 package com.example.citycare.FAB;
 
 import android.app.Activity;
+import android.app.appsearch.ReportSystemUsageRequest;
 import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -21,8 +23,9 @@ public class MyFloatingActionButtons {
     private FloatingActionButton settingsFAB;
     private Boolean areFabsVisible;
     private ProfilDialog profilDialog;
+    private ReportDialogPage allReportsDialog;
 
-    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog) {
+    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, ReportDialogPage allReportsDialog) {
         this.context = context;
         this.menuFAB = landingPage.findViewById(R.id.menu);
         this.profilFAB = landingPage.findViewById(R.id.profil);
@@ -31,6 +34,7 @@ public class MyFloatingActionButtons {
         this.settingsFAB = landingPage.findViewById(R.id.setting);;
         this.areFabsVisible = areFabsVisible;
         this.profilDialog = profilDialog;
+        this.allReportsDialog = allReportsDialog;
 
         addFAB.setVisibility(View.GONE);
         profilFAB.setVisibility(View.GONE);
@@ -45,6 +49,19 @@ public class MyFloatingActionButtons {
             allReportsFAB.setVisibility(View.GONE);
             settingsFAB.setVisibility(View.GONE);
         });
+        allReportsFAB.setOnClickListener(v ->{
+            showAllReportsDialog();
+            landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
+            addFAB.setVisibility(View.GONE);
+            profilFAB.setVisibility(View.GONE);
+            settingsFAB.setVisibility(View.GONE);
+                });
+
+        allReportsDialog.setOnDismissListener(v->{
+            allReportsFAB.setVisibility(View.GONE);
+            setAreFabsVisible(false);
+            landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
+        });
 
 
         profilDialog.setOnDismissListener(v->{
@@ -52,6 +69,15 @@ public class MyFloatingActionButtons {
             setAreFabsVisible(false);
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
         });
+    }
+
+    private void showAllReportsDialog() {
+        Window window = allReportsDialog.getWindow();
+        assert window != null;
+        window.setGravity(Gravity.TOP);
+        window.setDimAmount(0.0f);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        allReportsDialog.show();
     }
 
     private void showProfiledialog(){

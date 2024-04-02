@@ -5,18 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:background="@drawable/profile_dialog_background"
-    android:maxHeight="500dp">
+    android:background="@drawable/bg_profile_dialog"
+    android:maxHeight="600dp">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reportsrecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="500dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutDPN" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutDPN"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="10dp" />
 
     <LinearLayout
         android:id="@+id/layoutDPN"
