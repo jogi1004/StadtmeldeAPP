@@ -80,7 +80,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiInformationDialog = new PoiInformationDialog(this,this);
         profileDialog = new ProfilDialog(this, this);
         allReportsDialog = new ReportDialogPage(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, allReportsDialog);
+        settingDialog =new SettingDialog(this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog,allReportsDialog);
 
     }
 
