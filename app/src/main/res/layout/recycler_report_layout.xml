@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         app:strokeWidth="2dp"
         app:strokeColor="#b8bab9"
-        android:layout_height="150dp"
+        android:layout_height="130dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
