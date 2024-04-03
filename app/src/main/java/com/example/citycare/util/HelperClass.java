@@ -44,4 +44,12 @@ public class HelperClass {
         }
         return false;
     }
+    public boolean checkEmail(Context c, String emailContent){
+        if((emailContent.indexOf('@') & emailContent.indexOf('.')) != -1){
+            return true;
+        } else {
+            Toast.makeText(c, "E-Mail-Adresse ist ungültig", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
 }

@@ -28,7 +28,8 @@
             android:exported="false" />
         <activity
             android:name=".WelcomePage"
-            android:exported="true">
+            android:exported="true"
+        >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

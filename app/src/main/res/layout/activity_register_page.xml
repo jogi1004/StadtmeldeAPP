@@ -62,7 +62,7 @@
             style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="20dp"
             android:hint="@string/username"
             android:inputType="text"
             android:paddingStart="20sp"
@@ -74,11 +74,28 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:id="@+id/emailEditText"
+            style="@style/EditTextStyle"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:paddingStart="20sp"
+            android:paddingEnd="20dp"
+            android:textColorHint="@color/hint_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/usernameEditText" />
+
+
+        <EditText
             android:id="@+id/passwordEditText"
             style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="20dp"
             android:hint="@string/password"
             android:inputType="textPassword"
             android:paddingStart="20sp"
@@ -87,14 +104,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/usernameEditText" />
+            app:layout_constraintTop_toBottomOf="@id/emailEditText" />
 
         <EditText
             android:id="@+id/passwordRepeatEditText"
             style="@style/EditTextStyle"
             android:layout_width="300dp"
             android:layout_height="50dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="20dp"
             android:hint="@string/passwordrepeat"
             android:inputType="textPassword"
             android:paddingStart="20dp"
@@ -103,55 +120,64 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/passwordEditText" />
+            app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
 
         <Button
             android:id="@+id/RegisterButton"
             style="@style/ButtonWithRoundedCorners"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="25dp"
             android:backgroundTint="@color/dark_green"
             android:text="@string/signUptxt"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/passwordRepeatEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/passwordRepeatEditText" />
 
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="3dp"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
             android:background="@color/white"
             app:layout_constraintTop_toBottomOf="@id/RegisterButton"
             tools:layout_editor_absoluteX="15dp" />
 
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loginView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="68dp"
-            android:layout_marginTop="48dp"
-            android:text="@string/alreadyAccount"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            app:layout_constraintTop_toBottomOf="@id/view"
+            android:layout_marginTop="20dp">
 
-        <Button
-            android:id="@+id/SignInButtonRegisterView"
-            android:layout_width="120dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="48dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.71"
-            app:layout_constraintStart_toStartOf="parent"
-            android:text="@string/signIntxt"
-            android:backgroundTint="@color/dark_green"
-            app:layout_constraintTop_toBottomOf="@+id/view" />
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/alreadyAccount"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/SignInButtonRegisterView"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/loginView"
+                />
+
+            <Button
+                android:id="@+id/SignInButtonRegisterView"
+                android:layout_width="120dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/dark_green"
+                android:text="@string/signIntxt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/textView5"
+                app:layout_constraintTop_toTopOf="@id/loginView"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

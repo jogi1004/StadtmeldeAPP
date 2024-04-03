@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.MyApp.MySplash" parent ="Theme.SplashScreen">
         <item name ="windowSplashScreenBackground">#FFFFFF</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo_ow</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/png_placeholder</item>
         <item name="postSplashScreenTheme">@style/Base.Theme.CityCare</item>
         <item name="windowSplashScreenAnimationDuration">700</item>
 
