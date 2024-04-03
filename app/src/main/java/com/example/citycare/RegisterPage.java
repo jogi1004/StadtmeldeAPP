@@ -46,6 +46,7 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        int code;
         if (v == backButton) {
             Intent i = new Intent(this, WelcomePage.class);
             startActivity(i);
@@ -63,8 +64,7 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                Intent i = new Intent(this, LandingPage.class);
-                startActivity(i);
+
             }
         }
     }
