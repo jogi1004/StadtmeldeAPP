@@ -15,6 +15,7 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_page);
+        getSplashScreen().setSplashScreenTheme(R.style.Theme_MyApp_MySplash);
         register = findViewById(R.id.signUpButton);
         signIn = findViewById(R.id.signInButton);
         register.setOnClickListener(this);

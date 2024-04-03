@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.citycare"
-        minSdk = 29
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -48,4 +48,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("de.hdodenhof:circleimageview:3.1.0")
+    //Splash Screen API
+    implementation ("androidx.core:core-splashscreen:1.0.0")
 }
