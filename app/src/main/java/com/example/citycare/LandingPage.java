@@ -2,6 +2,8 @@ package com.example.citycare;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,8 +26,10 @@ import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.damagetitleFragment;
 import com.example.citycare.Dialogs.damagetypeFragment;
 
+
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -59,6 +63,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
     public ProfilDialog profileDialog;
+    public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
     public SettingDialog settingDialog;
 
@@ -77,8 +82,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         initPermissions();
         profileDialog = new ProfilDialog(this, this);
-        settingDialog = new SettingDialog(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, poiInformationDialog);
+        allReportsDialog = new ReportDialogPage(this);
+        settingDialog =new SettingDialog(this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog);
 
     }
 
