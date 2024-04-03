@@ -27,7 +27,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     @Override
     public RecyclerViewAdapter_AllReports.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.recycler_report_layout, parent, false);
+        View view = inflater.inflate(R.layout.layout_recycler_report, parent, false);
         return new RecyclerViewAdapter_AllReports.MyViewHolder(view);
     }
 

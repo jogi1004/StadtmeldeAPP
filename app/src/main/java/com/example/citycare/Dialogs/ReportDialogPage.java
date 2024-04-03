@@ -25,7 +25,7 @@ public class ReportDialogPage extends Dialog {
     FrameLayout dim;
     ArrayList<ReportModel> allReports = new ArrayList<>();
     String[] reportNames = {"Meldung 1", "Meldung 2", "Meldung 3", "Meldung 4", "Meldung 5"};
-    String[] reportDates = {"22.03.2023  |  13:23Uhr", "23.09.2016  |  15:49Uhr", "06.11.2003  |  23:23Uhr", "30.02.2021  |  12:21Uhr", "01.10.2004  | 17:48Uhr"};
+    String[] reportDates = {"22.03.2023 | 13:23Uhr", "23.09.2016 | 15:49Uhr", "06.11.2003 | 23:23Uhr", "30.02.2021 | 12:21Uhr", "01.10.2004 | 17:48Uhr"};
     public ReportDialogPage(@NonNull Context context) {
         super(context);
         this.context = context;
@@ -36,7 +36,7 @@ public class ReportDialogPage extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.report_dialogpage);
+        setContentView(R.layout.dialog_reports);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         initAllReports();
         RecyclerView recyclerView = findViewById(R.id.reportsrecyclerview);

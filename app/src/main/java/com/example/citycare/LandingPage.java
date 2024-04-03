@@ -27,6 +27,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
+import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -61,6 +62,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public ProfilDialog profileDialog;
     public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
+    public SettingDialog settingDialog;
 
 
     @Override
@@ -78,7 +80,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiInformationDialog = new PoiInformationDialog(this,this);
         profileDialog = new ProfilDialog(this, this);
         allReportsDialog = new ReportDialogPage(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, allReportsDialog);
+        settingDialog =new SettingDialog(this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog,allReportsDialog);
 
     }
 
@@ -183,7 +186,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         }
         Window window = poiInformationDialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
         poiInformationDialog.show();
 
     }

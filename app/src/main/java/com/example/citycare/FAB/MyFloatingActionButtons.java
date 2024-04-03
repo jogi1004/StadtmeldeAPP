@@ -1,16 +1,15 @@
 package com.example.citycare.FAB;
 
 import android.app.Activity;
-import android.app.appsearch.ReportSystemUsageRequest;
 import android.content.Context;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
+import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,8 +23,10 @@ public class MyFloatingActionButtons {
     private Boolean areFabsVisible;
     private ProfilDialog profilDialog;
     private ReportDialogPage allReportsDialog;
+    private SettingDialog settingDialog;
+    private int dialogheight;
 
-    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, ReportDialogPage allReportsDialog) {
+    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, SettingDialog settingDialog, ReportDialogPage allReportsDialog) {
         this.context = context;
         this.menuFAB = landingPage.findViewById(R.id.menu);
         this.profilFAB = landingPage.findViewById(R.id.profil);
@@ -34,8 +35,13 @@ public class MyFloatingActionButtons {
         this.settingsFAB = landingPage.findViewById(R.id.setting);;
         this.areFabsVisible = areFabsVisible;
         this.profilDialog = profilDialog;
+        this.settingDialog = settingDialog;
         this.allReportsDialog = allReportsDialog;
 
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        landingPage.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dialogheight = (int) (displayMetrics.heightPixels*0.7);
         addFAB.setVisibility(View.GONE);
         profilFAB.setVisibility(View.GONE);
         allReportsFAB.setVisibility(View.GONE);
@@ -43,7 +49,7 @@ public class MyFloatingActionButtons {
 
         menuFAB.setOnClickListener(v->toggleFABMenu());
         profilFAB.setOnClickListener(v->{
-            showProfiledialog();
+            showProfileDialog();
             landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
             addFAB.setVisibility(View.GONE);
             allReportsFAB.setVisibility(View.GONE);
@@ -63,30 +69,52 @@ public class MyFloatingActionButtons {
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
         });
 
+        settingsFAB.setOnClickListener(v->{
+            showSettingDialog();
+            landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
+            addFAB.setVisibility(View.GONE);
+            allReportsFAB.setVisibility(View.GONE);
+            profilFAB.setVisibility(View.GONE);
+        });
 
         profilDialog.setOnDismissListener(v->{
             profilFAB.setVisibility(View.GONE);
             setAreFabsVisible(false);
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
         });
-    }
 
+        settingDialog.setOnDismissListener(v->{
+            settingsFAB.setVisibility(View.GONE);
+            setAreFabsVisible(false);
+            landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
+        });
+
+
+    }
     private void showAllReportsDialog() {
         Window window = allReportsDialog.getWindow();
         assert window != null;
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,dialogheight);
         allReportsDialog.show();
     }
 
-    private void showProfiledialog(){
+    private void showProfileDialog(){
         Window window = profilDialog.getWindow();
-        assert window != null;
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
         profilDialog.show();
+    }
+
+    private void showSettingDialog(){
+
+        Window window = settingDialog.getWindow();
+        window.setGravity(Gravity.TOP);
+        window.setDimAmount(0.0f);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
+        settingDialog.show();
     }
 
 
