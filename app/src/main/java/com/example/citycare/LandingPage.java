@@ -65,10 +65,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
-        View decorView = this.getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        decorView.setSystemUiVisibility(uiOptions);
-
         dimm = findViewById(R.id.dimm);
 
         initPermissions();
