@@ -117,4 +117,8 @@ public class APIHelper {
         myEditor.apply();
 
     }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 }

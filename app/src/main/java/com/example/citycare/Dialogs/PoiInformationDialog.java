@@ -30,5 +30,7 @@ public class PoiInformationDialog extends Dialog{
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
 
+
+
     }
 }
