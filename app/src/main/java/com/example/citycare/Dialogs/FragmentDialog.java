@@ -1,12 +1,13 @@
 package com.example.citycare.Dialogs;
 
-import static com.example.citycare.R.layout.report_dialog;
+import static com.example.citycare.R.layout.dialog_report;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,7 +39,7 @@ public class FragmentDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(report_dialog, container, false);
+        View rootView = inflater.inflate(dialog_report, container, false);
         getDialog().getWindow().setDimAmount(0.0f);
         return rootView;
     }
@@ -46,7 +47,6 @@ public class FragmentDialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Fügen Sie hier ggf. Logik für das Setup des Dialogs hinzu
 
         Fragment damageTypeF = new damagetypeFragment();
         Fragment damageTitleF = new damagetitleFragment();
@@ -55,6 +55,7 @@ public class FragmentDialog extends DialogFragment {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, damageTypeF);
         transaction.commit();
+
     }
 
     @Override
@@ -63,7 +64,12 @@ public class FragmentDialog extends DialogFragment {
         // Konfigurieren Sie das Dialogfenster
         Window window = getDialog().getWindow();
         if (window != null) {
-            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int dialogheight = (int) (displayMetrics.heightPixels * 0.75);
+
+            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
             window.setGravity(Gravity.TOP);
             window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
