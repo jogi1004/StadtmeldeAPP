@@ -21,20 +21,30 @@ import android.widget.Toast;
 
 import com.example.citycare.R;
 import com.example.citycare.model.DamagetypeModel;
+import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.OnItemClickListener;
 import com.example.citycare.util.RecyclerViewAdapter_Damagetype;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class damagetypeFragment extends Fragment implements OnItemClickListener {
 
     private View rootView;
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
+    private APIHelper apiHelper;
+    private List<MainCategoryModel> mainCategoryModelList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
+        apiHelper = APIHelper.getInstance(rootView.getContext());
+        mainCategoryModelList = apiHelper.getMainCategorys();
+
 
         ArrayList<DamagetypeModel> list = setUpData();
 

@@ -28,7 +28,7 @@ public class ProfilDialog extends Dialog {
         super(context);
         this.context = context;
         this.dimm = findViewById(R.id.dimm);
-        apiHelper = new APIHelper(context);
+        apiHelper = APIHelper.getInstance(context);
     }
 
     @Override
