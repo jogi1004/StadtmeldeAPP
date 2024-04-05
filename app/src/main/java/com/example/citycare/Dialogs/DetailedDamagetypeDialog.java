@@ -23,7 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
 
-public class DetailedDamagetypeDialog extends Dialog implements DialogInterface.OnDismissListener, View.OnClickListener {
+public class DetailedDamagetypeDialog extends Dialog implements View.OnClickListener {
 
     Dialog DetailedDamagetypeDialog;
     private final Context context;
@@ -42,7 +42,6 @@ public class DetailedDamagetypeDialog extends Dialog implements DialogInterface.
         this.context = rootView.getContext();
         this.rootView = rootView;
         this.fragmentManager = fragmentManager;
-        setOnDismissListener(this);
     }
 
     @Override
@@ -78,16 +77,6 @@ public class DetailedDamagetypeDialog extends Dialog implements DialogInterface.
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         getWindow().setAttributes(params);
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialogInterface) {
-//        rootView.findViewById(R.id.strassenschaeden).setBackground(ContextCompat.getDrawable(context, R.drawable.bg_report));
-//        rootView.findViewById(R.id.vandalismus).setBackground(ContextCompat.getDrawable(context, R.drawable.bg_report));
-//        rootView.findViewById(R.id.verschmutzung).setBackground(ContextCompat.getDrawable(context, R.drawable.bg_report));
-//        rootView.findViewById(R.id.platzhalter1).setBackground(ContextCompat.getDrawable(context, R.drawable.bg_report));
-//        rootView.findViewById(R.id.platzhalter2).setBackground(ContextCompat.getDrawable(context, R.drawable.bg_report));
-//        rootView.findViewById(R.id.platzhalter3).setBackground(ContextCompat.getDrawable(context, R.drawable.bg_report));
     }
 
     @Override

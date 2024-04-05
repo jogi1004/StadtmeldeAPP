@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.citycare.R;
@@ -17,14 +18,19 @@ import com.example.citycare.model.DamagetypeModel;
 
 import java.util.ArrayList;
 
-public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<RecyclerViewAdapter_Damagetype.MyViewHolder> {
+public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<RecyclerViewAdapter_Damagetype.MyViewHolder>{
 
     private Context context;
     private ArrayList<DamagetypeModel> allDamagetypes;
+    private  OnItemClickListener mListener;
 
     public RecyclerViewAdapter_Damagetype(Context context, ArrayList<DamagetypeModel> allDamagetypes) {
         this.context = context;
         this.allDamagetypes = allDamagetypes;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener){
+        mListener = onItemClickListener;
     }
 
     @NonNull
@@ -40,6 +46,11 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
         DamagetypeModel daten = allDamagetypes.get(position);
         holder.icon.setImageResource(daten.getIcon());
         holder.title.setText(daten.getDamagetype());
+        holder.field.setOnClickListener(v -> {
+            if(mListener != null){
+                mListener.onItemClick(position);
+            }
+        });
     }
 
     @Override
@@ -47,15 +58,21 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
         return allDamagetypes.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView icon;
-        public TextView title;
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
+
+        private ImageView icon;
+        private TextView title;
+
+        public ConstraintLayout field;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.icon);
             title = itemView.findViewById(R.id.name);
+            field = itemView.findViewById(R.id.category);
         }
+
     }
 }

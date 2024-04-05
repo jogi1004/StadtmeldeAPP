@@ -61,7 +61,6 @@ public class FragmentDialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Konfigurieren Sie das Dialogfenster
         Window window = getDialog().getWindow();
         if (window != null) {
 
@@ -77,7 +76,6 @@ public class FragmentDialog extends DialogFragment {
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
-        Log.d("Dismiss", " " + dialog.getClass());
         super.onDismiss(dialog);
         dimm.setVisibility(View.GONE);
     }
