@@ -11,24 +11,31 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.HelperClass;
+
+import org.json.JSONException;
 
 public class RegisterPage extends AppCompatActivity implements View.OnClickListener {
 
     HelperClass h = new HelperClass();
     ImageButton backButton;
     Button SignIn, register;
-    EditText username, password, passwordRepeat;
-    String usernameContent, passwordContent, passwordRepeatContent;
+    EditText username, password, passwordRepeat, email;
+    String usernameContent, passwordContent, passwordRepeatContent, emailContent;
+
+    private APIHelper apiHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        apiHelper = new APIHelper(this);
         setContentView(R.layout.activity_register_page);
         //Für die Registrierung benötigte Objekte initialisieren
         backButton = findViewById(R.id.backButton);
         SignIn = findViewById(R.id.SignInButtonRegisterView);
         username = findViewById(R.id.usernameEditText);
         password = findViewById(R.id.passwordEditText);
+        email = findViewById(R.id.emailEditText);
         passwordRepeat = findViewById(R.id.passwordRepeatEditText);
         register = findViewById(R.id.RegisterButton);
         //OnClickListener auf Buttons setzen
@@ -47,17 +54,22 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
             startActivity(i);
         } else if (v == register) {
             usernameContent = String.valueOf(username.getText());
+            emailContent = String.valueOf(email.getText());
             passwordContent = String.valueOf(password.getText());
             passwordRepeatContent = String.valueOf(passwordRepeat.getText());
-            if (checkSignUpData(usernameContent, passwordContent, passwordRepeatContent)) {
-                Intent i = new Intent(this, LandingPage.class);
-                startActivity(i);
+            if (checkSignUpData(usernameContent, passwordContent, passwordRepeatContent, emailContent)) {
+                try {
+                    apiHelper.registerUser(usernameContent.trim(),emailContent.trim(),passwordContent.trim());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         }
     }
 
 
-    private boolean checkSignUpData(String usernameContent, String passwordContent, String passwordRepeatContent) {
-        return h.checkUsername(this, usernameContent) && h.checkPassword(this, passwordContent) && h.checkPasswordEquality(this,passwordContent, passwordRepeatContent);
+    private boolean checkSignUpData(String usernameContent, String passwordContent, String passwordRepeatContent, String emailContent) {
+        return h.checkUsername(this, usernameContent) && h.checkPassword(this, passwordContent) && h.checkPasswordEquality(this,passwordContent, passwordRepeatContent) && h.checkEmail(this, emailContent);
     }
 }

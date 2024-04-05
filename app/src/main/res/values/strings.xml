@@ -33,4 +33,6 @@
     <string name="meldeort">Meldeort</string>
     <string name="einstellungentxt">Einstellungen</string>
     <string name="reports">Aktuelle Meldungen</string>
+    <string name="email">E-Mail-Adresse</string>
+    <string name="logout">logout</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.citycare;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +15,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.HelperClass;
+
+import org.json.JSONException;
 
 public class SignInPage extends AppCompatActivity implements View.OnClickListener {
     HelperClass h = new HelperClass();
@@ -22,6 +27,9 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
     ImageButton backButton;
     EditText username, password;
     String usernameContent, passwordContent;
+    private APIHelper apiHelper;
+    private SharedPreferences loginSharedPreferences;
+    private boolean loggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +47,12 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
         SignInButton.setOnClickListener(this);
         registerView.setOnClickListener(this);
         backButton.setOnClickListener(this);
+
+        apiHelper = new APIHelper(this);
+        loginSharedPreferences = getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
+        loginSharedPreferences.getBoolean("loggedIn", loggedIn);
+
+
     }
 
     @Override
@@ -47,8 +61,11 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
             usernameContent = String.valueOf(username.getText());
             passwordContent = String.valueOf(password.getText());
             if(checkLoginData(usernameContent, passwordContent)){
-                Intent i = new Intent(this, LandingPage.class);
-                startActivity(i);
+                try {
+                    apiHelper.loginUser(usernameContent.trim(),passwordContent.trim());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         } else if(v == registerView){
             Intent i = new Intent(this, RegisterPage.class);
@@ -62,4 +79,5 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
     private boolean checkLoginData(String usernameContent, String passwordContent) {
         return h.checkUsername(this,usernameContent) && h.checkPassword(this, passwordContent);
     }
+
 }
