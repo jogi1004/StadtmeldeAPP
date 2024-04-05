@@ -21,10 +21,12 @@ public class MyFloatingActionButtons {
     private FloatingActionButton allReportsFAB;
     private FloatingActionButton settingsFAB;
     private Boolean areFabsVisible;
+
     private ProfilDialog profilDialog;
     private ReportDialogPage allReportsDialog;
     private SettingDialog settingDialog;
     private int dialogheight;
+
 
     public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, SettingDialog settingDialog, ReportDialogPage allReportsDialog) {
         this.context = context;

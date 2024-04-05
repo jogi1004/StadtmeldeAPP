@@ -9,15 +9,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import com.example.citycare.Dialogs.PoiInformationDialog;
+import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.damagetitleFragment;
+import com.example.citycare.Dialogs.damagetypeFragment;
+
+
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
@@ -67,12 +70,12 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
 
+        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         initPermissions();
-        poiInformationDialog = new PoiInformationDialog(this,this);
         profileDialog = new ProfilDialog(this, this);
         allReportsDialog = new ReportDialogPage(this);
         settingDialog =new SettingDialog(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog,allReportsDialog);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog);
 
     }
 
@@ -146,12 +149,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiMarker.setPosition(geoPoint);
         //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
         mMap.getOverlays().add(poiMarker);
+        controller.setCenter(geoPoint);
 
         poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
-
-        TextView adress = poiInformationDialog.findViewById(R.id.adress);
-        TextView adressInfos = poiInformationDialog.findViewById(R.id.adressInfos);
-        TextView koords = poiInformationDialog.findViewById(R.id.koords);
 
         try{
             Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
@@ -162,23 +162,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                 toast.show();
             }
             else {
-                String address[] = addresses.get(0).getAddressLine(0).split(", ");
-                adress.setText(address[0]);
-                if(addresses.get(0).getSubLocality() == null){
-                    adressInfos.setText(address[0] + ", " + addresses.get(0).getLocality());
-                }else {
-                    adressInfos.setText(address[0] + ", " + addresses.get(0).getSubLocality());
-                }
-                koords.setText(addresses.get(0).getLatitude() + ", " + addresses.get(0).getLongitude());
+                poiInformationDialog.show();
+                poiInformationDialog.fill(addresses);
             }
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        Window window = poiInformationDialog.getWindow();
-        window.setGravity(Gravity.BOTTOM);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-        poiInformationDialog.show();
 
     }
 

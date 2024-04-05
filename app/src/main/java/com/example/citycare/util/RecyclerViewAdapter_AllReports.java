@@ -42,6 +42,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     public int getItemCount() {
         return allReports.size();
     }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView image;
         TextView reportName,reportDate;
