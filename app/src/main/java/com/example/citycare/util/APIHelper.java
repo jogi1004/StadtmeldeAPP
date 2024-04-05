@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.text.LocaleDisplayNames;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -112,6 +113,7 @@ public class APIHelper {
                     try {
                         token = jsonObject.getString("token");
 
+
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -140,12 +142,12 @@ public class APIHelper {
     public void updateSharedPreferences(){
         SharedPreferences.Editor myEditor = loginSharedPreferences.edit();
         myEditor.putBoolean("loggedIn",loggedIn);
+        myEditor.putString("token",token);
         myEditor.apply();
 
     }
 
-    public List<MainCategoryModel> getMainCategorys() {
-        Log.d("catch", token);
+    public void getMainCategorys(CategoryListCallback callback) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, categoryGetURL, null,
                 response -> {
@@ -161,8 +163,9 @@ public class APIHelper {
                             );
                             categoryModelList.add(categoryModel);
                         }
+                        callback.onSuccess(categoryModelList);
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        callback.onError(e.toString());
                     }
                 },
                 error -> {
@@ -178,10 +181,10 @@ public class APIHelper {
         };
 
         requestQueue.add(jsonObjectRequest);
-        return categoryModelList;
+
     }
 
-    public List<MainCategoryModel> getAllCategorys() throws JSONException {
+    /*public List<MainCategoryModel> getAllCategorys() throws JSONException {
         List<MainCategoryModel> allCategory = getMainCategorys();
         for (int i =0;i< allCategory.size();i++){
             JSONObject jsonBody = new JSONObject();
@@ -210,8 +213,16 @@ public class APIHelper {
 
 
         return allCategory;
-    }
+    }*/
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 }

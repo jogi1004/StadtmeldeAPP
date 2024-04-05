@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -26,6 +27,7 @@ import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
+import com.example.citycare.util.APIHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import org.osmdroid.api.IMapController;
@@ -59,6 +61,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
     public SettingDialog settingDialog;
+    private APIHelper apiHelper;
+    private String token;
 
 
 
@@ -69,6 +73,11 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
+        apiHelper = APIHelper.getInstance(this);
+        token = getSharedPreferences("loggedInOut",MODE_PRIVATE).getString("token", token);
+        Log.d("tokenlanding", token+"");
+        apiHelper.setToken(token);
+
 
         poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         initPermissions();

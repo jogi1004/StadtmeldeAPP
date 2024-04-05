@@ -23,6 +23,7 @@ import com.example.citycare.R;
 import com.example.citycare.model.DamagetypeModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CategoryListCallback;
 import com.example.citycare.util.OnItemClickListener;
 import com.example.citycare.util.RecyclerViewAdapter_Damagetype;
 
@@ -43,7 +44,18 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
         apiHelper = APIHelper.getInstance(rootView.getContext());
-        mainCategoryModelList = apiHelper.getMainCategorys();
+        apiHelper.getMainCategorys(new CategoryListCallback() {
+            @Override
+            public void onSuccess(List<MainCategoryModel> categoryModels) {
+                Log.d("catch", "dtfz50");
+                mainCategoryModelList=categoryModels;
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("Error", errorMessage);
+            }
+        });
 
 
         ArrayList<DamagetypeModel> list = setUpData();

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -29,6 +30,7 @@ public class ProfilDialog extends Dialog {
         this.context = context;
         this.dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(context);
+
     }
 
     @Override
@@ -45,6 +47,7 @@ public class ProfilDialog extends Dialog {
             Intent i = new Intent(context, WelcomePage.class);
             context.startActivity(i);
         });
+        Log.d("token", apiHelper.getToken()+"");
     }
 
 
