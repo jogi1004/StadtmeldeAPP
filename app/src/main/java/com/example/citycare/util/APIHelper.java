@@ -121,4 +121,10 @@ public class APIHelper {
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }
+
+    public void getAllReports() {
+        JSONObject requestBody = new JSONObject();
+
+
+    }
 }
