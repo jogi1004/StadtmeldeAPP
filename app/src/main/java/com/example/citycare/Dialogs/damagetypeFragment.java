@@ -2,6 +2,7 @@ package com.example.citycare.Dialogs;
 
 import static androidx.core.view.ViewCompat.setBackground;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.DamagetypeModel;
 import com.example.citycare.model.MainCategoryModel;
@@ -43,22 +45,27 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
-        apiHelper = APIHelper.getInstance(rootView.getContext());
-        apiHelper.getAllCategorys(new CategoryListCallback() {
-            @Override
-            public void onSuccess(List<MainCategoryModel> categoryModels) {
-                mainCategoryModelList = categoryModels;
-                for (MainCategoryModel m : categoryModels) {
-                    Log.d("catch2", m.toString());
-                }
-            }
+//        apiHelper = APIHelper.getInstance(rootView.getContext());
+//        ArrayList<DamagetypeModel> list = new ArrayList<>();
+        damagetypeFragment context = this;
+//        apiHelper.getMainCategorys(new CategoryListCallback() {
+//            @Override
+//            public void onSuccess(List<MainCategoryModel> categoryModels) {
+//                mainCategoryModelList = categoryModels;
+//                for (MainCategoryModel m : categoryModels) {
+//                    list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
+//                    Log.d("catch2", m.toString());
+//                }
+//            }
+//
+//            @Override
+//            public void onError(String errorMessage) {
+//                Log.e("errorGetAllCategorys", errorMessage);
+//            }
+//        });
 
-            @Override
-            public void onError(String errorMessage) {
-                Log.e("errorGetAllCategorys", errorMessage);
-            }
-        });
-        ArrayList<DamagetypeModel> list = setUpData();
+        LandingPage lp = new LandingPage();
+        ArrayList<DamagetypeModel> la = lp.getList();
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
 
@@ -66,12 +73,29 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
 
-        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), list);
-        adapter.setOnItemClickListener(this);
+        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), la);
+        adapter.setOnItemClickListener(context);
         recyclerView.setAdapter(adapter);
 
-
         ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
+
+
+
+
+        Log.d("mama", "amma");
+
+//        recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
+//
+//
+//        GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
+//        recyclerView.setLayoutManager(manager);
+//
+//        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), list);
+//        adapter.setOnItemClickListener(this);
+//        recyclerView.setAdapter(adapter);
+//
+//
+//        ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
 
         return rootView;
     }

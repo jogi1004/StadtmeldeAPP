@@ -27,7 +27,10 @@ import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
+import com.example.citycare.model.DamagetypeModel;
+import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import org.osmdroid.api.IMapController;
@@ -45,6 +48,7 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -151,6 +155,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.addMapListener(this);
     }
 
+    private List<MainCategoryModel> mainCategoryModelList;
+    private static ArrayList<DamagetypeModel> list = new ArrayList<>();;
+
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
 
@@ -179,6 +186,28 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             e.printStackTrace();
         }
 
+
+        apiHelper.getAllCategorys(new CategoryListCallback() {
+
+            @Override
+            public void onSuccess(List<MainCategoryModel> categoryModels) {
+                mainCategoryModelList = categoryModels;
+                for (MainCategoryModel m : categoryModels) {
+                    list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
+                    Log.d("catch2", m.toString());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("errorGetAllCategorys", errorMessage);
+            }
+        });
+
+    }
+
+    public static ArrayList<DamagetypeModel> getList() {
+        return list;
     }
 
     @SuppressLint("MissingPermission")
