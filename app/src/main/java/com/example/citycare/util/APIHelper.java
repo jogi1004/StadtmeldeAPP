@@ -14,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
 import com.example.citycare.model.MainCategoryModel;
@@ -199,8 +200,9 @@ public class APIHelper {
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
                 /*Log.d("catch", String.valueOf(categoryModels.size()));*/
-                for (int i=0;i< categoryModels.size();i++) {
+                    for (int i=0;i< categoryModels.size();i++) {
                     int finalI = i;
+                    RequestFuture<JsonArrayRequest> future = RequestFuture.newFuture();
                     JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
                             (Request.Method.GET, subCategoryGetURL + categoryModels.get(i).getId(), null, response -> {
                                 List<SubCategoryModel> allSubCategories = new ArrayList<>();
