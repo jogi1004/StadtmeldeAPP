@@ -3,6 +3,7 @@ package com.example.citycare.util;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -89,8 +90,9 @@ public class APIHelper {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    loggedIn =true;
-                    updateSharedPreferences();
+
+                    KeyStoreManager.savePassword(context, username, password);
+
                     Intent i = new Intent(context, LandingPage.class);
                     context.startActivity(i);
 
@@ -111,12 +113,13 @@ public class APIHelper {
                 });
         requestQueue.add(jsonObjectRequest);
     }
-    public void updateSharedPreferences(){
-        SharedPreferences.Editor myEditor = loginSharedPreferences.edit();
-        myEditor.putBoolean("loggedIn",loggedIn);
-        myEditor.apply();
 
-    }
+//    public void updateSharedPreferences(){
+//        SharedPreferences.Editor myEditor = loginSharedPreferences.edit();
+//        myEditor.putBoolean("loggedIn",loggedIn);
+//        myEditor.apply();
+//
+//    }
 
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
