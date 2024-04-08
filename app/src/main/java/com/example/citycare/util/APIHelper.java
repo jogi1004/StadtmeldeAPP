@@ -216,9 +216,13 @@ public class APIHelper {
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
-                                Log.d("catchi", String.valueOf(allSubCategories.size()));
+//                                Log.d("catchi", String.valueOf(allSubCategories.size()));
                                 categoryModels.get(finalI).setSubCategorys(allSubCategories);
-                                Log.d("catchu" , categoryModels.get(finalI).toString());
+//                                Log.d("catchu" , categoryModels.get(finalI).toString());
+
+                                if(finalI == categoryModels.size()-1) {
+                                    callback.onSuccess(categoryModels);
+                                }
                             }, volleyError -> volleyError.printStackTrace()) {
                         @Override
                         public Map<String, String> getHeaders() {
@@ -229,7 +233,7 @@ public class APIHelper {
                     };
                     requestQueue.add(jsonObjectRequest);
                 }
-                callback.onSuccess(categoryModels);
+//                callback.onSuccess(categoryModels);
             }
 
             @Override

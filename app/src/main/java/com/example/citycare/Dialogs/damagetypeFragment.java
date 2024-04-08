@@ -48,7 +48,7 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
                 mainCategoryModelList = categoryModels;
-                for (MainCategoryModel m :categoryModels) {
+                for (MainCategoryModel m : categoryModels) {
                     Log.d("catch2", m.toString());
                 }
             }
