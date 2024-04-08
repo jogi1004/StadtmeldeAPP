@@ -12,10 +12,12 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Header;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
 import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.model.SubCategoryModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,7 +35,7 @@ public class APIHelper {
     private static volatile APIHelper INSTANCE = null;
     private String registerPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/register";
     private String loginPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/login";
-    private String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main";
+    private String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/Zweibrücken";
     private String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
     private Context context;
     private RequestQueue requestQueue;
@@ -41,11 +43,11 @@ public class APIHelper {
     private String token;
     private SharedPreferences loginSharedPreferences;
     private boolean loggedIn;
-    private List<MainCategoryModel> categoryModelList = new ArrayList<>();
+
 
     private APIHelper(Context context){
         this.context = context;
-        requestQueue = Volley.newRequestQueue(context);
+        requestQueue = getRequestQueue();
         timer = new Timer();
         loginSharedPreferences = context.getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
 
@@ -64,6 +66,14 @@ public class APIHelper {
         return INSTANCE;
     }
 
+    public RequestQueue getRequestQueue() {
+        if (requestQueue == null) {
+            // getApplicationContext() is key, it keeps you from leaking the
+            // Activity or BroadcastReceiver if someone passes one in.
+            requestQueue = Volley.newRequestQueue(context.getApplicationContext());
+        }
+        return requestQueue;
+    }
     public void registerUser(String username, String email, String password) throws JSONException {
         JSONObject requestBody = new JSONObject();
         requestBody.put("username", username);
@@ -148,72 +158,86 @@ public class APIHelper {
     }
 
     public void getMainCategorys(CategoryListCallback callback) {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        List<MainCategoryModel> categoryModelList = new ArrayList<>();
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, categoryGetURL, null,
                 response -> {
-                    try {
-                        Log.d("catch", "catch");
-                        Log.d("MYResponse", String.valueOf(response.length()));
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject categoryObject = response.getJSONArray("").getJSONObject(i);
-                            Log.d("MYResponse", categoryObject.toString());
-                            MainCategoryModel categoryModel = new MainCategoryModel(
-                                    categoryObject.getInt("id"),
-                                    categoryObject.getString("title")
-                            );
-                            categoryModelList.add(categoryModel);
-                        }
-                        callback.onSuccess(categoryModelList);
-                    } catch (JSONException e) {
-                        callback.onError(e.toString());
-                    }
-                },
-                error -> {
-
-                }
-        ){
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer "+token);
-                return headers;
-            }
-        };
-
-        requestQueue.add(jsonObjectRequest);
-
-    }
-
-    /*public List<MainCategoryModel> getAllCategorys() throws JSONException {
-        List<MainCategoryModel> allCategory = getMainCategorys();
-        for (int i =0;i< allCategory.size();i++){
-            JSONObject jsonBody = new JSONObject();
-            jsonBody.put("id", allCategory.get(i).getId());
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                    (Request.Method.GET,subCategoryGetURL+ allCategory.get(i).getId(),jsonBody, jsonObject->{
+                    for (int i=0;i<response.length();i++){
                         try {
-                            JSONArray categoriesArray = jsonObject.getJSONArray("subCategories");
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            MainCategoryModel categoryModel = new MainCategoryModel(
+                                    jsonObject.getInt("id"),
+                                    jsonObject.getString("title")
+                            );
+
+                            categoryModelList.add(categoryModel);
+
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                    },volleyError -> {
-                        volleyError.printStackTrace();
-                    }){
-                @Override
-                public Map<String,String> getHeaders() {
-                    HashMap<String,String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer "+ token);
-                    return headers;
+                    }
+                    callback.onSuccess(categoryModelList);
+                },
+                error -> error.printStackTrace()
+                ){
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Authorization", "Bearer "+token);
+                        return headers;
+                    }
+                };
+
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+    public void getAllCategorys(CategoryListCallback callback){
+        getMainCategorys(new CategoryListCallback() {
+            @Override
+            public void onSuccess(List<MainCategoryModel> categoryModels) {
+                /*Log.d("catch", String.valueOf(categoryModels.size()));*/
+                for (int i=0;i< categoryModels.size();i++) {
+                    int finalI = i;
+                    JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
+                            (Request.Method.GET, subCategoryGetURL + categoryModels.get(i).getId(), null, response -> {
+                                List<SubCategoryModel> allSubCategories = new ArrayList<>();
+                                try {
+                                    for (int j = 0; j < response.length(); j++) {
+                                        JSONObject jsonObject = response.getJSONObject(j);
+                                        SubCategoryModel subCategoryModel = new SubCategoryModel(
+                                                jsonObject.getInt("id"),
+                                                jsonObject.getString("title")
+                                        );
+                                        allSubCategories.add(subCategoryModel);
+                                    }
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                Log.d("catchi", String.valueOf(allSubCategories.size()));
+                                categoryModels.get(finalI).setSubCategorys(allSubCategories);
+                                Log.d("catchu" , categoryModels.get(finalI).toString());
+                            }, volleyError -> volleyError.printStackTrace()) {
+                        @Override
+                        public Map<String, String> getHeaders() {
+                            HashMap<String, String> headers = new HashMap<>();
+                            headers.put("Authorization", "Bearer " + token);
+                            return headers;
+                        }
+                    };
+                    requestQueue.add(jsonObjectRequest);
                 }
-            };
-            requestQueue.add(jsonObjectRequest);
-        }
+                callback.onSuccess(categoryModels);
+            }
 
-
-
-        return allCategory;
-    }*/
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("CallBackError", errorMessage);
+            }
+        });
+    }
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
     }

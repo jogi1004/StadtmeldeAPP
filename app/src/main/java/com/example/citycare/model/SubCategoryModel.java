@@ -24,4 +24,12 @@ public class SubCategoryModel {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    @Override
+    public String toString() {
+        return "SubCategoryModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

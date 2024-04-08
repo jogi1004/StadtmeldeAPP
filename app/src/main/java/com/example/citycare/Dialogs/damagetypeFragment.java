@@ -44,20 +44,20 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
         apiHelper = APIHelper.getInstance(rootView.getContext());
-        apiHelper.getMainCategorys(new CategoryListCallback() {
+        apiHelper.getAllCategorys(new CategoryListCallback() {
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
-                Log.d("catch", "dtfz50");
-                mainCategoryModelList=categoryModels;
+                mainCategoryModelList = categoryModels;
+                for (MainCategoryModel m :categoryModels) {
+                    Log.d("catch2", m.toString());
+                }
             }
 
             @Override
             public void onError(String errorMessage) {
-                Log.e("Error", errorMessage);
+                Log.e("errorGetAllCategorys", errorMessage);
             }
         });
-
-
         ArrayList<DamagetypeModel> list = setUpData();
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
