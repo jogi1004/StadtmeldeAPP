@@ -28,14 +28,11 @@ public class APIHelper {
     private Timer timer;
     private String token;
     private SharedPreferences loginSharedPreferences;
-    private boolean loggedIn;
 
     public APIHelper(Context context) {
         this.context = context;
         requestQueue = Volley.newRequestQueue(context);
         timer = new Timer();
-
-        loginSharedPreferences = context.getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
     }
 
     public void registerUser(String username, String email, String password) throws JSONException {
@@ -114,14 +111,5 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-//    public void updateSharedPreferences(){
-//        SharedPreferences.Editor myEditor = loginSharedPreferences.edit();
-//        myEditor.putBoolean("loggedIn",loggedIn);
-//        myEditor.apply();
-//
-//    }
 
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
-    }
 }
