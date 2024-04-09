@@ -3,6 +3,7 @@ package com.example.citycare.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,12 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
     private Context context;
     private ArrayList<DamagetypeModel> allDamagetypes;
     private  OnItemClickListener mListener;
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setData(ArrayList<DamagetypeModel> newData) {
+        allDamagetypes = newData;
+        notifyDataSetChanged();
+    }
 
     public RecyclerViewAdapter_Damagetype(Context context, ArrayList<DamagetypeModel> allDamagetypes) {
         this.context = context;

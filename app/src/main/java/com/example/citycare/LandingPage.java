@@ -79,7 +79,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
         token = getSharedPreferences("loggedInOut",MODE_PRIVATE).getString("token", token);
-        Log.d("tokenlanding", token+"");
         apiHelper.setToken(token);
 
 
@@ -155,11 +154,32 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.addMapListener(this);
     }
 
+
+
     private List<MainCategoryModel> mainCategoryModelList;
-    private static ArrayList<DamagetypeModel> list = new ArrayList<>();;
+    private static ArrayList<DamagetypeModel> list = new ArrayList<>();
 
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
+
+        damagetypeFragment damagetypeFragment = new damagetypeFragment();
+
+        apiHelper.getAllCategorys(new CategoryListCallback() {
+
+            @Override
+            public void onSuccess(List<MainCategoryModel> categoryModels) {
+                mainCategoryModelList = categoryModels;
+                for (MainCategoryModel m : categoryModels) {
+                    list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
+                    Log.d("catch2", m.toString());
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("errorGetAllCategorys", errorMessage);
+            }
+        });
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
@@ -185,24 +205,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        apiHelper.getAllCategorys(new CategoryListCallback() {
-
-            @Override
-            public void onSuccess(List<MainCategoryModel> categoryModels) {
-                mainCategoryModelList = categoryModels;
-                for (MainCategoryModel m : categoryModels) {
-                    list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
-                    Log.d("catch2", m.toString());
-                }
-            }
-
-            @Override
-            public void onError(String errorMessage) {
-                Log.e("errorGetAllCategorys", errorMessage);
-            }
-        });
 
     }
 

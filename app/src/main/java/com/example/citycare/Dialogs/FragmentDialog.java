@@ -49,7 +49,6 @@ public class FragmentDialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         Fragment damageTypeF = new damagetypeFragment();
-        Fragment damageTitleF = new damagetitleFragment();
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();

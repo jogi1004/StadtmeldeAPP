@@ -41,61 +41,28 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     private RecyclerView recyclerView;
     private APIHelper apiHelper;
     private List<MainCategoryModel> mainCategoryModelList;
+    private ArrayList<DamagetypeModel> list;
+
+    RecyclerViewAdapter_Damagetype adapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
-//        apiHelper = APIHelper.getInstance(rootView.getContext());
-//        ArrayList<DamagetypeModel> list = new ArrayList<>();
-        damagetypeFragment context = this;
-//        apiHelper.getMainCategorys(new CategoryListCallback() {
-//            @Override
-//            public void onSuccess(List<MainCategoryModel> categoryModels) {
-//                mainCategoryModelList = categoryModels;
-//                for (MainCategoryModel m : categoryModels) {
-//                    list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
-//                    Log.d("catch2", m.toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onError(String errorMessage) {
-//                Log.e("errorGetAllCategorys", errorMessage);
-//            }
-//        });
 
-        LandingPage lp = new LandingPage();
-        ArrayList<DamagetypeModel> la = lp.getList();
+        adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), new ArrayList<>());
+
+        damagetypeFragment context = this;
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
-
 
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
 
-        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), la);
         adapter.setOnItemClickListener(context);
         recyclerView.setAdapter(adapter);
 
         ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
-
-
-
-
-        Log.d("mama", "amma");
-
-//        recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
-//
-//
-//        GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
-//        recyclerView.setLayoutManager(manager);
-//
-//        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), list);
-//        adapter.setOnItemClickListener(this);
-//        recyclerView.setAdapter(adapter);
-//
-//
-//        ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
 
         return rootView;
     }
@@ -128,22 +95,6 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
                 field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report));
             });
         }
-    }
-
-    @NonNull
-    private static ArrayList<DamagetypeModel> setUpData() {
-        ArrayList<DamagetypeModel> list = new ArrayList<>();
-        list.add(new DamagetypeModel("Straßenschäden", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Vandalismus", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Straßenschäden", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Vandalismus", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        return list;
     }
 
 }
