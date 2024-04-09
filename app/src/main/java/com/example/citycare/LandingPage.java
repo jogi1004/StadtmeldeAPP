@@ -51,7 +51,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -67,7 +68,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public SettingDialog settingDialog;
     private APIHelper apiHelper;
     private String token;
-
+    List<MainCategoryModel> mainCategoryModelList = new ArrayList<>();
+    private static ArrayList<DamagetypeModel> list = new ArrayList<>();
 
 
     @Override
@@ -156,9 +158,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
 
 
-    private List<MainCategoryModel> mainCategoryModelList;
-    private static ArrayList<DamagetypeModel> list = new ArrayList<>();
-
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
 
@@ -189,27 +188,22 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
 
-        try{
+        try {
             Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geo.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
             if (addresses.isEmpty()) {
                 Toast toast = new Toast(this);
                 toast.setText("Waiting for Location");
                 toast.show();
-            }
-            else {
+            } else {
                 poiInformationDialog.show();
                 poiInformationDialog.fill(addresses);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
 
-    public static ArrayList<DamagetypeModel> getList() {
-        return list;
     }
 
     @SuppressLint("MissingPermission")
@@ -236,5 +230,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
 
+    }
+    public static ArrayList<DamagetypeModel> getList() {
+        return list;
     }
 }

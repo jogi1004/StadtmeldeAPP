@@ -46,6 +46,7 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     RecyclerViewAdapter_Damagetype adapter;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
@@ -59,10 +60,12 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
 
+
         adapter.setOnItemClickListener(context);
         recyclerView.setAdapter(adapter);
 
         ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
+
 
         return rootView;
     }
