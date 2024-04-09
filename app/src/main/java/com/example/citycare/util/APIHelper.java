@@ -45,7 +45,6 @@ public class APIHelper {
     private SharedPreferences loginSharedPreferences;
     private boolean loggedIn;
 
-
     private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
@@ -128,8 +127,9 @@ public class APIHelper {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    loggedIn =true;
-                    updateSharedPreferences();
+
+                    KeyStoreManager.savePassword(context, username, password);
+
                     Intent i = new Intent(context, LandingPage.class);
                     context.startActivity(i);
 
