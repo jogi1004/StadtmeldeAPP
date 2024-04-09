@@ -2,20 +2,22 @@ package com.example.citycare.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
+import com.example.citycare.R;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.SubCategoryModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,7 +152,8 @@ public class APIHelper {
                             JSONObject jsonObject = response.getJSONObject(i);
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
-                                    jsonObject.getString("title")
+                                    jsonObject.getString("title"),
+                                    R.drawable.png_placeholder
                             );
 
                             categoryModelList.add(categoryModel);
@@ -176,37 +179,34 @@ public class APIHelper {
     }
 
 
-    public void getAllCategorys(CategoryListCallback callback){
-        getMainCategorys(new CategoryListCallback() {
-            @Override
-            public void onSuccess(List<MainCategoryModel> categoryModels) {
-                /*Log.d("catch", String.valueOf(categoryModels.size()));*/
-                    for (int i=0;i< categoryModels.size();i++) {
-                    int finalI = i;
-                    RequestFuture<JsonArrayRequest> future = RequestFuture.newFuture();
-                    JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
-                            (Request.Method.GET, subCategoryGetURL + categoryModels.get(i).getId(), null, response -> {
-                                List<SubCategoryModel> allSubCategories = new ArrayList<>();
-                                try {
-                                    for (int j = 0; j < response.length(); j++) {
-                                        JSONObject jsonObject = response.getJSONObject(j);
-                                        SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                                jsonObject.getInt("id"),
-                                                jsonObject.getString("title")
-                                        );
-                                        allSubCategories.add(subCategoryModel);
-                                    }
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-//                                Log.d("catchi", String.valueOf(allSubCategories.size()));
-                                categoryModels.get(finalI).setSubCategorys(allSubCategories);
-//                                Log.d("catchu" , categoryModels.get(finalI).toString());
+    public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories){
 
-                                if(finalI == categoryModels.size()-1) {
-                                    callback.onSuccess(categoryModels);
-                                }
-                            }, volleyError -> volleyError.printStackTrace()) {
+        int tmp = 0;
+        for (MainCategoryModel model: mainCategories) {
+            List<SubCategoryModel> allSubCategories = new ArrayList<>();
+            int finalI = tmp;
+            JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
+                    (Request.Method.GET, subCategoryGetURL + model.getId(), null, response ->{
+                        try{
+                            for(int i = 0; i < response.length(); i++){
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                SubCategoryModel subCategoryModel = new SubCategoryModel(
+                                        jsonObject.getInt("id"),
+                                    jsonObject.getString("title")
+                                );
+                                allSubCategories.add(subCategoryModel);
+                            }
+                        } catch (JSONException e){
+                            throw new RuntimeException(e);
+                        }
+                        model.setSubCategorys(allSubCategories);
+                        Log.d("Subs", "Ganzes Model " + model);
+
+
+                        if(finalI == mainCategories.size()-1){
+                            callback.onSuccess(mainCategories);
+                        }
+                    }, volleyError -> volleyError.printStackTrace()) {
                         @Override
                         public Map<String, String> getHeaders() {
                             HashMap<String, String> headers = new HashMap<>();
@@ -214,16 +214,59 @@ public class APIHelper {
                             return headers;
                         }
                     };
-                    requestQueue.add(jsonObjectRequest);
-                }
-//                callback.onSuccess(categoryModels);
-            }
+            requestQueue.add(jsonObjectRequest);
+            tmp++;
+        }
 
-            @Override
-            public void onError(String errorMessage) {
-                Log.e("CallBackError", errorMessage);
-            }
-        });
+
+
+
+//        getMainCategorys(new CategoryListCallback() {
+//            @Override
+//            public void onSuccess(List<MainCategoryModel> categoryModels) {
+//                /*Log.d("catch", String.valueOf(categoryModels.size()));*/
+//                    for (int i=0;i< categoryModels.size();i++) {
+//                    int finalI = i;
+//                    RequestFuture<JsonArrayRequest> future = RequestFuture.newFuture();
+//                    JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
+//                            (Request.Method.GET, subCategoryGetURL + categoryModels.get(i).getId(), null, response -> {
+//                                List<SubCategoryModel> allSubCategories = new ArrayList<>();
+//                                try {
+//                                    for (int j = 0; j < response.length(); j++) {
+//                                        JSONObject jsonObject = response.getJSONObject(j);
+//                                        SubCategoryModel subCategoryModel = new SubCategoryModel(
+//                                                jsonObject.getInt("id"),
+//                                                jsonObject.getString("title")
+//                                        );
+//                                        allSubCategories.add(subCategoryModel);
+//                                    }
+//                                } catch (JSONException e) {
+//                                    throw new RuntimeException(e);
+//                                }
+////                                Log.d("catchi", String.valueOf(allSubCategories.size()));
+//                                categoryModels.get(finalI).setSubCategorys(allSubCategories);
+////                                Log.d("catchu" , categoryModels.get(finalI).toString());
+//
+//                                if(finalI == categoryModels.size()-1) {
+//                                    callback.onSuccess(categoryModels);
+//                                }
+//                            }, volleyError -> volleyError.printStackTrace()) {
+//                        @Override
+//                        public Map<String, String> getHeaders() {
+//                            HashMap<String, String> headers = new HashMap<>();
+//                            headers.put("Authorization", "Bearer " + token);
+//                            return headers;
+//                        }
+//                    };
+//                    requestQueue.add(jsonObjectRequest);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(String errorMessage) {
+//                Log.e("CallBackError", errorMessage);
+//            }
+//        });
     }
 
     public void setToken(String token) {

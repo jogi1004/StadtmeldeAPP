@@ -6,82 +6,14 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_detailed_damagetype_dialog">
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Defekte Beleuchtung"
-        android:textColor="#2C6E49"
-        android:textSize="15sp"
-        android:textStyle="bold"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/subCategoryView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <FrameLayout
-        android:id="@+id/line1"
-        android:layout_width="200dp"
-        android:layout_height="2dp"
-        android:background="#2C6E49"
-        tools:layout_editor_absoluteX="220dp"
-        tools:layout_editor_absoluteY="43dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView1"/>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Fehlende Markierung"
-        android:textColor="#2C6E49"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/line1" />
-
-    <FrameLayout
-        android:id="@+id/line2"
-        android:layout_width="200dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="3dp"
-        android:background="#2C6E49"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"/>
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Schlagloch"
-        android:textColor="#2C6E49"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/line2" />
-
-    <FrameLayout
-        android:id="@+id/line3"
-        android:layout_width="200dp"
-        android:layout_height="2dp"
-        android:layout_marginTop="3dp"
-        android:background="#2C6E49"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/otherButton"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/otherButton"
@@ -95,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/subCategoryView">
 
         <EditText
             android:id="@+id/other"

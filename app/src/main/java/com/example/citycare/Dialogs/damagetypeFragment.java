@@ -1,11 +1,7 @@
 package com.example.citycare.Dialogs;
 
-import static androidx.core.view.ViewCompat.setBackground;
-
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -22,17 +18,11 @@ import android.widget.Toast;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
-import com.example.citycare.model.DamagetypeModel;
-import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.util.APIHelper;
-import com.example.citycare.util.CategoryListCallback;
 import com.example.citycare.util.OnItemClickListener;
-import com.example.citycare.util.RecyclerViewAdapter_Damagetype;
-
-import org.json.JSONException;
+import com.example.citycare.adapter.RecyclerViewAdapter_Categories;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class damagetypeFragment extends Fragment implements OnItemClickListener {
 
@@ -40,10 +30,8 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
     private APIHelper apiHelper;
-    private List<MainCategoryModel> mainCategoryModelList;
-    private ArrayList<DamagetypeModel> list;
 
-    public  static RecyclerViewAdapter_Damagetype adapter;
+    public  static RecyclerViewAdapter_Categories adapter;
 
 
 
@@ -51,11 +39,10 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
 
-        adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), new ArrayList<>());
+        adapter = new RecyclerViewAdapter_Categories(rootView.getContext(), new ArrayList<>());
         if (!LandingPage.getList().isEmpty()){
             adapter.setData(LandingPage.getList());
         }
-        damagetypeFragment context = this;
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
 
@@ -63,7 +50,7 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         recyclerView.setLayoutManager(manager);
 
 
-        adapter.setOnItemClickListener(context);
+        adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
         ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
@@ -77,7 +64,7 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         Toast.makeText(rootView.getContext(), "Item " + position, Toast.LENGTH_SHORT).show();
 
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-        RecyclerViewAdapter_Damagetype.MyViewHolder yourViewHolder = (RecyclerViewAdapter_Damagetype.MyViewHolder) viewHolder;
+        RecyclerViewAdapter_Categories.MyViewHolder yourViewHolder = (RecyclerViewAdapter_Categories.MyViewHolder) viewHolder;
         ConstraintLayout field = yourViewHolder.field;
         field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_ddd_border));
 
@@ -94,12 +81,11 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
             wlp.y = (int) (y - w.getHeight() * 1.5);
 
             ddd.setWindow(wlp);
-            ddd.show();
-
-            ddd.setOnDismissListener(v->{
-                field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report));
-            });
         }
+        ddd.prepList(position);
+
+        ddd.show();
+        ddd.setOnDismissListener(v-> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));
     }
 
 }

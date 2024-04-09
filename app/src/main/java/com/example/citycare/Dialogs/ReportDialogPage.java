@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
-import com.example.citycare.util.RecyclerViewAdapter_AllReports;
+import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
 
 import java.util.ArrayList;
 
