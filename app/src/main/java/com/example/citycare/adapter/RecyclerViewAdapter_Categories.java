@@ -19,7 +19,7 @@ import com.example.citycare.util.OnItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<RecyclerViewAdapter_Damagetype.MyViewHolder>{
+public class RecyclerViewAdapter_Categories extends RecyclerView.Adapter<RecyclerViewAdapter_Categories.MyViewHolder>{
 
     private Context context;
     private List<MainCategoryModel> allDamagetypes;
@@ -31,7 +31,7 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
         notifyDataSetChanged();
     }
 
-    public RecyclerViewAdapter_Damagetype(Context context, ArrayList<MainCategoryModel> allDamagetypes) {
+    public RecyclerViewAdapter_Categories(Context context, ArrayList<MainCategoryModel> allDamagetypes) {
         this.context = context;
         this.allDamagetypes = allDamagetypes;
     }
@@ -42,14 +42,14 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
 
     @NonNull
     @Override
-    public RecyclerViewAdapter_Damagetype.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerViewAdapter_Categories.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_damagetype, parent, false);
         return new MyViewHolder(view);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter_Damagetype.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerViewAdapter_Categories.MyViewHolder holder, int position) {
         MainCategoryModel daten = allDamagetypes.get(position);
         holder.icon.setImageResource(daten.getIcon());
         holder.title.setText(daten.getTitle());
