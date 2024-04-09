@@ -1,15 +1,10 @@
 package com.example.citycare.util;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.text.LocaleDisplayNames;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Header;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -19,11 +14,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.SubCategoryModel;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,15 +34,11 @@ public class APIHelper {
     private RequestQueue requestQueue;
     private Timer timer;
     private String token;
-    private SharedPreferences loginSharedPreferences;
-    private boolean loggedIn;
 
     private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
         timer = new Timer();
-        loginSharedPreferences = context.getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
-
     }
     public static APIHelper getInstance(Context context){
         if(INSTANCE==null){
@@ -150,13 +138,7 @@ public class APIHelper {
                 });
         requestQueue.add(jsonObjectRequest);
     }
-    public void updateSharedPreferences(){
-        SharedPreferences.Editor myEditor = loginSharedPreferences.edit();
-        myEditor.putBoolean("loggedIn",loggedIn);
-        myEditor.putString("token",token);
-        myEditor.apply();
 
-    }
 
     public void getMainCategorys(CategoryListCallback callback) {
         List<MainCategoryModel> categoryModelList = new ArrayList<>();
@@ -243,9 +225,6 @@ public class APIHelper {
                 Log.e("CallBackError", errorMessage);
             }
         });
-    }
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
     }
 
     public void setToken(String token) {

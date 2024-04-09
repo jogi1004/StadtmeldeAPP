@@ -28,7 +28,7 @@ import com.example.citycare.R;
 
 public class FragmentDialog extends DialogFragment {
 
-    FrameLayout dimm;
+    private FrameLayout dimm;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
