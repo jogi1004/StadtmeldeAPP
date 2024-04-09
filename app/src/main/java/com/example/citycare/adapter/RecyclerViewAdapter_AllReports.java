@@ -1,4 +1,4 @@
-package com.example.citycare.util;
+package com.example.citycare.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

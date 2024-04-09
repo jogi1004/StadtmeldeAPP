@@ -19,7 +19,7 @@ import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.OnItemClickListener;
-import com.example.citycare.util.RecyclerViewAdapter_Damagetype;
+import com.example.citycare.adapter.RecyclerViewAdapter_Damagetype;
 
 import java.util.ArrayList;
 

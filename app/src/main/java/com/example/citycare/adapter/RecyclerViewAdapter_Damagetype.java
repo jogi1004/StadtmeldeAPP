@@ -1,4 +1,4 @@
-package com.example.citycare.util;
+package com.example.citycare.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.citycare.R;
 import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.util.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
 
     private Context context;
     private List<MainCategoryModel> allDamagetypes;
-    private  OnItemClickListener mListener;
+    private OnItemClickListener mListener;
 
     @SuppressLint("NotifyDataSetChanged")
     public void setData(List<MainCategoryModel> newData) {

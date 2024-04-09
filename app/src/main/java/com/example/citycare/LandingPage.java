@@ -22,6 +22,7 @@ import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -59,6 +60,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public SettingDialog settingDialog;
     private APIHelper apiHelper;
     private static List<MainCategoryModel> list = new ArrayList<>();
+    private List<MainCategoryModel> fullList = new ArrayList<>();
 
 
     @Override
@@ -151,32 +153,31 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
                 list = categoryModels;
-                for (MainCategoryModel m : categoryModels) {
-                    Log.d("catch2", m.toString());
-                }
-                if (com.example.citycare.Dialogs.damagetypeFragment.adapter!=null && !categoryModels.isEmpty()){
+                if (com.example.citycare.Dialogs.damagetypeFragment.adapter != null && !categoryModels.isEmpty()){
                     com.example.citycare.Dialogs.damagetypeFragment.adapter.setData(list);
                 }
-
-                apiHelper.getSubCategories(new CategoryListCallback() {
+                apiHelper.putSubCategories(new CategoryListCallback() {
 
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {
-
+                        fullList = categoryModels;
                     }
 
                     @Override
                     public void onError(String errorMessage) {
-
+                        Log.e("errorGetSubCategorys", errorMessage);
                     }
                 }, list);
             }
 
+
+
             @Override
             public void onError(String errorMessage) {
-                Log.e("errorGetAllCategorys", errorMessage);
+                Log.e("errorGetMainCategorys", errorMessage);
             }
         });
+
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);

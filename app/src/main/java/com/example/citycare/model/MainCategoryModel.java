@@ -8,6 +8,9 @@ public class MainCategoryModel {
     private List<SubCategoryModel> subCategorys;
     private int icon;
 
+    public MainCategoryModel(int id) {
+        this.id = id;
+    }
 
     public MainCategoryModel(int id, String title, int icon) {
         this.id = id;

@@ -2,6 +2,7 @@ package com.example.citycare.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -178,14 +179,14 @@ public class APIHelper {
     }
 
 
-    public void getSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories){
+    public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories){
 
         int tmp = 0;
         for (MainCategoryModel model: mainCategories) {
+            List<SubCategoryModel> allSubCategories = new ArrayList<>();
             int finalI = tmp;
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
                     (Request.Method.GET, subCategoryGetURL + model.getId(), null, response ->{
-                        List<SubCategoryModel> allSubCategories = new ArrayList<>();
                         try{
                             for(int i = 0; i < response.length(); i++){
                                 JSONObject jsonObject = response.getJSONObject(i);
@@ -199,6 +200,8 @@ public class APIHelper {
                             throw new RuntimeException(e);
                         }
                         model.setSubCategorys(allSubCategories);
+                        Log.d("Subs", "Ganzes Model " + model);
+
 
                         if(finalI == mainCategories.size()-1){
                             callback.onSuccess(mainCategories);

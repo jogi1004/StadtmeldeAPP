@@ -1,6 +1,6 @@
 package com.example.citycare.model;
 
-public class SubCategoryModel {
+public class SubCategoryModel{
     private int id;
     private String title;
 
