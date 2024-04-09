@@ -39,8 +39,8 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     private View rootView;
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
-    private APIHelper apiHelper;
-    private List<MainCategoryModel> mainCategoryModelList;
+    ArrayList<DamagetypeModel> list = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,25 +64,18 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
 //            }
 //        });
 
-        LandingPage lp = new LandingPage();
-        ArrayList<DamagetypeModel> la = lp.getList();
-
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
+
+        list = LandingPage.getList();
 
 
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
-
-        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), la);
+        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(),list);
         adapter.setOnItemClickListener(context);
         recyclerView.setAdapter(adapter);
 
         ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
-
-
-
-
-        Log.d("mama", "amma");
 
 //        recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
 //
@@ -144,6 +137,8 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
         list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
         return list;
+
+
     }
 
 }
