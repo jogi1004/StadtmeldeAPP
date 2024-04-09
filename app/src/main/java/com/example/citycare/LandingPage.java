@@ -67,8 +67,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public PoiInformationDialog poiInformationDialog;
     public SettingDialog settingDialog;
     private APIHelper apiHelper;
-    private String token;
-    List<MainCategoryModel> mainCategoryModelList = new ArrayList<>();
     private static ArrayList<DamagetypeModel> list = new ArrayList<>();
 
 
@@ -80,16 +78,14 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
-        token = getSharedPreferences("loggedInOut",MODE_PRIVATE).getString("token", token);
-        apiHelper.setToken(token);
 
 
-        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         initPermissions();
+        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         profileDialog = new ProfilDialog(this, this);
         allReportsDialog = new ReportDialogPage(this);
         settingDialog =new SettingDialog(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog);
 
     }
 
@@ -160,17 +156,18 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
-
-        damagetypeFragment damagetypeFragment = new damagetypeFragment();
-
         apiHelper.getAllCategorys(new CategoryListCallback() {
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
-                mainCategoryModelList = categoryModels;
                 for (MainCategoryModel m : categoryModels) {
-                    list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
+                    if (list.size()!=categoryModels.size()){
+                        list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
+                    }
                     Log.d("catch2", m.toString());
+                }
+                if (com.example.citycare.Dialogs.damagetypeFragment.adapter!=null && !list.isEmpty()){
+                    com.example.citycare.Dialogs.damagetypeFragment.adapter.setData(list);
                 }
             }
 

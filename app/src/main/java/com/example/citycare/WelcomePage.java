@@ -28,6 +28,7 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        apiHelper = APIHelper.getInstance(this);
 
         try {
             if (checkIfUserExists()) {
@@ -41,7 +42,6 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_welcome_page);
         getSplashScreen().setSplashScreenTheme(R.style.Theme_MyApp_MySplash);
 
-        apiHelper = APIHelper.getInstance(this);
 
         register = findViewById(R.id.signUpButton);
         signIn = findViewById(R.id.signInButton);

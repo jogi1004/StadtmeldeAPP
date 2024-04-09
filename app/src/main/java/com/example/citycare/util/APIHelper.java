@@ -45,7 +45,6 @@ public class APIHelper {
             synchronized (APIHelper.class){
                 if(INSTANCE==null){
                     INSTANCE = new APIHelper(context);
-
                 }
             }
         } else {

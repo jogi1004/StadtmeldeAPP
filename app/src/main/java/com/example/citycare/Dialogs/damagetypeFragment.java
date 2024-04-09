@@ -43,7 +43,7 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     private List<MainCategoryModel> mainCategoryModelList;
     private ArrayList<DamagetypeModel> list;
 
-    RecyclerViewAdapter_Damagetype adapter;
+    public  static RecyclerViewAdapter_Damagetype adapter;
 
 
 
@@ -52,7 +52,9 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
 
         adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), new ArrayList<>());
-
+        if (!LandingPage.getList().isEmpty()){
+            adapter.setData(LandingPage.getList());
+        }
         damagetypeFragment context = this;
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
