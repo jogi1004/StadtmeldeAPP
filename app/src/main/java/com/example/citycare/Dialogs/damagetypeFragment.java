@@ -1,18 +1,13 @@
 package com.example.citycare.Dialogs;
 
-import static androidx.core.view.ViewCompat.setBackground;
-
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +17,11 @@ import android.widget.Toast;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
-import com.example.citycare.model.DamagetypeModel;
-import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.util.APIHelper;
-import com.example.citycare.util.CategoryListCallback;
 import com.example.citycare.util.OnItemClickListener;
 import com.example.citycare.util.RecyclerViewAdapter_Damagetype;
 
-import org.json.JSONException;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class damagetypeFragment extends Fragment implements OnItemClickListener {
 
@@ -40,8 +29,6 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
     private APIHelper apiHelper;
-    private List<MainCategoryModel> mainCategoryModelList;
-    private ArrayList<DamagetypeModel> list;
 
     public  static RecyclerViewAdapter_Damagetype adapter;
 

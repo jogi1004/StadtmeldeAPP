@@ -6,13 +6,13 @@ public class MainCategoryModel {
     private int id;
     private String title;
     private List<SubCategoryModel> subCategorys;
+    private int icon;
 
 
-
-
-    public MainCategoryModel(int id, String title) {
+    public MainCategoryModel(int id, String title, int icon) {
         this.id = id;
         this.title = title;
+        this.icon = icon;
     }
 
     public List<SubCategoryModel> getSubCategorys() {
@@ -33,6 +33,9 @@ public class MainCategoryModel {
 
     public String getTitle() {
         return title;
+    }
+    public int getIcon() {
+        return icon;
     }
 
     public void setTitle(String title) {

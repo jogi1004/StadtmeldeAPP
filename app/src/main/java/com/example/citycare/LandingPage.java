@@ -8,8 +8,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -18,16 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
-import com.example.citycare.Dialogs.damagetitleFragment;
-import com.example.citycare.Dialogs.damagetypeFragment;
 
 
-import com.example.citycare.Dialogs.PoiInformationDialog;
-import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
-import com.example.citycare.model.DamagetypeModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.CategoryListCallback;
@@ -51,8 +44,6 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -67,7 +58,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public PoiInformationDialog poiInformationDialog;
     public SettingDialog settingDialog;
     private APIHelper apiHelper;
-    private static ArrayList<DamagetypeModel> list = new ArrayList<>();
+    private static List<MainCategoryModel> list = new ArrayList<>();
 
 
     @Override
@@ -153,22 +144,32 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     }
 
 
-
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
-        apiHelper.getAllCategorys(new CategoryListCallback() {
+        apiHelper.getMainCategorys(new CategoryListCallback() {
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
+                list = categoryModels;
                 for (MainCategoryModel m : categoryModels) {
-                    if (list.size()!=categoryModels.size()){
-                        list.add(new DamagetypeModel(m.getTitle(), R.drawable.png_placeholder));
-                    }
                     Log.d("catch2", m.toString());
                 }
-                if (com.example.citycare.Dialogs.damagetypeFragment.adapter!=null && !list.isEmpty()){
+                if (com.example.citycare.Dialogs.damagetypeFragment.adapter!=null && !categoryModels.isEmpty()){
                     com.example.citycare.Dialogs.damagetypeFragment.adapter.setData(list);
                 }
+
+                apiHelper.getSubCategories(new CategoryListCallback() {
+
+                    @Override
+                    public void onSuccess(List<MainCategoryModel> categoryModels) {
+
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+
+                    }
+                }, list);
             }
 
             @Override
@@ -228,7 +229,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         super.onPointerCaptureChanged(hasCapture);
 
     }
-    public static ArrayList<DamagetypeModel> getList() {
+    public static List<MainCategoryModel> getList() {
         return list;
     }
 }

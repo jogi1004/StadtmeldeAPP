@@ -2,8 +2,6 @@ package com.example.citycare.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,23 +13,24 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.citycare.R;
-import com.example.citycare.model.DamagetypeModel;
+import com.example.citycare.model.MainCategoryModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<RecyclerViewAdapter_Damagetype.MyViewHolder>{
 
     private Context context;
-    private ArrayList<DamagetypeModel> allDamagetypes;
+    private List<MainCategoryModel> allDamagetypes;
     private  OnItemClickListener mListener;
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setData(ArrayList<DamagetypeModel> newData) {
+    public void setData(List<MainCategoryModel> newData) {
         allDamagetypes = newData;
         notifyDataSetChanged();
     }
 
-    public RecyclerViewAdapter_Damagetype(Context context, ArrayList<DamagetypeModel> allDamagetypes) {
+    public RecyclerViewAdapter_Damagetype(Context context, ArrayList<MainCategoryModel> allDamagetypes) {
         this.context = context;
         this.allDamagetypes = allDamagetypes;
     }
@@ -50,9 +49,9 @@ public class RecyclerViewAdapter_Damagetype extends RecyclerView.Adapter<Recycle
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_Damagetype.MyViewHolder holder, int position) {
-        DamagetypeModel daten = allDamagetypes.get(position);
+        MainCategoryModel daten = allDamagetypes.get(position);
         holder.icon.setImageResource(daten.getIcon());
-        holder.title.setText(daten.getDamagetype());
+        holder.title.setText(daten.getTitle());
         holder.field.setOnClickListener(v -> {
             if(mListener != null){
                 mListener.onItemClick(position);
