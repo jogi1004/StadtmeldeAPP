@@ -13,11 +13,13 @@ import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,16 +30,18 @@ import java.util.TimerTask;
 public class APIHelper {
 
     private static volatile APIHelper INSTANCE = null;
-    private String registerPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/register";
-    private String loginPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/login";
-    private String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/Zweibrücken";
-    private String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
+    private final String registerPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/register";
+    private final String loginPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/login";
+    private final String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/Zweibrücken";
+    private final String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
+    private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
     private String token;
+    private ArrayList<ReportModel> allReports = new ArrayList<>();
 
-    private APIHelper(Context context){
+    public APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
         timer = new Timer();
@@ -179,94 +183,44 @@ public class APIHelper {
     }
 
 
-    public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories){
+    public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories) {
 
         int tmp = 0;
-        for (MainCategoryModel model: mainCategories) {
+        for (MainCategoryModel model : mainCategories) {
             List<SubCategoryModel> allSubCategories = new ArrayList<>();
             int finalI = tmp;
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
-                    (Request.Method.GET, subCategoryGetURL + model.getId(), null, response ->{
-                        try{
-                            for(int i = 0; i < response.length(); i++){
+                    (Request.Method.GET, subCategoryGetURL + model.getId(), null, response -> {
+                        try {
+                            for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 SubCategoryModel subCategoryModel = new SubCategoryModel(
                                         jsonObject.getInt("id"),
-                                    jsonObject.getString("title")
+                                        jsonObject.getString("title")
                                 );
                                 allSubCategories.add(subCategoryModel);
                             }
-                        } catch (JSONException e){
+                        } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
                         model.setSubCategorys(allSubCategories);
                         Log.d("Subs", "Ganzes Model " + model);
 
 
-                        if(finalI == mainCategories.size()-1){
+                        if (finalI == mainCategories.size() - 1) {
                             callback.onSuccess(mainCategories);
                         }
                     }, volleyError -> volleyError.printStackTrace()) {
-                        @Override
-                        public Map<String, String> getHeaders() {
-                            HashMap<String, String> headers = new HashMap<>();
-                            headers.put("Authorization", "Bearer " + token);
-                            return headers;
-                        }
-                    };
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
             requestQueue.add(jsonObjectRequest);
             tmp++;
         }
-
-
-
-
-//        getMainCategorys(new CategoryListCallback() {
-//            @Override
-//            public void onSuccess(List<MainCategoryModel> categoryModels) {
-//                /*Log.d("catch", String.valueOf(categoryModels.size()));*/
-//                    for (int i=0;i< categoryModels.size();i++) {
-//                    int finalI = i;
-//                    RequestFuture<JsonArrayRequest> future = RequestFuture.newFuture();
-//                    JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
-//                            (Request.Method.GET, subCategoryGetURL + categoryModels.get(i).getId(), null, response -> {
-//                                List<SubCategoryModel> allSubCategories = new ArrayList<>();
-//                                try {
-//                                    for (int j = 0; j < response.length(); j++) {
-//                                        JSONObject jsonObject = response.getJSONObject(j);
-//                                        SubCategoryModel subCategoryModel = new SubCategoryModel(
-//                                                jsonObject.getInt("id"),
-//                                                jsonObject.getString("title")
-//                                        );
-//                                        allSubCategories.add(subCategoryModel);
-//                                    }
-//                                } catch (JSONException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-////                                Log.d("catchi", String.valueOf(allSubCategories.size()));
-//                                categoryModels.get(finalI).setSubCategorys(allSubCategories);
-////                                Log.d("catchu" , categoryModels.get(finalI).toString());
-//
-//                                if(finalI == categoryModels.size()-1) {
-//                                    callback.onSuccess(categoryModels);
-//                                }
-//                            }, volleyError -> volleyError.printStackTrace()) {
-//                        @Override
-//                        public Map<String, String> getHeaders() {
-//                            HashMap<String, String> headers = new HashMap<>();
-//                            headers.put("Authorization", "Bearer " + token);
-//                            return headers;
-//                        }
-//                    };
-//                    requestQueue.add(jsonObjectRequest);
-//                }
-//            }
-//
-//            @Override
-//            public void onError(String errorMessage) {
-//                Log.e("CallBackError", errorMessage);
-//            }
-//        });
     }
 
     public void setToken(String token) {
@@ -277,9 +231,43 @@ public class APIHelper {
         return token;
     }
 
-    public void getAllReports() {
-        JSONObject requestBody = new JSONObject();
+    public void getAllReports(String cityName, CategoryListCallback callback) {
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
+                Request.Method.GET, allReportsURL + cityName, null,
+                response -> {
+                    for (int i=0;i<response.length();i++){
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            JSONObject subCategoryObject = jsonObject.getJSONObject("subcategory");
+                            ReportModel reportModel = new ReportModel(
+                                    jsonObject.getString("title"),
+                                    null,
+                                    null,
+                                    jsonObject.getJSONObject("subcategory").getJSONObject("maincategoryEntity").getString("title"),
+                                    subCategoryObject.getString("title"),
+                                    jsonObject.getDouble("longitude"),
+                                    jsonObject.getDouble("latitude")
+                            );
+                            allReports.add(reportModel);
+                            Log.d("allReports", reportModel.toString() + "\n " + allReports.size());
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                },
+                error -> error.printStackTrace()
+        ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
 
-
+    public ArrayList<ReportModel> getAllReportsAsList() {
+        return allReports;
     }
 }

@@ -125,7 +125,7 @@ public class DetailedDamagetypeDialog extends Dialog implements View.OnClickList
             listSub.clear();
         }
 
-        listAll = LandingPage.getList();
+        listAll = LandingPage.getMainCategoryList();
         listSub.addAll(listAll.get(position).getSubCategorys());
         if(adapter != null) {
             adapter.notifyDataSetChanged();
