@@ -19,7 +19,6 @@ import com.example.citycare.model.SubCategoryModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -231,7 +230,7 @@ public class APIHelper {
         return token;
     }
 
-    public void getAllReports(String cityName, CategoryListCallback callback) {
+    public void getAllReports(String cityName, AllReportsCallback callback) {
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
                 response -> {
@@ -250,6 +249,7 @@ public class APIHelper {
                             );
                             allReports.add(reportModel);
                             Log.d("allReports", reportModel.toString() + "\n " + allReports.size());
+                            callback.onSuccess();
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }

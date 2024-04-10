@@ -24,6 +24,7 @@ import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -149,9 +150,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.invalidate();
         mMap.addMapListener(this);
         // Setzen der bereits gemeldetes Meldungen auf der Karte
-        if (alreadyCalled) {
-            loadExistingMarkers();
-        }
     }
 
 
@@ -223,7 +221,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             loadListfromDB(location);
             alreadyCalled = true;
         }
-        loadExistingMarkers();
+
 
     }
 
@@ -252,12 +250,12 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     }
 
     public void loadExistingMarkers() {
-        for (ReportModel m : allReports) {
-            Marker poi = new Marker(mMap);
-            GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
-            poi.setPosition(geoP);
-            mMap.getOverlays().add(poi);
-        }
+            for (ReportModel m : allReports) {
+                Marker poi = new Marker(mMap);
+                GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
+                poi.setPosition(geoP);
+                mMap.getOverlays().add(poi);
+            }
     }
 
     protected void loadListfromDB(Location location) {
@@ -268,22 +266,23 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-            Log.d("city name: ", "Stadtname: " + cityName);
-                apiHelper.getAllReports(cityName, new CategoryListCallback() {
+            apiHelper.getAllReports(cityName, new AllReportsCallback() {
                     @Override
-                    public void onSuccess(List<MainCategoryModel> categoryModels) {
+                    public void onSuccess() {
                         allReports = apiHelper.getAllReportsAsList();
-                        alreadyCalled = true;
+                        updateMap();
                     }
-
                     @Override
                     public void onError(String errorMessage) {
                         Log.e("Error in onLocationReceived: ", errorMessage);
                     }
                 });
-
         }catch(IOException e){
             throw new RuntimeException(e);
         }
+    }
+    protected void updateMap(){
+        loadMap();
+        loadExistingMarkers();
     }
 }
