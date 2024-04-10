@@ -20,9 +20,9 @@ import com.example.citycare.Dialogs.ProfilDialog;
 
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
+import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
-import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -120,7 +120,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                 updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()));
                 return true;
             }
-
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
@@ -139,7 +138,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             controller.animateTo(mMyLocationOverlay.getMyLocation());
         }));
         controller.setZoom(18.0);
-        mMap.getOverlays().add(0, mapEventsOverlay); // Das Overlay an den Anfang der Liste hinzufügen
+        mMap.getOverlays().add(0, mapEventsOverlay);
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
@@ -153,8 +152,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
                 list = categoryModels;
-                if (com.example.citycare.Dialogs.damagetypeFragment.adapter != null && !categoryModels.isEmpty()){
-                    com.example.citycare.Dialogs.damagetypeFragment.adapter.setData(list);
+                if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()){
+                    fragment_damagetype.adapter.setData(list);
                 }
                 apiHelper.putSubCategories(new CategoryListCallback() {
 
@@ -181,7 +180,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
-        //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
+        poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi));
         mMap.getOverlays().add(poiMarker);
         controller.setCenter(geoPoint);
 

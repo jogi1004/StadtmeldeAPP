@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    tools:context=".Dialogs.fragment_damagetype"
     tools:background="@color/colorPrimary"
     tools:alpha="0.7">
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/damageTypeRecyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ImageView
+        android:id="@+id/cam"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:padding="45dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/png_cam"
+        android:background="@drawable/bg_edittextcorner"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

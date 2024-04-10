@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,7 @@ import com.example.citycare.adapter.RecyclerViewAdapter_Categories;
 
 import java.util.ArrayList;
 
-public class damagetypeFragment extends Fragment implements OnItemClickListener {
+public class fragment_damagetype extends Fragment implements OnItemClickListener {
 
     private View rootView;
     private DetailedDamagetypeDialog ddd;

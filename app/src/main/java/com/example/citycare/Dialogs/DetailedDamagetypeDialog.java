@@ -3,23 +3,15 @@ package com.example.citycare.Dialogs;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
-import com.example.citycare.adapter.RecyclerViewAdapter_Categories;
 import com.example.citycare.adapter.RecyclerViewAdapter_SubCategories;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.SubCategoryModel;
@@ -43,7 +34,7 @@ public class DetailedDamagetypeDialog extends Dialog implements View.OnClickList
     private final View rootView;
     private EditText other;
     private final FragmentManager fragmentManager;
-    private damagetitleFragment damageTitleF;
+    private fragment_damagetitle damageTitleF;
     private FragmentTransaction transaction;
     private TextView title;
     RecyclerViewAdapter_SubCategories adapter;
@@ -66,7 +57,7 @@ public class DetailedDamagetypeDialog extends Dialog implements View.OnClickList
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_detailed_damagetype);
 
-        damageTitleF = new damagetitleFragment();
+        damageTitleF = new fragment_damagetitle();
         recyclerView = findViewById(R.id.subCategoryView);
 
         adapter = new RecyclerViewAdapter_SubCategories(rootView.getContext(), listSub);
