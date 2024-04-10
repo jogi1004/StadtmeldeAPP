@@ -24,10 +24,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 
 public class FragmentDialog extends DialogFragment {
 
     private FrameLayout dimm;
+    private ReportModel report;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +49,7 @@ public class FragmentDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Fragment damageTypeF = new fragment_damagetype();
+        Fragment damageTypeF = new fragment_damagetype(report);
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -78,9 +80,10 @@ public class FragmentDialog extends DialogFragment {
         dimm.setVisibility(View.GONE);
     }
 
-    public void showFragmentDialog(FragmentManager fragmentManager, FrameLayout dimm) {
+    public void showFragmentDialog(FragmentManager fragmentManager, FrameLayout dimm, double lat, double lon) {
         if (fragmentManager != null) {
             show(fragmentManager, "FragmentDialog");
+            report = new ReportModel(null, null, null, null, null, lon, lat, null);
             this.dimm = dimm;
         }
     }

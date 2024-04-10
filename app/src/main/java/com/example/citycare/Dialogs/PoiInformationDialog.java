@@ -31,6 +31,7 @@ public class PoiInformationDialog extends Dialog{
     Activity landingpage;
     Context context;
     FragmentManager supportFragmentManager;
+    double lat, lon;
 
     public PoiInformationDialog(Context context, Activity landingPage, FragmentManager supportFragmentManager) {
         super(context);
@@ -55,7 +56,7 @@ public class PoiInformationDialog extends Dialog{
         reportButton.setOnClickListener(v-> {
             FragmentDialog dialog = new FragmentDialog();
             FrameLayout dimm = landingpage.findViewById(R.id.dimm);
-            dialog.showFragmentDialog(supportFragmentManager, dimm);
+            dialog.showFragmentDialog(supportFragmentManager, dimm, lat, lon);
             dimm.setVisibility(View.VISIBLE);
             dismiss();
         });
@@ -78,7 +79,10 @@ public class PoiInformationDialog extends Dialog{
         }else {
             adressInfos.setText(address[0] + ", " + addresses.get(0).getSubLocality());
         }
-        koords.setText(addresses.get(0).getLatitude() + ", " + addresses.get(0).getLongitude());
+        lat = addresses.get(0).getLatitude();
+        lon = addresses.get(0).getLongitude();
+
+        koords.setText(lat + ", " + lon);
 
         Window window = getWindow();
         window.setGravity(Gravity.BOTTOM);

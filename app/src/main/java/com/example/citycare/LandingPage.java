@@ -16,14 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
-
-
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
-
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.CategoryListCallback;
@@ -43,13 +40,10 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-
 
 public class LandingPage extends AppCompatActivity implements MapListener {
 
@@ -149,7 +143,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
-        // Setzen der bereits gemeldetes Meldungen auf der Karte
+        //Setzen der bereits gemeldetes Meldungen auf der Karte
         if (alreadyCalled) {
             loadExistingMarkers();
         }

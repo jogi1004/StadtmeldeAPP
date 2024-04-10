@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.OnItemClickListener;
 import com.example.citycare.adapter.RecyclerViewAdapter_Categories;
@@ -29,9 +30,13 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
     private APIHelper apiHelper;
+    private ReportModel report;
 
     public  static RecyclerViewAdapter_Categories adapter;
 
+    public fragment_damagetype(ReportModel report) {
+        this.report = report;
+    }
 
 
     @Override
@@ -81,7 +86,9 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
 
             ddd.setWindow(wlp);
         }
-        ddd.prepList(position);
+        String category = LandingPage.getMainCategoryList().get(position).getTitle();
+        report.setMainCategory(category);
+        ddd.prepList(position, report);
 
         ddd.show();
         ddd.setOnDismissListener(v-> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));

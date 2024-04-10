@@ -246,7 +246,8 @@ public class APIHelper {
                                     jsonObject.getJSONObject("subcategory").getJSONObject("maincategoryEntity").getString("title"),
                                     subCategoryObject.getString("title"),
                                     jsonObject.getDouble("longitude"),
-                                    jsonObject.getDouble("latitude")
+                                    jsonObject.getDouble("latitude"),
+                                    jsonObject.getString("description")
                             );
                             allReports.add(reportModel);
                             Log.d("allReports", reportModel.toString() + "\n " + allReports.size());

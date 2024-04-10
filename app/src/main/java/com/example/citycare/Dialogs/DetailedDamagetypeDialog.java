@@ -21,13 +21,15 @@ import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.adapter.RecyclerViewAdapter_SubCategories;
 import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailedDamagetypeDialog extends Dialog implements View.OnClickListener, OnItemClickListener {
+//View.OnClickListener
+public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListener {
 
     Dialog DetailedDamagetypeDialog;
     private final Context context;
@@ -41,6 +43,7 @@ public class DetailedDamagetypeDialog extends Dialog implements View.OnClickList
     private RecyclerView recyclerView;
     private List<MainCategoryModel> listAll;
     private List<SubCategoryModel> listSub = new ArrayList<>();
+    private ReportModel report;
 
     public DetailedDamagetypeDialog(View rootView, FragmentManager fragmentManager) {
         super(rootView.getContext());
@@ -57,7 +60,7 @@ public class DetailedDamagetypeDialog extends Dialog implements View.OnClickList
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_detailed_damagetype);
 
-        damageTitleF = new fragment_damagetitle();
+        damageTitleF = new fragment_damagetitle(report);
         recyclerView = findViewById(R.id.subCategoryView);
 
         adapter = new RecyclerViewAdapter_SubCategories(rootView.getContext(), listSub);
@@ -86,35 +89,27 @@ public class DetailedDamagetypeDialog extends Dialog implements View.OnClickList
         getWindow().setAttributes(params);
     }
 
-    @Override
-    public void onClick(View view) {
-
-        dismiss();
-
-        transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment, damageTitleF);
-        transaction.commitNow();
-
-        title = damageTitleF.getView().findViewById(R.id.title);
-
-
-//        if(view == tv1){
-//            title.setText(tv1.getText());
-//        } else if (view == tv2) {
-//            title.setText(tv2.getText());
-//        } else{
-//            assert view == tv3;
-//            title.setText(tv3.getText());
-//        }
-
-
-    }
+//    @Override
+//    public void onClick(View view) {
+//
+//        dismiss();
+//
+//        transaction = fragmentManager.beginTransaction();
+//        transaction.replace(R.id.flFragment, damageTitleF);
+//        transaction.commitNow();
+//
+//        title = damageTitleF.getView().findViewById(R.id.title);
+//
+//
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void prepList(int position) {
+    public void prepList(int position, ReportModel report) {
         if(!listSub.isEmpty()){
             listSub.clear();
         }
+
+        this.report = report;
 
         listAll = LandingPage.getMainCategoryList();
         listSub.addAll(listAll.get(position).getSubCategorys());

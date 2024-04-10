@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,21 +16,27 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 
 public class fragment_damagetitle extends Fragment implements View.OnClickListener {
 
     public TextView title;
-    private fragment_cam camF;
+    private EditText description;
+    private ReportModel report;
+
+    public fragment_damagetitle(ReportModel report) {
+        this.report = report;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_title, container, false);
 
         title = rootView.findViewById(R.id.title);
+        description = rootView.findViewById(R.id.newDescription);
+
         ImageButton nextFragment = rootView.findViewById(R.id.nextFragment);
         nextFragment.setOnClickListener(this);
-
-        camF = new fragment_cam();
 
         return rootView;
     }
@@ -41,6 +48,11 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
+        report.setSubCategory(String.valueOf(title.getText()));
+        report.setDescription(String.valueOf(description.getText()));
+
+        fragment_cam camF = new fragment_cam(report);
+
         final FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, camF);

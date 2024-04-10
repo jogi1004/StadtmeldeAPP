@@ -15,10 +15,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 
 public class fragment_cam extends Fragment implements View.OnClickListener {
 
-    private fragment_report reportF;
+    private ReportModel report;
+
+    public fragment_cam(ReportModel report) {
+        this.report = report;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,8 +31,6 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
 
         ImageButton nextFragment = rootView.findViewById(R.id.nextFragment);
         nextFragment.setOnClickListener(this);
-
-        reportF = new fragment_report();
 
         return rootView;
     }
@@ -39,6 +42,11 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        //null später ersetzen durch Bild
+        report.setImage(null);
+
+        fragment_report reportF = new fragment_report(report);
+
         final FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, reportF);
