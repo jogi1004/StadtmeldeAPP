@@ -7,8 +7,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
+import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -17,15 +16,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
-import com.example.citycare.Dialogs.damagetitleFragment;
-import com.example.citycare.Dialogs.damagetypeFragment;
 
 
-import com.example.citycare.Dialogs.PoiInformationDialog;
-import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
+import com.example.citycare.model.MainCategoryModel;
+import com.example.citycare.model.SubCategoryModel;
+import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import org.osmdroid.api.IMapController;
@@ -43,9 +42,9 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -59,7 +58,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
     public SettingDialog settingDialog;
-
+    private APIHelper apiHelper;
+    private static List<MainCategoryModel> list = new ArrayList<>();
+    private List<MainCategoryModel> fullList = new ArrayList<>();
 
 
     @Override
@@ -69,13 +70,15 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
+        apiHelper = APIHelper.getInstance(this);
 
-        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
+
         initPermissions();
+        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         profileDialog = new ProfilDialog(this, this);
         allReportsDialog = new ReportDialogPage(this);
         settingDialog =new SettingDialog(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog);
 
     }
 
@@ -142,8 +145,39 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.addMapListener(this);
     }
 
+
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
+        apiHelper.getMainCategorys(new CategoryListCallback() {
+
+            @Override
+            public void onSuccess(List<MainCategoryModel> categoryModels) {
+                list = categoryModels;
+                if (com.example.citycare.Dialogs.damagetypeFragment.adapter != null && !categoryModels.isEmpty()){
+                    com.example.citycare.Dialogs.damagetypeFragment.adapter.setData(list);
+                }
+                apiHelper.putSubCategories(new CategoryListCallback() {
+
+                    @Override
+                    public void onSuccess(List<MainCategoryModel> categoryModels) {
+                        fullList = categoryModels;
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("errorGetSubCategorys", errorMessage);
+                    }
+                }, list);
+            }
+
+
+
+            @Override
+            public void onError(String errorMessage) {
+                Log.e("errorGetMainCategorys", errorMessage);
+            }
+        });
+
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
@@ -153,22 +187,21 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
 
-        try{
+        try {
             Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geo.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
             if (addresses.isEmpty()) {
                 Toast toast = new Toast(this);
                 toast.setText("Waiting for Location");
                 toast.show();
-            }
-            else {
+            } else {
                 poiInformationDialog.show();
                 poiInformationDialog.fill(addresses);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 
@@ -196,5 +229,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
 
+    }
+    public static List<MainCategoryModel> getList() {
+        return list;
     }
 }

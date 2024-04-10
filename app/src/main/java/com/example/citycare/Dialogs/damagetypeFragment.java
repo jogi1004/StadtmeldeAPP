@@ -1,10 +1,7 @@
 package com.example.citycare.Dialogs;
 
-import static androidx.core.view.ViewCompat.setBackground;
-
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -19,10 +16,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.citycare.LandingPage;
 import com.example.citycare.R;
-import com.example.citycare.model.DamagetypeModel;
+import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.OnItemClickListener;
-import com.example.citycare.util.RecyclerViewAdapter_Damagetype;
+import com.example.citycare.adapter.RecyclerViewAdapter_Categories;
 
 import java.util.ArrayList;
 
@@ -31,25 +29,32 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
     private View rootView;
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
+    private APIHelper apiHelper;
+
+    public  static RecyclerViewAdapter_Categories adapter;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
 
-        ArrayList<DamagetypeModel> list = setUpData();
+        adapter = new RecyclerViewAdapter_Categories(rootView.getContext(), new ArrayList<>());
+        if (!LandingPage.getList().isEmpty()){
+            adapter.setData(LandingPage.getList());
+        }
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
-
 
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
 
-        RecyclerViewAdapter_Damagetype adapter = new RecyclerViewAdapter_Damagetype(rootView.getContext(), list);
+
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
-
         ddd = new DetailedDamagetypeDialog(rootView, getParentFragmentManager());
+
 
         return rootView;
     }
@@ -59,7 +64,7 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
         Toast.makeText(rootView.getContext(), "Item " + position, Toast.LENGTH_SHORT).show();
 
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
-        RecyclerViewAdapter_Damagetype.MyViewHolder yourViewHolder = (RecyclerViewAdapter_Damagetype.MyViewHolder) viewHolder;
+        RecyclerViewAdapter_Categories.MyViewHolder yourViewHolder = (RecyclerViewAdapter_Categories.MyViewHolder) viewHolder;
         ConstraintLayout field = yourViewHolder.field;
         field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_ddd_border));
 
@@ -76,28 +81,11 @@ public class damagetypeFragment extends Fragment implements OnItemClickListener 
             wlp.y = (int) (y - w.getHeight() * 1.5);
 
             ddd.setWindow(wlp);
-            ddd.show();
-
-            ddd.setOnDismissListener(v->{
-                field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report));
-            });
         }
-    }
+        ddd.prepList(position);
 
-    @NonNull
-    private static ArrayList<DamagetypeModel> setUpData() {
-        ArrayList<DamagetypeModel> list = new ArrayList<>();
-        list.add(new DamagetypeModel("Straßenschäden", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Vandalismus", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Straßenschäden", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Vandalismus", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        list.add(new DamagetypeModel("Tobias", R.drawable.png_placeholder));
-        return list;
+        ddd.show();
+        ddd.setOnDismissListener(v-> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));
     }
 
 }

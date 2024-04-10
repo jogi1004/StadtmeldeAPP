@@ -28,7 +28,7 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        apiHelper = new APIHelper(this);
+        apiHelper = APIHelper.getInstance(this);
         setContentView(R.layout.activity_register_page);
         //Für die Registrierung benötigte Objekte initialisieren
         backButton = findViewById(R.id.backButton);

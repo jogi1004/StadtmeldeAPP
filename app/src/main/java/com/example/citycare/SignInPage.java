@@ -48,7 +48,7 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
         registerView.setOnClickListener(this);
         backButton.setOnClickListener(this);
 
-        apiHelper = new APIHelper(this);
+        apiHelper = APIHelper.getInstance(this);
         loginSharedPreferences = getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
         loginSharedPreferences.getBoolean("loggedIn", loggedIn);
 

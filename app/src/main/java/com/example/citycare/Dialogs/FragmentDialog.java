@@ -28,7 +28,7 @@ import com.example.citycare.R;
 
 public class FragmentDialog extends DialogFragment {
 
-    FrameLayout dimm;
+    private FrameLayout dimm;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +49,6 @@ public class FragmentDialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         Fragment damageTypeF = new damagetypeFragment();
-        Fragment damageTitleF = new damagetitleFragment();
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();

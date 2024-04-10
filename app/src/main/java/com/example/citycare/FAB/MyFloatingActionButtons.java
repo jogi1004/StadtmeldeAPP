@@ -7,6 +7,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
@@ -26,9 +28,10 @@ public class MyFloatingActionButtons {
     private ReportDialogPage allReportsDialog;
     private SettingDialog settingDialog;
     private int dialogheight;
+    PoiInformationDialog poiInformationDialog;
 
 
-    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, SettingDialog settingDialog, ReportDialogPage allReportsDialog) {
+    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, SettingDialog settingDialog, ReportDialogPage allReportsDialog, PoiInformationDialog poiInformationDialog) {
         this.context = context;
         this.menuFAB = landingPage.findViewById(R.id.menu);
         this.profilFAB = landingPage.findViewById(R.id.profil);
@@ -39,6 +42,7 @@ public class MyFloatingActionButtons {
         this.profilDialog = profilDialog;
         this.settingDialog = settingDialog;
         this.allReportsDialog = allReportsDialog;
+        this.poiInformationDialog = poiInformationDialog;
 
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -64,13 +68,6 @@ public class MyFloatingActionButtons {
             profilFAB.setVisibility(View.GONE);
             settingsFAB.setVisibility(View.GONE);
                 });
-
-        allReportsDialog.setOnDismissListener(v->{
-            allReportsFAB.setVisibility(View.GONE);
-            setAreFabsVisible(false);
-            landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
-        });
-
         settingsFAB.setOnClickListener(v->{
             showSettingDialog();
             landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
@@ -79,6 +76,11 @@ public class MyFloatingActionButtons {
             profilFAB.setVisibility(View.GONE);
         });
 
+        allReportsDialog.setOnDismissListener(v->{
+            allReportsFAB.setVisibility(View.GONE);
+            setAreFabsVisible(false);
+            landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
+        });
         profilDialog.setOnDismissListener(v->{
             profilFAB.setVisibility(View.GONE);
             setAreFabsVisible(false);
@@ -90,8 +92,18 @@ public class MyFloatingActionButtons {
             setAreFabsVisible(false);
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
         });
+        poiInformationDialog.setOnDismissListener(v->{
+            hideFABS();
+        });
 
 
+    }
+    private void hideFABS(){
+        addFAB.setVisibility(View.GONE);
+        allReportsFAB.setVisibility(View.GONE);
+        profilFAB.setVisibility(View.GONE);
+        settingsFAB.setVisibility(View.GONE);
+        areFabsVisible = false;
     }
     private void showAllReportsDialog() {
         Window window = allReportsDialog.getWindow();
