@@ -23,6 +23,8 @@ import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
+
+import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,9 +44,11 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -58,9 +62,11 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
     public SettingDialog settingDialog;
-    private APIHelper apiHelper;
+    private static APIHelper apiHelper;
     private static List<MainCategoryModel> list = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
+    boolean alreadyCalled = false;
+    private ArrayList<ReportModel> allReports = new ArrayList<>();
 
 
     @Override
@@ -71,39 +77,40 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
-
+        Log.d("token", apiHelper.getToken() + "");
 
         initPermissions();
-        poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
+        poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
+        initPermissions();
         profileDialog = new ProfilDialog(this, this);
         allReportsDialog = new ReportDialogPage(this);
-        settingDialog =new SettingDialog(this);
+        settingDialog = new SettingDialog(this);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog);
 
     }
 
     @SuppressLint("ObsoleteSdkInt")
-    protected void initPermissions(){
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+    protected void initPermissions() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadMap();
             updateLocation();
-        }else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                requestPermissions(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             loadMap();
             updateLocation();
         }
     }
 
-    protected void loadMap(){
+    protected void loadMap() {
         Configuration.getInstance().load(
                 getApplicationContext(),
                 getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE)
@@ -142,6 +149,10 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
+        // Setzen der bereits gemeldetes Meldungen auf der Karte
+        if (alreadyCalled) {
+            loadExistingMarkers();
+        }
     }
 
 
@@ -154,6 +165,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                 list = categoryModels;
                 if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()){
                     fragment_damagetype.adapter.setData(list);
+
                 }
                 apiHelper.putSubCategories(new CategoryListCallback() {
 
@@ -168,7 +180,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                     }
                 }, list);
             }
-
 
 
             @Override
@@ -201,16 +212,20 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             e.printStackTrace();
         }
 
-
     }
 
     @SuppressLint("MissingPermission")
-    protected void updateLocation(){
+    protected void updateLocation() {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this::onLocationReceived);
     }
 
-    protected void onLocationReceived(Location location){
+    protected void onLocationReceived(Location location) {
+        if(!alreadyCalled) {
+            loadListfromDB(location);
+            alreadyCalled = true;
+        }
+        loadExistingMarkers();
 
     }
 
@@ -229,7 +244,48 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         super.onPointerCaptureChanged(hasCapture);
 
     }
-    public static List<MainCategoryModel> getList() {
+
+    public static List<MainCategoryModel> getMainCategoryList() {
         return list;
+    }
+
+    public static ArrayList<ReportModel> getAllReportsList() {
+        return apiHelper.getAllReportsAsList();
+    }
+
+    public void loadExistingMarkers() {
+        for (ReportModel m : allReports) {
+            Marker poi = new Marker(mMap);
+            GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
+            poi.setPosition(geoP);
+            mMap.getOverlays().add(poi);
+        }
+    }
+
+    protected void loadListfromDB(Location location) {
+        Geocoder geocoder = new Geocoder(this);
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            assert addresses != null;
+            String cityName = addresses.get(0).getLocality();
+            Log.d("city name: ", "Stadtname: " + cityName);
+                apiHelper.getAllReports(cityName, new CategoryListCallback() {
+                    @Override
+                    public void onSuccess(List<MainCategoryModel> categoryModels) {
+                        allReports = apiHelper.getAllReportsAsList();
+                        alreadyCalled = true;
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in onLocationReceived: ", errorMessage);
+                    }
+                });
+
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
     }
 }

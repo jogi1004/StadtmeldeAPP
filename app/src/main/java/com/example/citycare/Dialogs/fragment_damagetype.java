@@ -39,8 +39,8 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
 
         adapter = new RecyclerViewAdapter_Categories(rootView.getContext(), new ArrayList<>());
-        if (!LandingPage.getList().isEmpty()){
-            adapter.setData(LandingPage.getList());
+        if (!LandingPage.getMainCategoryList().isEmpty()){
+            adapter.setData(LandingPage.getMainCategoryList());
         }
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
