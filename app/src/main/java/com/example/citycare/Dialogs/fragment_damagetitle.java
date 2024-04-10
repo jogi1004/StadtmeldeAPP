@@ -19,7 +19,6 @@ import com.example.citycare.R;
 public class fragment_damagetitle extends Fragment implements View.OnClickListener {
 
     public TextView title;
-    private FragmentTransaction transaction;
     private fragment_cam camF;
 
     @Override
@@ -43,7 +42,7 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         final FragmentManager fragmentManager = getParentFragmentManager();
-        transaction = fragmentManager.beginTransaction();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, camF);
         transaction.commitNow();
     }
