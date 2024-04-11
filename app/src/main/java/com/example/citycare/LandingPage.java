@@ -1,12 +1,17 @@
 package com.example.citycare;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -14,8 +19,12 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.damagetitleFragment;
@@ -30,6 +39,7 @@ import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.DamagetypeModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CamUtil;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -48,11 +58,19 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -68,6 +86,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public SettingDialog settingDialog;
     private APIHelper apiHelper;
     private static ArrayList<DamagetypeModel> list = new ArrayList<>();
+    private CamUtil camUtil;
 
 
     @Override
@@ -78,7 +97,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
-
+        camUtil=new CamUtil(this);
 
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
@@ -98,6 +117,15 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 requestPermissions(new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 123);
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 124);
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 125);
         }
     }
 
@@ -231,4 +259,20 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     public static ArrayList<DamagetypeModel> getList() {
         return list;
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 2 && data != null){
+            Uri selectedImage = data.getData();
+            Log.d("UriTest", String.valueOf(selectedImage));
+            camUtil.copyImage(this,selectedImage,camUtil.getUri());
+            profileDialog.getPicture().setImageURI(selectedImage);
+            profileDialog.setImagePath(camUtil.getUri().toString());
+
+        } else if (requestCode == 1) {
+            profileDialog.getPicture().setImageURI(Uri.parse(profileDialog.getImagePath()));
+        }
+    }
+
 }
