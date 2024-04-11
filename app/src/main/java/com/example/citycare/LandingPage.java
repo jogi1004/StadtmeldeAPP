@@ -264,7 +264,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-            Log.d("city name: ", "Stadtname: " + cityName);
+            Log.d("cityName:", "Stadtname: " + cityName);
                 apiHelper.getAllReports(cityName, new CategoryListCallback() {
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {

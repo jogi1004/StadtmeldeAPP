@@ -11,24 +11,29 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
+import com.example.citycare.util.APIHelper;
 
-public class fragment_report extends Fragment{
+import org.json.JSONException;
+
+public class fragment_report extends Fragment implements View.OnClickListener {
 
     TextView category, subCategory, koords;
     EditText description;
     ReportModel report;
+    ConstraintLayout sendReport;
 
     public fragment_report(ReportModel report) {
         this.report = report;
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_report, container, false);
@@ -45,6 +50,9 @@ public class fragment_report extends Fragment{
         description = rootView.findViewById(R.id.endDescription);
         description.setText(report.getDescription());
 
+        sendReport = rootView.findViewById(R.id.sendReport);
+        sendReport.setOnClickListener(this);
+
         return rootView;
     }
 
@@ -53,4 +61,13 @@ public class fragment_report extends Fragment{
         super.onViewCreated(view, savedInstanceState);
     }
 
+    @Override
+    public void onClick(View view) {
+        APIHelper apiHelper = APIHelper.getInstance(this.getContext());
+        try {
+            apiHelper.postReport(report.getTitle(), report.getSubCategory(), report.getMainCategory(), report.getDescription(), report.getLongitude(), report.getLatitude(), report.getLocationName());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

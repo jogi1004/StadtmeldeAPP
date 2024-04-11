@@ -29,7 +29,6 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
     private View rootView;
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
-    private APIHelper apiHelper;
     private ReportModel report;
 
     public  static RecyclerViewAdapter_Categories adapter;
