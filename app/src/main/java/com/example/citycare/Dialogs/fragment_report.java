@@ -65,7 +65,9 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         APIHelper apiHelper = APIHelper.getInstance(this.getContext());
         try {
-            apiHelper.postReport(report.getTitle(), report.getSubCategory(), report.getMainCategory(), report.getDescription(), report.getLongitude(), report.getLatitude(), report.getLocationName());
+            apiHelper.postReport(report);
+            //maybe nicht finishen
+            getActivity().finish();
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

@@ -47,7 +47,7 @@ import java.util.Locale;
 
 public class LandingPage extends AppCompatActivity implements MapListener {
 
-    MapView mMap;
+    public static MapView mMap;
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
@@ -62,6 +62,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     boolean alreadyCalled = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
 
+    public static MapView getmMap(){
+        return mMap;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +155,19 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
-        apiHelper.getMainCategorys(new CategoryListCallback() {
+
+        String cityName;
+
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            assert addresses != null;
+            cityName = addresses.get(0).getLocality();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        apiHelper.getMainCategorys(cityName, new CategoryListCallback() {
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
@@ -249,11 +264,15 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
     public void loadExistingMarkers() {
         for (ReportModel m : allReports) {
-            Marker poi = new Marker(mMap);
-            GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
-            poi.setPosition(geoP);
-            mMap.getOverlays().add(poi);
+            setMarker(m);
         }
+    }
+
+    public static void setMarker(ReportModel m){
+        Marker poi = new Marker(mMap);
+        GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
+        poi.setPosition(geoP);
+        mMap.getOverlays().add(poi);
     }
 
     protected void loadListfromDB(Location location) {
@@ -264,7 +283,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-            Log.d("cityName:", "Stadtname: " + cityName);
                 apiHelper.getAllReports(cityName, new CategoryListCallback() {
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {

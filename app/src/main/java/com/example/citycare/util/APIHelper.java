@@ -18,8 +18,9 @@ import com.example.citycare.model.SubCategoryModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +33,7 @@ public class APIHelper {
     private static volatile APIHelper INSTANCE = null;
     private final String registerPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/register";
     private final String loginPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/login";
-    private final String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/Zweibrücken";
+    private final String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/";
     private final String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
@@ -146,11 +147,11 @@ public class APIHelper {
     }
 
 
-    public void getMainCategorys(CategoryListCallback callback) {
+    public void getMainCategorys(String cityName, CategoryListCallback callback) {
         List<MainCategoryModel> categoryModelList = new ArrayList<>();
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
-                Request.Method.GET, categoryGetURL, null,
+                Request.Method.GET, categoryGetURL + cityName, null,
                 response -> {
                     for (int i=0;i<response.length();i++){
                         try {
@@ -270,30 +271,27 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void postReport(String title, String subCategory, String mainCategory, String description, double longitude, double latitude, String locationName) throws JSONException {
+    public void postReport(ReportModel report) throws JSONException {
         JSONObject requestBody = new JSONObject();
-        requestBody.put("title", title);
-        requestBody.put("subCategoryName", subCategory);
-        requestBody.put("mainCategoryName", mainCategory);
-        requestBody.put("description", description);
-        requestBody.put("longitude", longitude);
-        requestBody.put("latitude", latitude);
-        requestBody.put("reportingLocationName", locationName);
+        requestBody.put("title", report.getTitle());
+        requestBody.put("subCategoryName", report.getSubCategory());
+        requestBody.put("mainCategoryName", report.getMainCategory());
+        requestBody.put("description", report.getDescription());
+        requestBody.put("longitude", report.getLongitude());
+        requestBody.put("latitude", report.getLatitude());
+        requestBody.put("reportingLocationName", report.getLocationName());
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
 
                     //Zeige Poi auf der Karte an?
+//                    LandingPage.setMarker(report);
 
                 }, volleyError -> {
                     int statuscode = volleyError.networkResponse.statusCode;
 
-                    switch (statuscode){
-                        case 404:
-                            Toast.makeText(context, "Stadt ist kein Mitglied !",Toast.LENGTH_LONG).show();
-                        default:
-                            Toast.makeText(context, "Verbindung fehlgeschlagen!",Toast.LENGTH_LONG).show();
-                            break;
+                    if (statuscode == 404) {
+                        Toast.makeText(context, "Stadt ist kein Mitglied !", Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
