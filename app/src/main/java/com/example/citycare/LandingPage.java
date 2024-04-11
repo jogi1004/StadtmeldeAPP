@@ -23,6 +23,7 @@ import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
+import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
@@ -47,7 +48,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -149,7 +149,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
-        // Setzen der bereits gemeldetes Meldungen auf der Karte
     }
 
 
@@ -176,6 +175,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                     }
                 }, list);
             }
+
 
 
             @Override
@@ -207,6 +207,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
 
     }
 
