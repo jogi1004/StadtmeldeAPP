@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gallery_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/headlineReport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reportTitle"
+            android:layout_marginTop="15sp"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@drawable/bg_edittextcorner"
+            android:backgroundTint="@color/illu_green"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp"
+            android:paddingTop="5sp"
+            android:paddingBottom="5sp"
+            android:elevation="5dp"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="330sp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/png_dummy"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detailsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="450sp"
+        android:background="@drawable/bg_sign_in"
+        app:layout_constraintBaseline_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="parent">
+
+        <TextView
+            android:id="@+id/detailsDescriptionHeader"
+            android:layout_width="150sp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/detailsLayout"
+            android:layout_marginTop="20sp"
+            android:layout_marginStart="40sp"
+            android:text="@string/descriptionHeader"
+            android:textStyle="bold"
+            android:textSize="24sp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="250sp"
+            android:layout_marginStart="25sp"
+            android:layout_marginEnd="25sp"
+            android:layout_marginTop="10sp"
+            app:layout_constraintTop_toBottomOf="@id/detailsDescriptionHeader"
+            style="@style/EditTextStyle"
+            android:maxHeight="300sp"
+            />
+        <TextView
+            android:id="@+id/coordinates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25sp"
+            android:layout_marginEnd="25sp"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/signIntxt"
+            android:layout_marginBottom="30sp"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

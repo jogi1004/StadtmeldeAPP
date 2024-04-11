@@ -187,7 +187,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
-        //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
         mMap.getOverlays().add(poiMarker);
         controller.setCenter(geoPoint);
 
@@ -283,7 +282,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         }
     }
     protected void updateMap(){
-        loadMap();
         loadExistingMarkers();
     }
 }

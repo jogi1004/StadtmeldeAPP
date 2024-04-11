@@ -35,4 +35,6 @@
     <string name="reports">Aktuelle Meldungen</string>
     <string name="email">E-Mail-Adresse</string>
     <string name="logout">logout</string>
+    <string name="reportTitle">Meldungstitel</string>
+    <string name="descriptionHeader">Beschreibung</string>
 </resources>
