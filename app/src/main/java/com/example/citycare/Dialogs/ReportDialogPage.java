@@ -7,22 +7,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.RecyclerViewInterface;
 
 import java.util.ArrayList;
 
-public class ReportDialogPage extends Dialog {
+public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
     Context context;
     FrameLayout dim;
@@ -41,7 +44,7 @@ public class ReportDialogPage extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         initAllReports();
         RecyclerView recyclerView = findViewById(R.id.reportsrecyclerview);
-        RecyclerViewAdapter_AllReports recyclerAdapter = new RecyclerViewAdapter_AllReports(context, allReports);
+        RecyclerViewAdapter_AllReports recyclerAdapter = new RecyclerViewAdapter_AllReports(context, allReports, this);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
@@ -49,5 +52,11 @@ public class ReportDialogPage extends Dialog {
     private void initAllReports() {
         allReports = LandingPage.getAllReportsList();
 
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Toast.makeText(context, "Item " + position + " angeklickt", Toast.LENGTH_SHORT).show();
+        Intent Intent = new Intent(context,DialogReportDetailView.class);
     }
 }
