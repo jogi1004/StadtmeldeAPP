@@ -270,19 +270,17 @@ public class APIHelper {
     }
 
     public void postReport(ReportModel report) throws JSONException {
+
         JSONObject requestBody = new JSONObject();
-        requestBody.put("image", report.getImage());
+        requestBody.put("title", report.getTitle());
+        requestBody.put("subCategoryName", report.getSubCategory());
+        requestBody.put("mainCategoryName", report.getMainCategory());
+        requestBody.put("description", report.getDescription());
+        requestBody.put("longitude", report.getLongitude());
+        requestBody.put("latitude", report.getLatitude());
+        requestBody.put("reportingLocationName", report.getLocationName());
+        requestBody.put("additionalPicture", report.getImage());
 
-        JSONObject reportDTO = new JSONObject();
-        reportDTO.put("title", report.getTitle());
-        reportDTO.put("subCategoryName", report.getSubCategory());
-        reportDTO.put("mainCategoryName", report.getMainCategory());
-        reportDTO.put("description", report.getDescription());
-        reportDTO.put("longitude", report.getLongitude());
-        reportDTO.put("latitude", report.getLatitude());
-        reportDTO.put("reportingLocationName", report.getLocationName());
-
-        requestBody.put("reportDTO", reportDTO);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {

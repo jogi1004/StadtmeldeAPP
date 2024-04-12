@@ -19,9 +19,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
-import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
@@ -179,6 +179,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
         poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi_dark));
+
         mMap.getOverlays().add(poiMarker);
         controller.setCenter(geoPoint);
 
@@ -242,7 +243,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             loadListfromDB(location);
             alreadyCalled = true;
         }
-
 
     }
 
