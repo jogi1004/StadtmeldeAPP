@@ -2,19 +2,17 @@ package com.example.citycare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
@@ -23,16 +21,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
-import com.example.citycare.Dialogs.damagetitleFragment;
-import com.example.citycare.Dialogs.damagetypeFragment;
 
 
-import com.example.citycare.Dialogs.PoiInformationDialog;
-import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
@@ -43,6 +36,8 @@ import com.example.citycare.util.CamUtil;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
+import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -58,19 +53,9 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class LandingPage extends AppCompatActivity implements MapListener {
@@ -98,7 +83,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
         camUtil=new CamUtil(this);
-
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this,this, getSupportFragmentManager());
         profileDialog = new ProfilDialog(this, this);
@@ -264,14 +248,27 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == 2 && data != null){
-            Uri selectedImage = data.getData();
-            Log.d("UriTest", String.valueOf(selectedImage));
-            camUtil.copyImage(this,selectedImage,camUtil.getUri());
-            profileDialog.getPicture().setImageURI(selectedImage);
-            profileDialog.setImagePath(camUtil.getUri().toString());
+            Uri selectedImageUri = data.getData();
+            Bitmap bitmap = camUtil.getBitmapFromUri(selectedImageUri);
+
+            // Speichern Sie das Bild im internen Speicher
+            profileDialog.saveImageToInternalStorage(bitmap);
+            profileDialog.getPicture().setImageBitmap(bitmap);
+            try {
+                apiHelper.putProfilePicture(bitmap);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
 
         } else if (requestCode == 1) {
-            profileDialog.getPicture().setImageURI(Uri.parse(profileDialog.getImagePath()));
+            Bitmap bitmap = camUtil.getBitmap(profileDialog.getImageFile());
+            profileDialog.getPicture().setImageBitmap(bitmap);
+            try {
+                apiHelper.putProfilePicture(bitmap);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

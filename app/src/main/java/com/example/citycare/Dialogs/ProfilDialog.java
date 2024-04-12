@@ -3,15 +3,14 @@ package com.example.citycare.Dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Window;
@@ -22,17 +21,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 
-import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.WelcomePage;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.CamUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -45,6 +41,8 @@ public class ProfilDialog extends Dialog {
     private String imagePath;
     public Activity landingPage;
     private CamUtil camUtil;
+    private Bitmap camBitmap;
+    private File imageFile;
     public ProfilDialog(@NonNull Context context, Activity landingPage) {
         super(context);
         this.context = context;
@@ -52,6 +50,7 @@ public class ProfilDialog extends Dialog {
         this.landingPage = landingPage;
         apiHelper = APIHelper.getInstance(context);
         camUtil= new CamUtil(context);
+
     }
 
     @Override
@@ -60,7 +59,7 @@ public class ProfilDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_profile);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+        apiHelper.getUserInfo();
         ImageView logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> {
 
@@ -100,29 +99,45 @@ public class ProfilDialog extends Dialog {
             Toast toast = new Toast(context);
             toast.setText("Kamera");
             toast.show();
+
             Intent fotoMachenIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri camUri = camUtil.getUri();
-            imagePath = camUri.toString();
-            fotoMachenIntent.putExtra(MediaStore.EXTRA_OUTPUT, camUri);
-            landingPage.startActivityForResult(fotoMachenIntent,1);
+            try {
+                imageFile = camUtil.getImageFile();
+                imageFile.setReadable(true);
+                imageFile.setWritable(true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (imageFile != null) {
+                Uri photoUri = FileProvider.getUriForFile(context, "com.example.citycare.fileprovider", imageFile);
+                fotoMachenIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                landingPage.startActivityForResult(fotoMachenIntent, 1);
+            }
             dialog.dismiss();
         });
         dialog.show();
+    }
+    public String saveImageToInternalStorage(Bitmap bitmap) {
+        ContextWrapper contextWrapper = new ContextWrapper(context);
+        File directory = contextWrapper.getDir("imageDir", Context.MODE_PRIVATE);
+        File myPath = new File(directory, "profile.jpg");
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(myPath);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return myPath.getAbsolutePath();
     }
 
     public CircleImageView getPicture() {
         return picture;
     }
-
-    public void setPicture(CircleImageView picture) {
-        this.picture = picture;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public File getImageFile() {
+        return imageFile;
     }
 }

@@ -2,7 +2,9 @@ package com.example.citycare.util;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 import com.android.volley.Request;
@@ -14,8 +16,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.SubCategoryModel;
+import com.example.citycare.model.UserModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +36,14 @@ public class APIHelper {
     private String loginPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/login";
     private String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/Zweibrücken";
     private String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
+    private String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
+    private String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
     private String token;
+    private String username;
+    private UserModel currentUser;
 
     private APIHelper(Context context){
         this.context = context;
@@ -109,7 +119,7 @@ public class APIHelper {
                 (Request.Method.POST, loginPostURL, requestBody, jsonObject -> {
                     try {
                         token = jsonObject.getString("token");
-
+                        this.username = username;
 
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -139,6 +149,85 @@ public class APIHelper {
     }
 
 
+    public void putProfilePicture(Bitmap bitmap) throws JSONException {
+        byte[] imagesBytes = encodeImage(bitmap);
+        JSONObject jsonObject = new JSONObject();
+        /*Log.d("imagesBytes", new String(imagesBytes));*/
+        jsonObject.put("file", new String(imagesBytes));
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,putProfilPictureURL,jsonObject,
+                response -> {
+                    try {
+                        if (currentUser==null){
+                            currentUser = new UserModel(
+                                    response.getInt("id"),
+                                    response.getString("username"),
+                                    response.getString("email"),
+                                    decodeImage(response.getString("profilePicture").getBytes()),
+                                    response.getBoolean("notificationsEnabled")
+                            );
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                },volleyError -> volleyError.printStackTrace())
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer "+token);
+                headers.put("Username",username);
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+    public void getUserInfo(){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getUserInfo,null,
+                response->{
+                    try {
+                        if (currentUser==null) {
+                            currentUser = new UserModel(
+                                    response.getInt("id"),
+                                    response.getString("username"),
+                                    response.getString("email"),
+                                    decodeImage(response.getString("profilePicture").getBytes()),
+                                    response.getBoolean("notificationsEnabled")
+                            );
+                        } else{
+                            currentUser.setId(response.getInt("id"));
+                            currentUser.setUsername(response.getString("username"));
+                            currentUser.setEmail(response.getString("email"));
+                            currentUser.setProfilePicture(decodeImage(response.getString("profilePicture").getBytes()));
+                            currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
+
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                Log.d("userDATA", currentUser.toString());
+
+                }, volleyError -> volleyError.printStackTrace()){
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Authorization", "Bearer "+token);
+                        headers.put("username",username);
+                        return headers;
+                    }
+                };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public byte[] encodeImage(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+    public Bitmap decodeImage(byte[] imageBytes) {
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+    }
     public void getMainCategorys(CategoryListCallback callback) {
         List<MainCategoryModel> categoryModelList = new ArrayList<>();
 
@@ -232,5 +321,9 @@ public class APIHelper {
 
     public String getToken() {
         return token;
+    }
+
+    public UserModel getCurrentUser() {
+        return currentUser;
     }
 }
