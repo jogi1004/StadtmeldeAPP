@@ -217,10 +217,12 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     }
 
     protected void onLocationReceived(Location location) {
-        if(!alreadyCalled) {
+       /* if(!alreadyCalled) {
             loadListfromDB(location);
             alreadyCalled = true;
         }
+
+        */
 
 
     }
