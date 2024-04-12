@@ -8,8 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.os.Bundle;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -17,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
@@ -55,11 +54,11 @@ public class PoiInformationDialog extends Dialog{
 
         ConstraintLayout reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v-> {
-            FragmentDialog dialog = new FragmentDialog();
-            FrameLayout dimm = landingpage.findViewById(R.id.dimm);
-            dialog.showFragmentDialog(supportFragmentManager, dimm, lat, lon, locationName);
-            dimm.setVisibility(View.VISIBLE);
-            dismiss();
+                FragmentDialog dialog = new FragmentDialog();
+                FrameLayout dimm = landingpage.findViewById(R.id.dimm);
+                dialog.showFragmentDialog(supportFragmentManager, dimm, lat, lon, locationName);
+                dimm.setVisibility(View.VISIBLE);
+                dismiss();
         });
 
 

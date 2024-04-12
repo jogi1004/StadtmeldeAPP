@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
@@ -23,12 +25,12 @@ import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
-import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -43,6 +45,7 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +65,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> list = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
-    boolean alreadyCalled = false;
+    boolean alreadyCalled = false, isMember = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
+    private String cityName, tmp;
 
     public static MapView getmMap(){
         return mMap;
@@ -156,8 +160,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
 
-        String cityName;
-
         Geocoder geocoder = new Geocoder(this);
         try {
             List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
@@ -167,41 +169,16 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             throw new RuntimeException(e);
         }
 
-        apiHelper.getMainCategorys(cityName, new CategoryListCallback() {
-
-            @Override
-            public void onSuccess(List<MainCategoryModel> categoryModels) {
-                list = categoryModels;
-                if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()){
-                    fragment_damagetype.adapter.setData(list);
-
-                }
-                apiHelper.putSubCategories(new CategoryListCallback() {
-
-                    @Override
-                    public void onSuccess(List<MainCategoryModel> categoryModels) {
-                        fullList = categoryModels;
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("errorGetSubCategorys", errorMessage);
-                    }
-                }, list);
-            }
-
-
-
-            @Override
-            public void onError(String errorMessage) {
-                Log.e("errorGetMainCategorys", errorMessage);
-            }
-        });
-
+        if(fullList.isEmpty()) {
+            fillListWithData(cityName);
+        }else if(!tmp.equals(cityName)){
+            fullList.clear();
+            fillListWithData(cityName);
+        }
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
-        poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi));
+        poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi_dark));
         mMap.getOverlays().add(poiMarker);
         controller.setCenter(geoPoint);
 
@@ -222,7 +199,36 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             e.printStackTrace();
         }
 
+        tmp = cityName;
+    }
 
+    private void fillListWithData(String cityName) {
+        apiHelper.getMainCategorys(cityName, new CategoryListCallback() {
+
+            @Override
+            public void onSuccess(List<MainCategoryModel> categoryModels) {
+                list = categoryModels;
+                isMember = true;
+                if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
+                    fragment_damagetype.adapter.setData(list);
+                }
+                apiHelper.putSubCategories(new CategoryListCallback() {
+                    @Override
+                    public void onSuccess(List<MainCategoryModel> categoryModels) {
+                        fullList = categoryModels;
+                    }
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("errorGetSubCategorys", errorMessage);
+                    }
+                }, list);
+            }
+            @Override
+            public void onError(String errorMessage) {
+                isMember = false;
+                Log.e("errorGetMainCategorys", errorMessage);
+            }
+        });
     }
 
     @SuppressLint("MissingPermission")
@@ -292,7 +298,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                         allReports = apiHelper.getAllReportsAsList();
                         alreadyCalled = true;
                         loadExistingMarkers();
-
                     }
                     @Override
                     public void onError(String errorMessage) {
