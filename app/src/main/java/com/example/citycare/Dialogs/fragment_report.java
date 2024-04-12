@@ -46,7 +46,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         subCategory.setText(report.getSubCategory());
 
         koords = rootView.findViewById(R.id.koords);
-        koords.setText(report.getLatitude() + ", " + report.getLongitude());
+        koords.setText(report.getLocationName());
 
         description = rootView.findViewById(R.id.endDescription);
         description.setText(report.getDescription());
@@ -67,8 +67,10 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         APIHelper apiHelper = APIHelper.getInstance(this.getContext());
         try {
             apiHelper.postReport(report);
-            //maybe nicht finishen
-//            getActivity().finish();
+            FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
+            if (fragmentDialog != null) {
+                fragmentDialog.dismiss();
+            }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
