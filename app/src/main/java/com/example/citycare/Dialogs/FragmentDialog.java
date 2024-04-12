@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +24,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 
 public class FragmentDialog extends DialogFragment {
 
     private FrameLayout dimm;
+    private ReportModel report;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class FragmentDialog extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Fragment damageTypeF = new damagetypeFragment();
+        Fragment damageTypeF = new fragment_damagetype(report);
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -65,7 +66,7 @@ public class FragmentDialog extends DialogFragment {
 
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int dialogheight = (int) (displayMetrics.heightPixels * 0.75);
+            int dialogheight = (int) (displayMetrics.heightPixels * 0.85);
 
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
             window.setGravity(Gravity.TOP);
@@ -79,9 +80,10 @@ public class FragmentDialog extends DialogFragment {
         dimm.setVisibility(View.GONE);
     }
 
-    public void showFragmentDialog(FragmentManager fragmentManager, FrameLayout dimm) {
+    public void showFragmentDialog(FragmentManager fragmentManager, FrameLayout dimm, double lat, double lon, String locationName) {
         if (fragmentManager != null) {
             show(fragmentManager, "FragmentDialog");
+            report = new ReportModel(null, null, null, null, null, lon, lat, null, locationName);
             this.dimm = dimm;
         }
     }

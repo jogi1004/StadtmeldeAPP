@@ -18,6 +18,8 @@ import com.example.citycare.model.SubCategoryModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +33,10 @@ public class APIHelper {
     private static volatile APIHelper INSTANCE = null;
     private final String registerPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/register";
     private final String loginPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/auth/login";
-    private final String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/Zweibrücken";
+    private final String categoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/main/location/";
     private final String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
+    private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
@@ -114,6 +117,7 @@ public class APIHelper {
                 (Request.Method.POST, loginPostURL, requestBody, jsonObject -> {
                     try {
                         token = jsonObject.getString("token");
+                        Log.d("token", token);
 
 
                     } catch (JSONException e) {
@@ -144,11 +148,11 @@ public class APIHelper {
     }
 
 
-    public void getMainCategorys(CategoryListCallback callback) {
+    public void getMainCategorys(String cityName, CategoryListCallback callback) {
         List<MainCategoryModel> categoryModelList = new ArrayList<>();
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
-                Request.Method.GET, categoryGetURL, null,
+                Request.Method.GET, categoryGetURL + cityName, null,
                 response -> {
                     for (int i=0;i<response.length();i++){
                         try {
@@ -237,16 +241,14 @@ public class APIHelper {
                     for (int i=0;i<response.length();i++){
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
-                            JSONObject subCategoryObject = jsonObject.getJSONObject("subcategory");
                             ReportModel reportModel = new ReportModel(
-                                    jsonObject.getString("title"),
+                                    jsonObject.getString("titleOrsubcategoryName"),
                                     null,
+                                    jsonObject.getString("timestamp"),
                                     null,
-                                    jsonObject.getJSONObject("subcategory").getJSONObject("maincategoryEntity").getString("title"),
-                                    subCategoryObject.getString("title"),
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
-                            );
+                                    );
                             allReports.add(reportModel);
                             Log.d("allReports", reportModel.toString() + "\n " + allReports.size());
                             callback.onSuccess();
@@ -257,6 +259,39 @@ public class APIHelper {
                 },
                 error -> error.printStackTrace()
         ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void postReport(ReportModel report) throws JSONException {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("title", report.getTitle());
+        requestBody.put("subCategoryName", report.getSubCategory());
+        requestBody.put("mainCategoryName", report.getMainCategory());
+        requestBody.put("description", report.getDescription());
+        requestBody.put("longitude", report.getLongitude());
+        requestBody.put("latitude", report.getLatitude());
+        requestBody.put("reportingLocationName", report.getLocationName());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
+
+                    //Zeige Poi auf der Karte an?
+                    LandingPage.setMarker(report);
+
+                }, volleyError -> {
+                    int statuscode = volleyError.networkResponse.statusCode;
+
+                    if (statuscode == 404) {
+                        Toast.makeText(context, "Stadt ist kein Mitglied !", Toast.LENGTH_LONG).show();
+                    }
+                }){
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();

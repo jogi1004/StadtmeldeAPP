@@ -16,10 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
-
-
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
+import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
@@ -43,16 +42,14 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
 public class LandingPage extends AppCompatActivity implements MapListener {
 
-    MapView mMap;
+    public static MapView mMap;
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
@@ -67,6 +64,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     boolean alreadyCalled = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
 
+    public static MapView getmMap(){
+        return mMap;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +126,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                 updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()));
                 return true;
             }
-
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
@@ -145,22 +144,36 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             controller.animateTo(mMyLocationOverlay.getMyLocation());
         }));
         controller.setZoom(18.0);
-        mMap.getOverlays().add(0, mapEventsOverlay); // Das Overlay an den Anfang der Liste hinzufügen
+        mMap.getOverlays().add(0, mapEventsOverlay);
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
+
     }
 
 
     @SuppressLint("SetTextI18n")
     private void updatePoiMarker(GeoPoint geoPoint) {
-        apiHelper.getMainCategorys(new CategoryListCallback() {
+
+        String cityName;
+
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            assert addresses != null;
+            cityName = addresses.get(0).getLocality();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        apiHelper.getMainCategorys(cityName, new CategoryListCallback() {
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
                 list = categoryModels;
-                if (com.example.citycare.Dialogs.damagetypeFragment.adapter != null && !categoryModels.isEmpty()) {
-                    com.example.citycare.Dialogs.damagetypeFragment.adapter.setData(list);
+                if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()){
+                    fragment_damagetype.adapter.setData(list);
+
                 }
                 apiHelper.putSubCategories(new CategoryListCallback() {
 
@@ -187,7 +200,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
-        //poiMarker.setIcon(ContextCompat.getDrawable(this, R.mipmap.poiklein));
+        poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi));
         mMap.getOverlays().add(poiMarker);
         controller.setCenter(geoPoint);
 
@@ -251,12 +264,16 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     }
 
     public void loadExistingMarkers() {
-            for (ReportModel m : allReports) {
-                Marker poi = new Marker(mMap);
-                GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
-                poi.setPosition(geoP);
-                mMap.getOverlays().add(poi);
-            }
+        for (ReportModel m : allReports) {
+            setMarker(m);
+        }
+    }
+
+    public static void setMarker(ReportModel m){
+        Marker poi = new Marker(mMap);
+        GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
+        poi.setPosition(geoP);
+        mMap.getOverlays().add(poi);
     }
 
     protected void loadListfromDB(Location location) {
@@ -267,11 +284,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-            apiHelper.getAllReports(cityName, new AllReportsCallback() {
+                apiHelper.getAllReports(cityName, new AllReportsCallback(){
                     @Override
                     public void onSuccess() {
                         allReports = apiHelper.getAllReportsAsList();
-                        updateMap();
+                        alreadyCalled = true;
+                        loadExistingMarkers();
+
                     }
                     @Override
                     public void onError(String errorMessage) {
@@ -281,9 +300,5 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         }catch(IOException e){
             throw new RuntimeException(e);
         }
-    }
-    protected void updateMap(){
-        loadMap();
-        loadExistingMarkers();
     }
 }

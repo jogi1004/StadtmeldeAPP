@@ -37,7 +37,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        >
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/menu"
@@ -54,50 +55,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:fabSize="normal"
             />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/setting"
+            style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Design.FloatingActionButton"
+            android:src="@drawable/zahnrad"
+            app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="90"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/ic_settings"
-            tools:ignore="MissingConstraints" />
+            app:tint="@null"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="160dp"
+            tools:layout_editor_absoluteY="70dp" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/allReports"
+            style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Design.FloatingActionButton"
+            android:src="@drawable/wernzeichen"
+            app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="30"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/ic_settings"
-            tools:ignore="MissingConstraints" />
+            app:tint="@null"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="120dp"
+            />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/profil"
+            style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Design.FloatingActionButton"
+            android:src="@drawable/png_person"
+            app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="270"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/ic_settings"
-            tools:ignore="MissingConstraints" />
+            app:tint="@null"
+
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="70dp" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addReports"
+            style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Widget.Design.FloatingActionButton"
+            android:src="@drawable/ic_settings"
+            app:backgroundTint="@color/white"
             app:fabSize="normal"
             app:layout_constraintCircle="@id/menu"
             app:layout_constraintCircleAngle="330"
             app:layout_constraintCircleRadius="80dp"
-            android:src="@drawable/ic_settings"
-            tools:ignore="MissingConstraints" />
+            app:tint="@null"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="40dp" />
 
 
 

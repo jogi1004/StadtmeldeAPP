@@ -40,7 +40,7 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
         }
 
         setContentView(R.layout.activity_welcome_page);
-        getSplashScreen().setSplashScreenTheme(R.style.Theme_MyApp_MySplash);
+//        getSplashScreen().setSplashScreenTheme(R.style.Theme_MyApp_MySplash);
 
 
         register = findViewById(R.id.signUpButton);
