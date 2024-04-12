@@ -4,3 +4,4 @@ public interface AllReportsCallback {
     void onSuccess();
     void onError(String errorMessage);
 }
+

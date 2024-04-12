@@ -22,6 +22,7 @@ import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
+import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
@@ -147,10 +148,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
-        //Setzen der bereits gemeldetes Meldungen auf der Karte
-        if (alreadyCalled) {
-            loadExistingMarkers();
-        }
+
     }
 
 
@@ -192,6 +190,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             }
 
 
+
             @Override
             public void onError(String errorMessage) {
                 Log.e("errorGetMainCategorys", errorMessage);
@@ -222,6 +221,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             e.printStackTrace();
         }
 
+
     }
 
     @SuppressLint("MissingPermission")
@@ -235,7 +235,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             loadListfromDB(location);
             alreadyCalled = true;
         }
-        loadExistingMarkers();
+
 
     }
 
@@ -290,14 +290,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
                         allReports = apiHelper.getAllReportsAsList();
                         alreadyCalled = true;
                         loadExistingMarkers();
-                    }
 
+                    }
                     @Override
                     public void onError(String errorMessage) {
                         Log.e("Error in onLocationReceived: ", errorMessage);
                     }
                 });
-
         }catch(IOException e){
             throw new RuntimeException(e);
         }
