@@ -1,6 +1,7 @@
 package com.example.citycare;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -265,14 +266,15 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
     public void loadExistingMarkers() {
         for (ReportModel m : allReports) {
-            setMarker(m);
+            setMarker(m, this);
         }
     }
 
-    public static void setMarker(ReportModel m){
+    public static void setMarker(ReportModel m, Context context){
         Marker poi = new Marker(mMap);
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
+        poi.setIcon(ContextCompat.getDrawable(context, R.drawable.png_poi));
         mMap.getOverlays().add(poi);
     }
 

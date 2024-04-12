@@ -283,7 +283,7 @@ public class APIHelper {
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
 
                     //Zeige Poi auf der Karte an?
-                    LandingPage.setMarker(report);
+                    LandingPage.setMarker(report, context);
 
                 }, volleyError -> {
                     int statuscode = volleyError.networkResponse.statusCode;
