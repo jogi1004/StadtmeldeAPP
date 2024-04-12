@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -43,6 +44,7 @@ public class ProfilDialog extends Dialog {
     private CamUtil camUtil;
     private Bitmap camBitmap;
     private File imageFile;
+    private TextView username;
     public ProfilDialog(@NonNull Context context, Activity landingPage) {
         super(context);
         this.context = context;
@@ -59,7 +61,8 @@ public class ProfilDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_profile);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        apiHelper.getUserInfo();
+        username = findViewById(R.id.name);
+        username.setText(apiHelper.getCurrentUser().getUsername());
         ImageView logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> {
 
@@ -81,7 +84,6 @@ public class ProfilDialog extends Dialog {
         dialog.setContentView(R.layout.dialog_input_bild);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
         ImageButton gallery = dialog.findViewById(R.id.intentGallery);
         ImageButton cam = dialog.findViewById(R.id.intentCamera);
 

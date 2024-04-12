@@ -14,15 +14,21 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
+import com.example.citycare.model.Data;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.model.UserModel;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +125,7 @@ public class APIHelper {
                 (Request.Method.POST, loginPostURL, requestBody, jsonObject -> {
                     try {
                         token = jsonObject.getString("token");
+                        getUserInfo();
                         this.username = username;
 
                     } catch (JSONException e) {
@@ -151,37 +158,49 @@ public class APIHelper {
 
     public void putProfilePicture(Bitmap bitmap) throws JSONException {
         byte[] imagesBytes = encodeImage(bitmap);
-        JSONObject jsonObject = new JSONObject();
-        /*Log.d("imagesBytes", new String(imagesBytes));*/
-        jsonObject.put("file", new String(imagesBytes));
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,putProfilPictureURL,jsonObject,
+        ObjectMapper objectMapper = new ObjectMapper();
+        JSONObject body = new JSONObject();
+        String json;
+        try {
+            json = objectMapper.writeValueAsString(new Data(imagesBytes));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        body.put("profilePicture", json);
+        Log.d("imagesBytePUT", json);
+        Log.d("imagesBytePUT", token);
+        String filename = "/data/data/com.example.citycare/output.txt";
+        writeToFile(json,filename);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT,putProfilPictureURL,body,
                 response -> {
-                    try {
-                        if (currentUser==null){
-                            currentUser = new UserModel(
-                                    response.getInt("id"),
-                                    response.getString("username"),
-                                    response.getString("email"),
-                                    decodeImage(response.getString("profilePicture").getBytes()),
-                                    response.getBoolean("notificationsEnabled")
-                            );
-                        }
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    }
 
-                },volleyError -> volleyError.printStackTrace())
-        {
+                },volleyError -> volleyError.printStackTrace()
+        ){
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer "+token);
-                headers.put("Username",username);
                 return headers;
             }
         };
         requestQueue.add(jsonObjectRequest);
+    }
+    public static void writeToFile(String content, String filename) {
+        try {
+            // FileOutputStream und BufferedWriter initialisieren
+            FileOutputStream fos = new FileOutputStream(filename);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+            // Inhalt in die Datei schreiben
+            bw.write(content);
+
+            // Buffer schließen
+            bw.close();
+
+            System.out.println("Datei erfolgreich geschrieben: " + filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void getUserInfo(){
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getUserInfo,null,
@@ -207,13 +226,12 @@ public class APIHelper {
                         throw new RuntimeException(e);
                     }
                 Log.d("userDATA", currentUser.toString());
-
-                }, volleyError -> volleyError.printStackTrace()){
+                }, volleyError -> volleyError.printStackTrace())
+                {
                     @Override
                     public Map<String, String> getHeaders() {
                         Map<String, String> headers = new HashMap<>();
                         headers.put("Authorization", "Bearer "+token);
-                        headers.put("username",username);
                         return headers;
                     }
                 };
