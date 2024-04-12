@@ -117,6 +117,7 @@ public class APIHelper {
                 (Request.Method.POST, loginPostURL, requestBody, jsonObject -> {
                     try {
                         token = jsonObject.getString("token");
+                        Log.d("token", token);
 
 
                     } catch (JSONException e) {
@@ -233,27 +234,24 @@ public class APIHelper {
         return token;
     }
 
-    public void getAllReports(String cityName, CategoryListCallback callback) {
+    public void getAllReports(String cityName, AllReportsCallback callback) {
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
                 response -> {
                     for (int i=0;i<response.length();i++){
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
-                            JSONObject subCategoryObject = jsonObject.getJSONObject("subcategory");
                             ReportModel reportModel = new ReportModel(
-                                    jsonObject.getString("title"),
+                                    jsonObject.getString("titleOrsubcategoryName"),
                                     null,
+                                    jsonObject.getString("timestamp"),
                                     null,
-                                    jsonObject.getJSONObject("subcategory").getJSONObject("maincategoryEntity").getString("title"),
-                                    subCategoryObject.getString("title"),
                                     jsonObject.getDouble("longitude"),
-                                    jsonObject.getDouble("latitude"),
-                                    jsonObject.getString("description"),
-                                    jsonObject.getJSONObject("subcategory").getJSONObject("maincategoryEntity").getJSONObject("reportingLocationEntity").getString("name")
-                            );
+                                    jsonObject.getDouble("latitude")
+                                    );
                             allReports.add(reportModel);
                             Log.d("allReports", reportModel.toString() + "\n " + allReports.size());
+                            callback.onSuccess();
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -285,7 +283,7 @@ public class APIHelper {
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
 
                     //Zeige Poi auf der Karte an?
-//                    LandingPage.setMarker(report);
+                    LandingPage.setMarker(report);
 
                 }, volleyError -> {
                     int statuscode = volleyError.networkResponse.statusCode;

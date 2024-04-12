@@ -66,7 +66,7 @@ public class FragmentDialog extends DialogFragment {
 
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int dialogheight = (int) (displayMetrics.heightPixels * 0.75);
+            int dialogheight = (int) (displayMetrics.heightPixels * 0.85);
 
             window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
             window.setGravity(Gravity.TOP);

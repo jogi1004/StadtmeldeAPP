@@ -23,6 +23,7 @@ import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -283,11 +284,12 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-                apiHelper.getAllReports(cityName, new CategoryListCallback() {
+                apiHelper.getAllReports(cityName, new AllReportsCallback(){
                     @Override
-                    public void onSuccess(List<MainCategoryModel> categoryModels) {
+                    public void onSuccess() {
                         allReports = apiHelper.getAllReportsAsList();
                         alreadyCalled = true;
+                        loadExistingMarkers();
                     }
 
                     @Override
