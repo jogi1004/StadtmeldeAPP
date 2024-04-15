@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.SearchDialog;
 import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
@@ -58,10 +59,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
-    public ProfilDialog profileDialog;
-    public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
-    public SettingDialog settingDialog;
+    SearchDialog searchDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> list = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
@@ -85,13 +84,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
-        initPermissions();
-        profileDialog = new ProfilDialog(this, this);
-        allReportsDialog = new ReportDialogPage(this);
-        settingDialog = new SettingDialog(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog);
-
+        ProfilDialog profileDialog = new ProfilDialog(this, this);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this);
+        SettingDialog settingDialog = new SettingDialog(this);
+        searchDialog = new SearchDialog(this,this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
     }
+
 
     @SuppressLint("ObsoleteSdkInt")
     protected void initPermissions() {
@@ -114,7 +113,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         }
     }
 
-    protected void loadMap() {
+    public void loadMap() {
         Configuration.getInstance().load(
                 getApplicationContext(),
                 getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE)
@@ -130,13 +129,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
                 updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()));
                 return true;
+
             }
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
             }
         });
-
 
         mMyLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), mMap);
         controller = mMap.getController();
@@ -148,17 +147,17 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             controller.setCenter(mMyLocationOverlay.getMyLocation());
             controller.animateTo(mMyLocationOverlay.getMyLocation());
         }));
+
         controller.setZoom(18.0);
         mMap.getOverlays().add(0, mapEventsOverlay);
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
-
     }
 
 
     @SuppressLint("SetTextI18n")
-    private void updatePoiMarker(GeoPoint geoPoint) {
+    public void updatePoiMarker(GeoPoint geoPoint) {
 
         Geocoder geocoder = new Geocoder(this);
         try {
@@ -175,13 +174,14 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             fullList.clear();
             fillListWithData(cityName);
         }
+        controller.animateTo(geoPoint);
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);
         poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi_dark));
 
         mMap.getOverlays().add(poiMarker);
-        controller.setCenter(geoPoint);
+
 
         poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
 
@@ -243,7 +243,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             loadListfromDB(location);
             alreadyCalled = true;
         }
-
     }
 
     @Override
@@ -259,7 +258,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
-
     }
 
     public static List<MainCategoryModel> getMainCategoryList() {

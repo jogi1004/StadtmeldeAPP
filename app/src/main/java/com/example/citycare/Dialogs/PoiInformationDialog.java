@@ -26,7 +26,7 @@ import java.util.List;
 
 
 public class PoiInformationDialog extends Dialog{
-    FragmentDialog fragmentDialog;
+    
     Activity landingpage;
     Context context;
     FragmentManager supportFragmentManager;
@@ -38,7 +38,6 @@ public class PoiInformationDialog extends Dialog{
         this.context = context;
         this.landingpage = landingPage;
         this.supportFragmentManager = supportFragmentManager;
-
     }
 
     @Override

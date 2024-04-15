@@ -105,7 +105,7 @@
             tools:layout_editor_absoluteY="70dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addReports"
+            android:id="@+id/searchFAB"
             style="@style/Widget.Design.FloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
