@@ -270,6 +270,7 @@ public class APIHelper {
     }
 
     public void postReport(ReportModel report) throws JSONException {
+
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", report.getTitle());
         requestBody.put("subCategoryName", report.getSubCategory());
@@ -278,18 +279,20 @@ public class APIHelper {
         requestBody.put("longitude", report.getLongitude());
         requestBody.put("latitude", report.getLatitude());
         requestBody.put("reportingLocationName", report.getLocationName());
+        requestBody.put("additionalPicture", report.getImage());
+
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
 
                     //Zeige Poi auf der Karte an?
-                    LandingPage.setMarker(report);
+                    LandingPage.setMarker(report, context);
 
                 }, volleyError -> {
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {
-                        Toast.makeText(context, "Stadt ist kein Mitglied !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
