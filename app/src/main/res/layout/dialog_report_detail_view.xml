@@ -2,7 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:minWidth="600dp"
+    android:minHeight="800dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/gallery_layout"
@@ -32,6 +34,7 @@
             android:elevation="5dp"/>
 
         <ImageView
+            android:id="@+id/reportImage"
             android:layout_width="match_parent"
             android:layout_height="330sp"
             android:scaleType="centerCrop"
@@ -74,6 +77,7 @@
             android:src="@drawable/png_dummy"
             android:scaleType="centerCrop"/>
         <TextView
+            android:id="@+id/descriptionReportDetailView"
             android:layout_width="match_parent"
             android:layout_height="250sp"
             android:layout_marginStart="25sp"
