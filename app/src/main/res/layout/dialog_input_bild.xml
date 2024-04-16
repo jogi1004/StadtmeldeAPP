@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="200dp"
+    android:layout_height="120dp"
+    android:layout_gravity="center"
+    android:background="@drawable/bg_corner">
+
+
+    <ImageButton
+        android:id="@+id/intentGallery"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_galerie"
+        android:scaleY="2"
+        android:scaleX="2"
+        android:paddingEnd="20dp"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/intentCamera"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="">
+
+    </ImageButton>
+
+    <ImageButton
+        android:id="@+id/intentCamera"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_cam"
+        android:scaleY="2"
+        android:scaleX="2"
+        android:paddingStart="20dp"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/intentGallery"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="">
+
+    </ImageButton>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="intentCamera,intentGallery" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

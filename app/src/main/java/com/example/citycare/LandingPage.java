@@ -1,24 +1,28 @@
 package com.example.citycare;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.SearchDialog;
@@ -29,11 +33,11 @@ import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CamUtil;
 import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -48,7 +52,6 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +59,7 @@ import java.util.Locale;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
-    public static MapView mMap;
+    private static MapView mMap;
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
@@ -70,6 +73,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private ArrayList<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
     ConstraintLayout compass;
+    private CamUtil camUtil;
+    private ProfilDialog profileDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
+        camUtil=new CamUtil(this);
         Log.d("token", apiHelper.getToken() + "");
 
         compass = findViewById(R.id.compass);
@@ -86,11 +92,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
-        ProfilDialog profileDialog = new ProfilDialog(this, this);
+
+        profileDialog = new ProfilDialog(this, this);
         ReportDialogPage allReportsDialog = new ReportDialogPage(this);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this,this);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
+
     }
 
 
@@ -103,6 +111,15 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 123);
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 124);
+        }
+        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 125);
         }
     }
 
@@ -132,6 +149,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()));
                 return true;
             }
+
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
@@ -155,6 +173,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         mMap.invalidate();
         mMap.addMapListener(this);
     }
+
 
 
     @SuppressLint("SetTextI18n")
@@ -313,5 +332,26 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
             controller.animateTo(mMyLocationOverlay.getMyLocation());
         }));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 2 && data != null){
+            Uri selectedImageUri = data.getData();
+            Bitmap bitmap = camUtil.getBitmapFromUri(selectedImageUri);
+
+            // Speichern Sie das Bild im internen Speicher
+            profileDialog.saveImageToInternalStorage(bitmap);
+            profileDialog.getPicture().setImageBitmap(bitmap);
+            apiHelper.putProfilePicture(bitmap);
+
+
+        } else if (requestCode == 1) {
+            Bitmap bitmap = camUtil.getBitmap(profileDialog.getImageFile());
+            profileDialog.getPicture().setImageBitmap(bitmap);
+            apiHelper.putProfilePicture(bitmap);
+        }
     }
 }
