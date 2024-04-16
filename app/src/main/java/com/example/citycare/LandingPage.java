@@ -68,10 +68,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     private ArrayList<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
 
-    public static MapView getmMap(){
-        return mMap;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +125,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
                 updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()));
                 return true;
-
             }
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
@@ -167,6 +162,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        controller.animateTo(geoPoint);
 
         if(fullList.isEmpty()) {
             fillListWithData(cityName);
@@ -174,7 +170,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             fullList.clear();
             fillListWithData(cityName);
         }
-        controller.animateTo(geoPoint);
 
         poiMarker = new Marker(mMap);
         poiMarker.setPosition(geoPoint);

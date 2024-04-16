@@ -118,8 +118,6 @@ public class APIHelper {
                     try {
                         token = jsonObject.getString("token");
                         Log.d("token", token);
-
-
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
