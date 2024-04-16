@@ -312,7 +312,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     public void onClick(View view) {
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
             controller.animateTo(mMyLocationOverlay.getMyLocation());
-//            controller.setCenter(mMyLocationOverlay.getMyLocation());
         }));
     }
 }
