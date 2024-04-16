@@ -9,12 +9,14 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.example.citycare.Dialogs.PoiInformationDialog;
@@ -52,7 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class LandingPage extends AppCompatActivity implements MapListener {
+public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
     public static MapView mMap;
     Marker poiMarker;
@@ -67,6 +69,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     boolean alreadyCalled = false, isMember = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
+    ConstraintLayout compass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,9 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
         Log.d("token", apiHelper.getToken() + "");
+
+        compass = findViewById(R.id.compass);
+        compass.setOnClickListener(this);
 
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
@@ -300,5 +306,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         }catch(IOException e){
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
+            controller.animateTo(mMyLocationOverlay.getMyLocation());
+//            controller.setCenter(mMyLocationOverlay.getMyLocation());
+        }));
     }
 }
