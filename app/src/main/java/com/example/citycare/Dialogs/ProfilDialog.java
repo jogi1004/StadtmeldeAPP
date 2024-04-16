@@ -63,6 +63,8 @@ public class ProfilDialog extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         username = findViewById(R.id.name);
         username.setText(apiHelper.getCurrentUser().getUsername());
+
+
         ImageView logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> {
 
@@ -76,6 +78,7 @@ public class ProfilDialog extends Dialog {
         });
 
         picture = findViewById(R.id.circleImageView);
+        picture.setImageBitmap(apiHelper.getCurrentUser().getProfilePicture());
         picture.setOnClickListener(v -> initDialog());
     }
     private void initDialog() {

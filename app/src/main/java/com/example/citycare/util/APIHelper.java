@@ -7,19 +7,20 @@ import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
-import com.example.citycare.model.Data;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.model.UserModel;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,7 +29,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -156,52 +156,33 @@ public class APIHelper {
     }
 
 
-    public void putProfilePicture(Bitmap bitmap) throws JSONException {
+    public void putProfilePicture(Bitmap bitmap) {
         byte[] imagesBytes = encodeImage(bitmap);
-        ObjectMapper objectMapper = new ObjectMapper();
         JSONObject body = new JSONObject();
-        String json;
         try {
-            json = objectMapper.writeValueAsString(new Data(imagesBytes));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            body.put("profilePicture", Base64.encodeToString(imagesBytes, Base64.DEFAULT));
+        } catch (JSONException e) {
+            Log.e("putProfilePicture", "Error", e);
+            return;
         }
-        body.put("profilePicture", json);
-        Log.d("imagesBytePUT", json);
-        Log.d("imagesBytePUT", token);
-        String filename = "/data/data/com.example.citycare/output.txt";
-        writeToFile(json,filename);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT,putProfilPictureURL,body,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, putProfilPictureURL, body,
                 response -> {
-
-                },volleyError -> volleyError.printStackTrace()
-        ){
+                },
+                volleyError -> {
+                    volleyError.printStackTrace();
+                }
+        ) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer "+token);
+                headers.put("Authorization", "Bearer " + token);
+                Log.d("imagesBytePUT", headers.get("Authorization"));
                 return headers;
             }
         };
         requestQueue.add(jsonObjectRequest);
     }
-    public static void writeToFile(String content, String filename) {
-        try {
-            // FileOutputStream und BufferedWriter initialisieren
-            FileOutputStream fos = new FileOutputStream(filename);
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-            // Inhalt in die Datei schreiben
-            bw.write(content);
-
-            // Buffer schließen
-            bw.close();
-
-            System.out.println("Datei erfolgreich geschrieben: " + filename);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public void getUserInfo(){
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getUserInfo,null,
                 response->{
@@ -211,14 +192,14 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    decodeImage(response.getString("profilePicture").getBytes()),
+                                    decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)),
                                     response.getBoolean("notificationsEnabled")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
-                            currentUser.setProfilePicture(decodeImage(response.getString("profilePicture").getBytes()));
+                            currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
 
                         }

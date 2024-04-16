@@ -254,21 +254,13 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             // Speichern Sie das Bild im internen Speicher
             profileDialog.saveImageToInternalStorage(bitmap);
             profileDialog.getPicture().setImageBitmap(bitmap);
-            try {
-                apiHelper.putProfilePicture(bitmap);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            apiHelper.putProfilePicture(bitmap);
 
 
         } else if (requestCode == 1) {
             Bitmap bitmap = camUtil.getBitmap(profileDialog.getImageFile());
             profileDialog.getPicture().setImageBitmap(bitmap);
-            try {
-                apiHelper.putProfilePicture(bitmap);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
+            apiHelper.putProfilePicture(bitmap);
         }
     }
 
