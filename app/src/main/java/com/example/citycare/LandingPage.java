@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,17 +23,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
-import com.example.citycare.Dialogs.damagetitleFragment;
-import com.example.citycare.Dialogs.damagetypeFragment;
-
-
-import com.example.citycare.Dialogs.PoiInformationDialog;
-import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
-import com.example.citycare.model.DamagetypeModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -43,8 +35,6 @@ import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-
-import org.json.JSONException;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -59,7 +49,6 @@ import org.osmdroid.views.overlay.MapEventsOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +57,7 @@ import java.util.Locale;
 
 public class LandingPage extends AppCompatActivity implements MapListener {
 
-    MapView mMap;
+    private static MapView mMap;
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
@@ -83,13 +72,8 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     boolean alreadyCalled = false, isMember = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
-    private APIHelper apiHelper;
-    private static ArrayList<DamagetypeModel> list = new ArrayList<>();
     private CamUtil camUtil;
 
-    public static MapView getmMap(){
-        return mMap;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,8 +170,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
 
 
     @SuppressLint("SetTextI18n")
-    private void updatePoiMarker(GeoPoint geoPoint) {
-        apiHelper.getAllCategorys(new CategoryListCallback() {
+    public void updatePoiMarker(GeoPoint geoPoint) {
 
         Geocoder geocoder = new Geocoder(this);
         try {
@@ -197,6 +180,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        controller.animateTo(geoPoint);
 
         if(fullList.isEmpty()) {
             fillListWithData(cityName);
@@ -210,7 +194,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi_dark));
 
         mMap.getOverlays().add(poiMarker);
-        controller.setCenter(geoPoint);
+
 
         poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
 

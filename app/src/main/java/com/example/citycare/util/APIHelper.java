@@ -234,11 +234,11 @@ public class APIHelper {
     public Bitmap decodeImage(byte[] imageBytes) {
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
-    public void getMainCategorys(CategoryListCallback callback) {
+    public void getMainCategorys(String cityName, CategoryListCallback callback) {
         List<MainCategoryModel> categoryModelList = new ArrayList<>();
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
-                Request.Method.GET, categoryGetURL, null,
+                Request.Method.GET, categoryGetURL + cityName, null,
                 response -> {
                     for (int i=0;i<response.length();i++){
                         try {
@@ -258,14 +258,14 @@ public class APIHelper {
                     callback.onSuccess(categoryModelList);
                 },
                 error -> error.printStackTrace()
-                ){
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", "Bearer "+token);
-                        return headers;
-                    }
-                };
+        ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer "+token);
+                return headers;
+            }
+        };
 
 
         requestQueue.add(jsonObjectRequest);
