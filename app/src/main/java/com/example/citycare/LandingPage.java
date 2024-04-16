@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
@@ -146,7 +147,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
-                updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()));
+                apiHelper.getIsLocationMember(geoPoint, LandingPage.this);
                 return true;
             }
 
@@ -177,7 +178,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
 
     @SuppressLint("SetTextI18n")
-    public void updatePoiMarker(GeoPoint geoPoint) {
+    public void updatePoiMarker(GeoPoint geoPoint, boolean isMember) {
+
 
         Geocoder geocoder = new Geocoder(this);
         try {
@@ -189,11 +191,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
         controller.animateTo(geoPoint);
 
-        if(fullList.isEmpty()) {
-            fillListWithData(cityName);
-        }else if(!tmp.equals(cityName)){
-            fullList.clear();
-            fillListWithData(cityName);
+        if(isMember) {
+            if (fullList.isEmpty()) {
+                fillListWithData(cityName);
+            } else if (!tmp.equals(cityName)) {
+                fullList.clear();
+                fillListWithData(cityName);
+            }
         }
 
         poiMarker = new Marker(mMap);
@@ -214,6 +218,19 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 toast.show();
             } else {
                 poiInformationDialog.show();
+
+                ConstraintLayout createReportBtn = poiInformationDialog.findViewById(R.id.reportButton);
+
+                if(!isMember){
+                    createReportBtn.setClickable(false);
+                    createReportBtn.setVisibility(View.INVISIBLE);
+                    Toast.makeText(this, "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
+                }else {
+                    if (createReportBtn.getVisibility() == View.INVISIBLE) {
+                        createReportBtn.setClickable(true);
+                        createReportBtn.setVisibility(View.VISIBLE);
+                    }
+                }
                 poiInformationDialog.fill(addresses);
             }
         } catch (Exception e) {
@@ -310,18 +327,18 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-                apiHelper.getAllReports(cityName, new AllReportsCallback(){
-                    @Override
-                    public void onSuccess() {
-                        allReports = apiHelper.getAllReportsAsList();
-                        alreadyCalled = true;
-                        loadExistingMarkers();
-                    }
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in onLocationReceived: ", errorMessage);
-                    }
-                });
+            apiHelper.getAllReports(cityName, new AllReportsCallback(){
+                @Override
+                public void onSuccess() {
+                    allReports = apiHelper.getAllReportsAsList();
+                    alreadyCalled = true;
+                    loadExistingMarkers();
+                }
+                @Override
+                public void onError(String errorMessage) {
+                    Log.e("Error in onLocationReceived: ", errorMessage);
+                }
+            });
         }catch(IOException e){
             throw new RuntimeException(e);
         }
