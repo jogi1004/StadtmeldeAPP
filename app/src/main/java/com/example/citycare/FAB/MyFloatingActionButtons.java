@@ -1,5 +1,7 @@
 package com.example.citycare.FAB;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -11,44 +13,42 @@ import android.view.WindowManager;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
+import com.example.citycare.Dialogs.SearchDialog;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MyFloatingActionButtons {
     Context context;
-    private FloatingActionButton menuFAB;
-    private FloatingActionButton profilFAB;
-    private FloatingActionButton addFAB;
-    private FloatingActionButton allReportsFAB;
-    private FloatingActionButton settingsFAB;
+    PoiInformationDialog poiInformationDialog;
+    private FloatingActionButton menuFAB, profilFAB, searchFAB, allReportsFAB, settingsFAB;
     private Boolean areFabsVisible;
-
     private ProfilDialog profilDialog;
     private ReportDialogPage allReportsDialog;
     private SettingDialog settingDialog;
+    private SearchDialog searchDialog;
     private int dialogheight;
-    PoiInformationDialog poiInformationDialog;
 
 
-    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, SettingDialog settingDialog, ReportDialogPage allReportsDialog, PoiInformationDialog poiInformationDialog) {
+    public MyFloatingActionButtons(Context context, Activity landingPage, Boolean areFabsVisible, ProfilDialog profilDialog, SettingDialog settingDialog, ReportDialogPage allReportsDialog, PoiInformationDialog poiInformationDialog, SearchDialog searchDialog) {
         this.context = context;
         this.menuFAB = landingPage.findViewById(R.id.menu);
         this.profilFAB = landingPage.findViewById(R.id.profil);
-        this.addFAB = landingPage.findViewById(R.id.addReports);;
-        this.allReportsFAB = landingPage.findViewById(R.id.allReports);;
-        this.settingsFAB = landingPage.findViewById(R.id.setting);;
+        this.allReportsFAB = landingPage.findViewById(R.id.allReports);
+        this.settingsFAB = landingPage.findViewById(R.id.setting);
+        this.searchFAB = landingPage.findViewById(R.id.searchFAB);
         this.areFabsVisible = areFabsVisible;
         this.profilDialog = profilDialog;
         this.settingDialog = settingDialog;
         this.allReportsDialog = allReportsDialog;
         this.poiInformationDialog = poiInformationDialog;
+        this.searchDialog = searchDialog;
 
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         landingPage.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         dialogheight = (int) (displayMetrics.heightPixels*0.7);
-        addFAB.setVisibility(View.GONE);
+        searchFAB.setVisibility(View.GONE);
         profilFAB.setVisibility(View.GONE);
         allReportsFAB.setVisibility(View.GONE);
         settingsFAB.setVisibility(View.GONE);
@@ -57,24 +57,32 @@ public class MyFloatingActionButtons {
         profilFAB.setOnClickListener(v->{
             showProfileDialog();
             landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
-            addFAB.setVisibility(View.GONE);
+            searchFAB.setVisibility(View.GONE);
             allReportsFAB.setVisibility(View.GONE);
             settingsFAB.setVisibility(View.GONE);
         });
         allReportsFAB.setOnClickListener(v ->{
             showAllReportsDialog();
             landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
-            addFAB.setVisibility(View.GONE);
+            searchFAB.setVisibility(View.GONE);
             profilFAB.setVisibility(View.GONE);
             settingsFAB.setVisibility(View.GONE);
                 });
         settingsFAB.setOnClickListener(v->{
             showSettingDialog();
             landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
-            addFAB.setVisibility(View.GONE);
+            searchFAB.setVisibility(View.GONE);
             allReportsFAB.setVisibility(View.GONE);
             profilFAB.setVisibility(View.GONE);
         });
+        searchFAB.setOnClickListener(v->{
+            showSearchDialog();
+            landingPage.findViewById(R.id.dimm).setVisibility(View.VISIBLE);
+            allReportsFAB.setVisibility(View.GONE);
+            profilFAB.setVisibility(View.GONE);
+            settingsFAB.setVisibility(View.GONE);
+        });
+
 
         allReportsDialog.setOnDismissListener(v->{
             allReportsFAB.setVisibility(View.GONE);
@@ -92,6 +100,11 @@ public class MyFloatingActionButtons {
             setAreFabsVisible(false);
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
         });
+        searchDialog.setOnDismissListener(v->{
+            searchFAB.setVisibility(View.GONE);
+            setAreFabsVisible(false);
+            landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
+        });
         poiInformationDialog.setOnDismissListener(v->{
             hideFABS();
         });
@@ -99,7 +112,7 @@ public class MyFloatingActionButtons {
 
     }
     private void hideFABS(){
-        addFAB.setVisibility(View.GONE);
+        searchFAB.setVisibility(View.GONE);
         allReportsFAB.setVisibility(View.GONE);
         profilFAB.setVisibility(View.GONE);
         settingsFAB.setVisibility(View.GONE);
@@ -123,7 +136,6 @@ public class MyFloatingActionButtons {
     }
 
     private void showSettingDialog(){
-
         Window window = settingDialog.getWindow();
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
@@ -131,12 +143,20 @@ public class MyFloatingActionButtons {
         settingDialog.show();
     }
 
+    private void showSearchDialog(){
+        Window window = searchDialog.getWindow();
+        window.setGravity(Gravity.TOP);
+        window.setDimAmount(0.0f);
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WRAP_CONTENT);
+        searchDialog.show();
+    }
+
 
     private void toggleFABMenu(){
         if(!areFabsVisible){
             //show
             profilFAB.show();
-            addFAB.show();
+            searchFAB.show();
             allReportsFAB.show();
             settingsFAB.show();
 
@@ -144,7 +164,7 @@ public class MyFloatingActionButtons {
         }else{
             //hide
             profilFAB.hide();
-            addFAB.hide();
+            searchFAB.hide();
             allReportsFAB.hide();
             settingsFAB.hide();
 
@@ -168,12 +188,12 @@ public class MyFloatingActionButtons {
         this.profilFAB = profilFAB;
     }
 
-    public FloatingActionButton getAddFAB() {
-        return addFAB;
+    public FloatingActionButton getSearchFAB() {
+        return searchFAB;
     }
 
-    public void setAddFAB(FloatingActionButton addFAB) {
-        this.addFAB = addFAB;
+    public void setSearchFAB(FloatingActionButton searchFAB) {
+        this.searchFAB = searchFAB;
     }
 
     public FloatingActionButton getAllReportsFAB() {

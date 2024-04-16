@@ -134,7 +134,6 @@ public class APIHelper {
                         token = jsonObject.getString("token");
                         getUserInfo();
                         this.username = username;
-
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }

@@ -13,16 +13,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
+import com.example.citycare.Dialogs.SearchDialog;
 import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
@@ -54,26 +57,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-
-public class LandingPage extends AppCompatActivity implements MapListener {
+public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
     private static MapView mMap;
     Marker poiMarker;
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
-    public ProfilDialog profileDialog;
-    public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
-    public SettingDialog settingDialog;
+    SearchDialog searchDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> list = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
+    ConstraintLayout compass;
     private CamUtil camUtil;
-
+    private ProfilDialog profileDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,14 +87,20 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         camUtil=new CamUtil(this);
         Log.d("token", apiHelper.getToken() + "");
 
+        compass = findViewById(R.id.compass);
+        compass.setOnClickListener(this);
+
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
+
         profileDialog = new ProfilDialog(this, this);
-        allReportsDialog = new ReportDialogPage(this);
-        settingDialog = new SettingDialog(this);
-        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this);
+        SettingDialog settingDialog = new SettingDialog(this);
+        searchDialog = new SearchDialog(this,this);
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
 
     }
+
 
     @SuppressLint("ObsoleteSdkInt")
     protected void initPermissions() {
@@ -125,7 +132,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
         }
     }
 
-    protected void loadMap() {
+    public void loadMap() {
         Configuration.getInstance().load(
                 getApplicationContext(),
                 getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE)
@@ -149,7 +156,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             }
         });
 
-
         mMyLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), mMap);
         controller = mMap.getController();
 
@@ -160,6 +166,7 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             controller.setCenter(mMyLocationOverlay.getMyLocation());
             controller.animateTo(mMyLocationOverlay.getMyLocation());
         }));
+
         controller.setZoom(18.0);
         mMap.getOverlays().add(0, mapEventsOverlay);
         mMap.getOverlays().add(mMyLocationOverlay);
@@ -256,7 +263,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             loadListfromDB(location);
             alreadyCalled = true;
         }
-
     }
 
     @Override
@@ -272,7 +278,6 @@ public class LandingPage extends AppCompatActivity implements MapListener {
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
-
     }
 
     public static List<MainCategoryModel> getMainCategoryList() {
@@ -321,6 +326,14 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void onClick(View view) {
+        mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
+            controller.animateTo(mMyLocationOverlay.getMyLocation());
+        }));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -341,5 +354,4 @@ public class LandingPage extends AppCompatActivity implements MapListener {
             apiHelper.putProfilePicture(bitmap);
         }
     }
-
 }
