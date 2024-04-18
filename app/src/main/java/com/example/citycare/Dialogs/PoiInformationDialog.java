@@ -14,12 +14,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.citycare.R;
 
 import java.util.List;
@@ -32,6 +34,8 @@ public class PoiInformationDialog extends Dialog{
     FragmentManager supportFragmentManager;
     double lat, lon;
     String locationName;
+    ImageView gifImageView;
+    ConstraintLayout reportButton;
 
     public PoiInformationDialog(Context context, Activity landingPage, FragmentManager supportFragmentManager) {
         super(context);
@@ -51,7 +55,10 @@ public class PoiInformationDialog extends Dialog{
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        ConstraintLayout reportButton = findViewById(R.id.reportButton);
+        gifImageView = findViewById(R.id.gif);
+        Glide.with(context).asGif().load(R.drawable.gif_punkte_laden).into(gifImageView);
+
+        reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v-> {
                 FragmentDialog dialog = new FragmentDialog();
                 FrameLayout dimm = landingpage.findViewById(R.id.dimm);
@@ -92,4 +99,11 @@ public class PoiInformationDialog extends Dialog{
         show();
     }
 
+    public void setGifVisibility(int visibility) {
+        gifImageView.setVisibility(visibility);
+    }
+
+    public void setButtonVisibility(int visibility) {
+        reportButton.setVisibility(visibility);
+    }
 }

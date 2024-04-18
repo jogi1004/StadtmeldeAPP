@@ -4,17 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Geocoder;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.MainCategoryModel;
@@ -31,6 +37,7 @@ import org.osmdroid.views.overlay.Marker;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.location.Address;
+
 
 public class APIHelper {
 
@@ -50,11 +59,14 @@ public class APIHelper {
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
+    private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
     private String token;
     private String username;
+    List<String> members = new ArrayList<>();
+    List<String> notMembers = new ArrayList<>();
     private UserModel currentUser;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
 
@@ -369,10 +381,7 @@ public class APIHelper {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
-
-                    //Zeige Poi auf der Karte an?
                     LandingPage.setMarker(report, context);
-
                 }, volleyError -> {
                     int statuscode = volleyError.networkResponse.statusCode;
 
@@ -390,6 +399,58 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
+    public void getIsLocationMember(GeoPoint geoPoint, LandingPage landingPage, PoiInformationDialog poiInformationDialog){
+
+        String location;
+
+        Geocoder geocoder = new Geocoder(landingPage);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            assert addresses != null;
+            location = addresses.get(0).getLocality();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+            StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
+                    response -> {
+                        boolean isMember = Boolean.parseBoolean(response);
+
+                        if (isMember) {
+                            poiInformationDialog.setGifVisibility(View.GONE);
+                            poiInformationDialog.setButtonVisibility(View.VISIBLE);
+                            members.add(location);
+                        } else {
+                            poiInformationDialog.setGifVisibility(View.GONE);
+                            poiInformationDialog.setButtonVisibility(View.INVISIBLE);
+                            Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
+                            notMembers.add(location);
+                        }
+                    },
+                    volleyError -> {
+                        volleyError.printStackTrace();
+                        Log.d("Member", "Volley Error");
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+        requestQueue.add(booleanRequest);
+
+    }
+
+    public List<String> getMembers() {
+        return members;
+    }
+
+    public List<String> getNotMembers() {
+        return notMembers;
+    }
+
     public ArrayList<ReportModel> getAllReportsAsList() {
         return allReports;
     }
@@ -397,4 +458,5 @@ public class APIHelper {
     public UserModel getCurrentUser() {
         return currentUser;
     }
+
 }
