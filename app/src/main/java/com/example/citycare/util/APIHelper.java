@@ -9,12 +9,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
@@ -404,24 +406,35 @@ public class APIHelper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        Log.d("Bug", location);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getIsLocationMember + location,null,
-                response->{
-                    Log.d("Member", "true");
-                    landingPage.updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()), true);
-                }, volleyError -> {
-            landingPage.updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()), false);
-            Log.d("Member", "false");
-        })
-        {
+        StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
+                response -> {
+                    // Parse the response as boolean
+                    boolean isMember = Boolean.parseBoolean(response);
+                    if (isMember) {
+                        Log.d("Member", "true");
+                        landingPage.updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()), true);
+                    } else {
+                        Log.d("Member", "false");
+                        landingPage.updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()), false);
+                    }
+                },
+                volleyError -> {
+                    volleyError.printStackTrace();
+                    Log.d("Member", "Volley Error");
+                }
+        ) {
             @Override
-            public Map<String, String> getHeaders() {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer "+token);
+                // Add your token to the headers
+                headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };
-        requestQueue.add(jsonObjectRequest);
+
+// Add the request to the RequestQueue
+        requestQueue.add(booleanRequest);
+
     }
 
 
