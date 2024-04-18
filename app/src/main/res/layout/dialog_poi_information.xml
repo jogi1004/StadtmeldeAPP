@@ -43,6 +43,17 @@
         app:layout_constraintStart_toStartOf="@id/adress"
         app:layout_constraintTop_toBottomOf="@+id/adressInfos" />
 
+    <ImageView
+        android:id="@+id/gif"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/koords"
+        app:srcCompat="@drawable/gif_punkte_laden" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/reportButton"
@@ -50,12 +61,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/adress"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/koords">
 
         <TextView
+            android:id="@+id/textView11"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/btn_report"

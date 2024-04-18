@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -18,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.MainCategoryModel;
@@ -62,6 +65,8 @@ public class APIHelper {
     private Timer timer;
     private String token;
     private String username;
+    List<String> members = new ArrayList<>();
+    List<String> notMembers = new ArrayList<>();
     private UserModel currentUser;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
 
@@ -394,7 +399,7 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void getIsLocationMember(GeoPoint geoPoint, LandingPage landingPage){
+    public void getIsLocationMember(GeoPoint geoPoint, LandingPage landingPage, PoiInformationDialog poiInformationDialog){
 
         String location;
 
@@ -406,37 +411,45 @@ public class APIHelper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
-                response -> {
-                    // Parse the response as boolean
-                    boolean isMember = Boolean.parseBoolean(response);
-                    if (isMember) {
-                        Log.d("Member", "true");
-                        landingPage.updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()), true);
-                    } else {
-                        Log.d("Member", "false");
-                        landingPage.updatePoiMarker(new GeoPoint(geoPoint.getLatitude(), geoPoint.getLongitude()), false);
-                    }
-                },
-                volleyError -> {
-                    volleyError.printStackTrace();
-                    Log.d("Member", "Volley Error");
-                }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                // Add your token to the headers
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
 
-// Add the request to the RequestQueue
+            StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
+                    response -> {
+                        boolean isMember = Boolean.parseBoolean(response);
+
+                        if (isMember) {
+                            poiInformationDialog.setGifVisibility(View.GONE);
+                            poiInformationDialog.setButtonVisibility(View.VISIBLE);
+                            members.add(location);
+                        } else {
+                            poiInformationDialog.setGifVisibility(View.GONE);
+                            poiInformationDialog.setButtonVisibility(View.INVISIBLE);
+                            Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
+                            notMembers.add(location);
+                        }
+                    },
+                    volleyError -> {
+                        volleyError.printStackTrace();
+                        Log.d("Member", "Volley Error");
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
         requestQueue.add(booleanRequest);
 
     }
 
+    public List<String> getMembers() {
+        return members;
+    }
+
+    public List<String> getNotMembers() {
+        return notMembers;
+    }
 
     public ArrayList<ReportModel> getAllReportsAsList() {
         return allReports;

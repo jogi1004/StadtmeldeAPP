@@ -97,7 +97,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         profileDialog = new ProfilDialog(this, this);
         ReportDialogPage allReportsDialog = new ReportDialogPage(this);
         SettingDialog settingDialog = new SettingDialog(this);
-        searchDialog = new SearchDialog(this,this);
+        searchDialog = new SearchDialog(this,this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
 
     }
@@ -144,10 +144,32 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         mMap.setMultiTouchControls(true);
         mMap.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
+        Geocoder geocoder = new Geocoder(this);
+
         MapEventsOverlay mapEventsOverlay = new MapEventsOverlay(new MapEventsReceiver() {
             @Override
             public boolean singleTapConfirmedHelper(GeoPoint geoPoint) {
-                apiHelper.getIsLocationMember(geoPoint, LandingPage.this);
+                updatePoiMarker(geoPoint);
+                String location;
+
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+                    assert addresses != null;
+                    location = addresses.get(0).getLocality();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if(apiHelper.getMembers().contains(location)){
+                    poiInformationDialog.setGifVisibility(View.GONE);
+                    poiInformationDialog.setButtonVisibility(View.VISIBLE);
+                } else if (apiHelper.getNotMembers().contains(location)) {
+                    poiInformationDialog.setGifVisibility(View.GONE);
+                    poiInformationDialog.setButtonVisibility(View.INVISIBLE);
+                    Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
+                } else{
+                    apiHelper.getIsLocationMember(geoPoint, LandingPage.this, poiInformationDialog);
+                }
                 return true;
             }
 
@@ -178,8 +200,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
 
     @SuppressLint("SetTextI18n")
-    public void updatePoiMarker(GeoPoint geoPoint, boolean isMember) {
-
+    public void updatePoiMarker(GeoPoint geoPoint) {
 
         Geocoder geocoder = new Geocoder(this);
         try {
@@ -191,13 +212,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
         controller.animateTo(geoPoint);
 
-        if(isMember) {
-            if (fullList.isEmpty()) {
-                fillListWithData(cityName);
-            } else if (!tmp.equals(cityName)) {
-                fullList.clear();
-                fillListWithData(cityName);
-            }
+        if (fullList.isEmpty()) {
+            fillListWithData(cityName);
+        } else if (!tmp.equals(cityName)) {
+            fullList.clear();
+            fillListWithData(cityName);
         }
 
         poiMarker = new Marker(mMap);
@@ -207,7 +226,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         mMap.getOverlays().add(poiMarker);
 
 
-        poiInformationDialog.setOnDismissListener(dialog -> mMap.getOverlays().remove(poiMarker));
+        poiInformationDialog.setOnDismissListener(dialog -> {
+            mMap.getOverlays().remove(poiMarker);
+            poiInformationDialog.setGifVisibility(View.VISIBLE);
+            poiInformationDialog.setButtonVisibility(View.GONE);
+        });
 
         try {
             Geocoder geo = new Geocoder(LandingPage.this.getApplicationContext(), Locale.getDefault());
@@ -221,15 +244,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
                 ConstraintLayout createReportBtn = poiInformationDialog.findViewById(R.id.reportButton);
 
-                if(!isMember){
-                    createReportBtn.setClickable(false);
-                    createReportBtn.setVisibility(View.INVISIBLE);
-                    Toast.makeText(this, "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
-                }else {
-                    if (createReportBtn.getVisibility() == View.INVISIBLE) {
-                        createReportBtn.setClickable(true);
-                        createReportBtn.setVisibility(View.VISIBLE);
-                    }
+                if (createReportBtn.getVisibility() == View.INVISIBLE) {
+                    createReportBtn.setClickable(true);
+                    createReportBtn.setVisibility(View.VISIBLE);
                 }
                 poiInformationDialog.fill(addresses);
             }

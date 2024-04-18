@@ -35,12 +35,14 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
     private ConstraintLayout searchBtn;
     LandingPage landingPage;
     APIHelper apiHelper;
+    private PoiInformationDialog poiInformationDialog;
 
-    public SearchDialog(@NonNull Context context, LandingPage landingPage) {
+    public SearchDialog(@NonNull Context context, LandingPage landingPage, PoiInformationDialog poiInformationDialog) {
         super(context);
         this.context = context;
         this.dimm = findViewById(R.id.dimm);
         this.landingPage = landingPage;
+        this.poiInformationDialog = poiInformationDialog;
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +78,9 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                         "\nLongitude: " + address.getLongitude();
                 Log.d("Address", result);
 
-                apiHelper.getIsLocationMember(new GeoPoint(address.getLatitude(), address.getLongitude()), landingPage);
-//                landingPage.updatePoiMarker(new GeoPoint(address.getLatitude(), address.getLongitude()), true);
+                landingPage.updatePoiMarker(new GeoPoint(address.getLatitude(), address.getLongitude()));
+                apiHelper.getIsLocationMember(new GeoPoint(address.getLatitude(), address.getLongitude()), landingPage, poiInformationDialog);
+
                 dismiss();
             } else {
                 Log.d("Search","No results found for query: " + query);
