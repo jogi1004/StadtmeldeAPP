@@ -183,7 +183,6 @@ public class APIHelper {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + token);
-                Log.d("imagesBytePUT", headers.get("Authorization"));
                 return headers;
             }
         };

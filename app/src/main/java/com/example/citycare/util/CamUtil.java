@@ -1,10 +1,12 @@
 package com.example.citycare.util;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import com.example.citycare.R;
@@ -99,6 +102,16 @@ public class CamUtil {
         ImageButton gallery = dialog.findViewById(R.id.intentGallery);
         ImageButton cam = dialog.findViewById(R.id.intentCamera);
 
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {
+                /*android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                android.Manifest.permission.WRITE_EXTERNAL_STORAGE,*/
+                android.Manifest.permission.CAMERA
+        };
+
+        if (!hasPermissions(context, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(landingPage, PERMISSIONS, PERMISSION_ALL);
+        }
         gallery.setOnClickListener(v -> {
             Toast toast = new Toast(context);
             toast.setText("Galerie");
@@ -128,6 +141,16 @@ public class CamUtil {
             dialog.dismiss();
         });
         dialog.show();
+    }
+    public static boolean hasPermissions(Context context, String[] permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public File getImageFile() {
