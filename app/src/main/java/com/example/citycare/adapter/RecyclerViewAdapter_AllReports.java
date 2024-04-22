@@ -55,16 +55,13 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             image = itemView.findViewById(R.id.reportImage);
             reportName = itemView.findViewById(R.id.reportName);
             reportDate = itemView.findViewById(R.id.reportDate);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(recyclerViewInterface != null){
-                        int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
-                            recyclerViewInterface.onItemClick(pos);
-                        }
-
+            itemView.setOnClickListener(v -> {
+                if(recyclerViewInterface != null){
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemClick(pos);
                     }
+
                 }
             });
         }

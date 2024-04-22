@@ -65,17 +65,19 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     IMapController controller;
     MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
+    public ProfilDialog profileDialog;
+    public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
-    SearchDialog searchDialog;
+    public SettingDialog settingDialog;
+    private SearchDialog searchDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> list = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
-    private ArrayList<ReportModel> allReports = new ArrayList<>();
+    private List<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
-    ConstraintLayout compass;
+    private ConstraintLayout compass;
     private CamUtil camUtil;
-    private ProfilDialog profileDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,16 +88,15 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
         camUtil=new CamUtil(this);
-        Log.d("token", apiHelper.getToken() + "");
+
 
         compass = findViewById(R.id.compass);
         compass.setOnClickListener(this);
-
+        Log.d("init", "onCreate");
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
-
         profileDialog = new ProfilDialog(this, this);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this,this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
@@ -103,15 +104,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     }
 
 
-    @SuppressLint("ObsoleteSdkInt")
     protected void initPermissions() {
+
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadMap();
             updateLocation();
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-            }
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
         if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 123);
@@ -124,14 +123,15 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d("onRequest", "onRequest");
             loadMap();
             updateLocation();
         }
-    }
+    }*/
 
     public void loadMap() {
         Configuration.getInstance().load(
@@ -172,12 +172,12 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 }
                 return true;
             }
-
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
             }
         });
+
 
         mMyLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this), mMap);
         controller = mMap.getController();
@@ -189,14 +189,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             controller.setCenter(mMyLocationOverlay.getMyLocation());
             controller.animateTo(mMyLocationOverlay.getMyLocation());
         }));
-
         controller.setZoom(18.0);
         mMap.getOverlays().add(0, mapEventsOverlay);
         mMap.getOverlays().add(mMyLocationOverlay);
         mMap.invalidate();
         mMap.addMapListener(this);
-    }
 
+    }
 
 
     @SuppressLint("SetTextI18n")
@@ -288,14 +287,17 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     @SuppressLint("MissingPermission")
     protected void updateLocation() {
+        Log.d("Locationupdate", "update");
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this::onLocationReceived);
     }
 
     protected void onLocationReceived(Location location) {
+        Log.d("alreadyCalled", String.valueOf(alreadyCalled));
         if(!alreadyCalled) {
-            loadListfromDB(location);
             alreadyCalled = true;
+            loadListfromDB(location);
+
         }
     }
 
@@ -344,18 +346,20 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-            apiHelper.getAllReports(cityName, new AllReportsCallback(){
-                @Override
-                public void onSuccess() {
-                    allReports = apiHelper.getAllReportsAsList();
-                    alreadyCalled = true;
-                    loadExistingMarkers();
-                }
-                @Override
-                public void onError(String errorMessage) {
-                    Log.e("Error in onLocationReceived: ", errorMessage);
-                }
-            });
+            Log.d("called 2", "called 2");
+                apiHelper.getAllReports(cityName, new AllReportsCallback(){
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        Log.d("called", "called 1");
+                        allReports = reports;
+                        loadExistingMarkers();
+
+                    }
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in onLocationReceived: ", errorMessage);
+                    }
+                });
         }catch(IOException e){
             throw new RuntimeException(e);
         }

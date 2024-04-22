@@ -28,8 +28,6 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
     EditText username, password;
     String usernameContent, passwordContent;
     private APIHelper apiHelper;
-    private SharedPreferences loginSharedPreferences;
-    private boolean loggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +47,7 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
         backButton.setOnClickListener(this);
 
         apiHelper = APIHelper.getInstance(this);
-        loginSharedPreferences = getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
-        loginSharedPreferences.getBoolean("loggedIn", loggedIn);
+
 
 
     }

@@ -332,9 +332,11 @@ public class APIHelper {
     }
 
     public void getAllReports(String cityName, AllReportsCallback callback) {
+        allReports.clear();
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
                 response -> {
+                    Log.d("response" , String.valueOf(response.length()));
                     for (int i=0;i<response.length();i++){
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
@@ -347,12 +349,12 @@ public class APIHelper {
                                     jsonObject.getDouble("latitude")
                                     );
                             allReports.add(reportModel);
-                            Log.d("allReports", reportModel.toString() + "\n " + allReports.size());
-                            callback.onSuccess();
+                            Log.d("allReportsALL", reportModel + "\n " + allReports.size());
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
                     }
+                    callback.onSuccess(allReports);
                 },
                 error -> error.printStackTrace()
         ){

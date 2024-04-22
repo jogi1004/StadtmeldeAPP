@@ -1,6 +1,7 @@
 package com.example.citycare.Dialogs;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.widget.WrapperListAdapter;
+
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
@@ -29,10 +32,13 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     FrameLayout dim;
     ArrayList<ReportModel> allReports = new ArrayList<>();
     private int dialogheight;
-    public ReportDialogPage(@NonNull Context context) {
+    public ReportDialogPage(@NonNull Context context, Activity landingPage) {
         super(context);
         this.context = context;
         this.dim = findViewById(R.id.dimm);
+        /*DisplayMetrics displayMetrics = new DisplayMetrics();
+        landingPage.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dialogheight = (int) (displayMetrics.heightPixels*0.67);*/
 
     }
 
@@ -52,7 +58,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         if (windowManager != null) {
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         }
-        dialogheight = (int) (displayMetrics.heightPixels * 0.8);
+        dialogheight = (int) (displayMetrics.heightPixels * 0.7);
     }
 
     private void initAllReports() {
@@ -63,13 +69,12 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     @Override
     public void onItemClick(int position) {
         ReportModel ClickedReport = allReports.get(position);
-        DialogReportDetailView DetailView = new DialogReportDetailView(context,ClickedReport.getTitle(),ClickedReport.getImage(),ClickedReport.getDescription(),ClickedReport.getLatitude(),ClickedReport.getLongitude(),ClickedReport.getTimestamp());
-        Window window = DetailView.getWindow();
-        assert window != null;
+        DialogReportDetailView detailView = new DialogReportDetailView(context,ClickedReport.getTitle(),ClickedReport.getImage(),ClickedReport.getDescription(),ClickedReport.getLatitude(),ClickedReport.getLongitude(),ClickedReport.getTimestamp());
+        detailView.show();
+        Window window = detailView.getWindow();
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT,dialogheight);
-        this.hide();
-        DetailView.show();
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
+
     }
 }
