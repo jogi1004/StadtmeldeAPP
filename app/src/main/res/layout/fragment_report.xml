@@ -7,14 +7,14 @@
     tools:background="@color/colorPrimary"
     >
 
-    <ImageView
-        android:id="@+id/cam"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/camReport"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/bg_edittextcorner_border"
-        android:padding="20dp"
-        android:src="@drawable/png_cam"
+        android:src="@drawable/png_placeholder"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +30,7 @@
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/category"
-        app:layout_constraintTop_toBottomOf="@+id/cam" />
+        app:layout_constraintTop_toBottomOf="@+id/camReport" />
 
     <TextView
         android:id="@+id/category"

@@ -1,5 +1,6 @@
 package com.example.citycare.Dialogs;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,8 +26,10 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
     private EditText description;
     private ReportModel report;
 
+
     public fragment_damagetitle(ReportModel report) {
         this.report = report;
+
     }
 
     @Override

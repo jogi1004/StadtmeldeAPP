@@ -52,7 +52,7 @@ public class APIHelper {
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private Context context;
     private RequestQueue requestQueue;
-    private Timer timer;
+
     private String token;
     private String username;
     private UserModel currentUser;
@@ -61,7 +61,6 @@ public class APIHelper {
     private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
-        timer = new Timer();
     }
     public static APIHelper getInstance(Context context){
         if(INSTANCE==null){
@@ -90,17 +89,9 @@ public class APIHelper {
         requestBody.put("email", email);
         requestBody.put("password", password);
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Timeout-Verhalten implementieren (z.B. Fehlermeldung anzeigen)
-                Toast.makeText(context, "Registrierung fehlgeschlagen - Zeitüberschreitung", Toast.LENGTH_LONG).show();
-            }
-        }, 2000);
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, registerPostURL, requestBody, jsonObject -> {
-                    timer.cancel();
+
                     Intent i = new Intent(context, LandingPage.class);
                     context.startActivity(i);
 
@@ -111,11 +102,11 @@ public class APIHelper {
                     switch (statuscode){
                         case 401:
                             Toast.makeText(context, "Username bereits vorhanden!",Toast.LENGTH_LONG).show();
-                            timer.cancel();
+
                             break;
                         default:
                             Toast.makeText(context, "Verbindung fehlgeschlagen!",Toast.LENGTH_LONG).show();
-                            timer.cancel();
+
                             break;
 
                     }
@@ -149,11 +140,9 @@ public class APIHelper {
                     switch (statuscode){
                         case 403:
                             Toast.makeText(context, "Username oder Passwort falsch!",Toast.LENGTH_LONG).show();
-                            timer.cancel();
                             break;
                         default:
                             Toast.makeText(context, "Verbindung fehlgeschlagen!",Toast.LENGTH_LONG).show();
-                            timer.cancel();
                             break;
 
                     }
@@ -334,8 +323,12 @@ public class APIHelper {
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
+                            Log.d("imageLog", jsonObject.getString("image"));
+                            if (!jsonObject.getString("image").equals("null")){
+                                reportModel.setImage(decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT)));
+                            }
                             allReports.add(reportModel);
-                            Log.d("allReports", reportModel.toString() + "\n " + allReports.size());
+                            Log.d("allReports", reportModel + "\n " + allReports.size());
                             callback.onSuccess();
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -364,7 +357,7 @@ public class APIHelper {
         requestBody.put("longitude", report.getLongitude());
         requestBody.put("latitude", report.getLatitude());
         requestBody.put("reportingLocationName", report.getLocationName());
-        requestBody.put("additionalPicture", report.getImage());
+        requestBody.put("additionalPicture", Base64.encodeToString(encodeImage(report.getImage()), Base64.DEFAULT));
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -374,6 +367,7 @@ public class APIHelper {
                     LandingPage.setMarker(report, context);
 
                 }, volleyError -> {
+                    volleyError.printStackTrace();
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {

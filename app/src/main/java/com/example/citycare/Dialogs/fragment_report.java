@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +23,12 @@ import org.json.JSONException;
 
 public class fragment_report extends Fragment implements View.OnClickListener {
 
-    TextView category, subCategory, koords;
-    EditText description;
-    ReportModel report;
-    ConstraintLayout sendReport;
+    private TextView category, subCategory, koords;
+    private ImageView reportPic;
+    private EditText description;
+    private ReportModel report;
+    private ConstraintLayout sendReport;
+    private View rootView;
 
     public fragment_report(ReportModel report) {
         this.report = report;
@@ -33,7 +37,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     @SuppressLint({"SetTextI18n", "MissingInflatedId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView =  inflater.inflate(R.layout.fragment_report, container, false);
+        rootView =  inflater.inflate(R.layout.fragment_report, container, false);
 
         category = rootView.findViewById(R.id.category);
         category.setText(report.getMainCategory());
@@ -49,6 +53,9 @@ public class fragment_report extends Fragment implements View.OnClickListener {
 
         sendReport = rootView.findViewById(R.id.sendReport);
         sendReport.setOnClickListener(this);
+
+        reportPic = rootView.findViewById(R.id.camReport);
+        reportPic.setImageBitmap(report.getImage());
 
         return rootView;
     }
@@ -67,8 +74,12 @@ public class fragment_report extends Fragment implements View.OnClickListener {
             if (fragmentDialog != null) {
                 fragmentDialog.dismiss();
             }
+            Toast toast = new Toast(rootView.getContext());
+            toast.setText("Meldung erfolgreich abgeschickt!");
+            toast.show();
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

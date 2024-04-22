@@ -1,5 +1,6 @@
 package com.example.citycare.Dialogs;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class fragment_damagetype extends Fragment implements OnItemClickListener {
 
+    private Activity landingPage;
     private View rootView;
     private DetailedDamagetypeDialog ddd;
     private RecyclerView recyclerView;
@@ -36,6 +38,7 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
 
     public fragment_damagetype(ReportModel report) {
         this.report = report;
+
     }
 
 
