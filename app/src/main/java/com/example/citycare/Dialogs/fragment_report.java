@@ -2,20 +2,16 @@ package com.example.citycare.Dialogs;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
@@ -46,7 +42,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         subCategory.setText(report.getSubCategory());
 
         koords = rootView.findViewById(R.id.koords);
-        koords.setText(report.getLatitude() + ", " + report.getLongitude());
+        koords.setText(report.getLocationName());
 
         description = rootView.findViewById(R.id.endDescription);
         description.setText(report.getDescription());
@@ -67,8 +63,10 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         APIHelper apiHelper = APIHelper.getInstance(this.getContext());
         try {
             apiHelper.postReport(report);
-            //maybe nicht finishen
-//            getActivity().finish();
+            FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
+            if (fragmentDialog != null) {
+                fragmentDialog.dismiss();
+            }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

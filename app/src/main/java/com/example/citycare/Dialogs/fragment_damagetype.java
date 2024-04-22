@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,14 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
         String category = LandingPage.getMainCategoryList().get(position).getTitle();
         report.setMainCategory(category);
         ddd.prepList(position, report);
+
+        FragmentDialog fragmentDialog = (FragmentDialog) getParentFragmentManager().findFragmentByTag("FragmentDialog");
+        if (fragmentDialog != null) {
+            Log.d("Fragment", "Fragment != null");
+            fragmentDialog.dismiss();
+        }else {
+            Log.d("Fragment", "Fragment == null");
+        }
 
         ddd.show();
         ddd.setOnDismissListener(v-> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));

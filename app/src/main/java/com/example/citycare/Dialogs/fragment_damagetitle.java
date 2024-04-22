@@ -1,6 +1,7 @@
 package com.example.citycare.Dialogs;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,15 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
         fragment_cam camF = new fragment_cam(report);
 
         final FragmentManager fragmentManager = getParentFragmentManager();
+
+        FragmentDialog fragmentDialog = (FragmentDialog) getParentFragmentManager().findFragmentByTag("FragmentDialog");
+        if (fragmentDialog != null) {
+            Log.d("Fragment", "Fragment != null");
+            fragmentDialog.dismiss();
+        }else {
+            Log.d("Fragment", "Fragment == null");
+        }
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, camF);
         transaction.commitNow();

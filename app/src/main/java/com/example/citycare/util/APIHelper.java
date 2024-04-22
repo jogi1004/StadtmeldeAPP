@@ -2,31 +2,51 @@ package com.example.citycare.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Geocoder;
+import android.util.Base64;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
+import com.example.citycare.model.UserModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.overlay.Marker;
 
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import android.location.Address;
+
 
 public class APIHelper {
 
@@ -37,13 +57,20 @@ public class APIHelper {
     private final String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
+    private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
+    private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
+    private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
     private String token;
+    private String username;
+    List<String> members = new ArrayList<>();
+    List<String> notMembers = new ArrayList<>();
+    private UserModel currentUser;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
 
-    public APIHelper(Context context){
+    private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
         timer = new Timer();
@@ -117,9 +144,8 @@ public class APIHelper {
                 (Request.Method.POST, loginPostURL, requestBody, jsonObject -> {
                     try {
                         token = jsonObject.getString("token");
-                        Log.d("token", token);
-
-
+                        getUserInfo();
+                        this.username = username;
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -148,6 +174,77 @@ public class APIHelper {
     }
 
 
+    public void putProfilePicture(Bitmap bitmap) {
+        byte[] imagesBytes = encodeImage(bitmap);
+        JSONObject body = new JSONObject();
+        try {
+            body.put("profilePicture", Base64.encodeToString(imagesBytes, Base64.DEFAULT));
+        } catch (JSONException e) {
+            Log.e("putProfilePicture", "Error", e);
+            return;
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, putProfilPictureURL, body,
+                response -> {
+                },
+                volleyError -> {
+                    volleyError.printStackTrace();
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                Log.d("imagesBytePUT", headers.get("Authorization"));
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void getUserInfo(){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getUserInfo,null,
+                response->{
+                    try {
+                        if (currentUser==null) {
+                            currentUser = new UserModel(
+                                    response.getInt("id"),
+                                    response.getString("username"),
+                                    response.getString("email"),
+                                    decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)),
+                                    response.getBoolean("notificationsEnabled")
+                            );
+                        } else{
+                            currentUser.setId(response.getInt("id"));
+                            currentUser.setUsername(response.getString("username"));
+                            currentUser.setEmail(response.getString("email"));
+                            currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
+                            currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
+
+                        }
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                Log.d("userDATA", currentUser.toString());
+                }, volleyError -> volleyError.printStackTrace())
+                {
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Authorization", "Bearer "+token);
+                        return headers;
+                    }
+                };
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public byte[] encodeImage(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
+    }
+    public Bitmap decodeImage(byte[] imageBytes) {
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+    }
     public void getMainCategorys(String cityName, CategoryListCallback callback) {
         List<MainCategoryModel> categoryModelList = new ArrayList<>();
 
@@ -172,14 +269,14 @@ public class APIHelper {
                     callback.onSuccess(categoryModelList);
                 },
                 error -> error.printStackTrace()
-                ){
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", "Bearer "+token);
-                        return headers;
-                    }
-                };
+        ){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer "+token);
+                return headers;
+            }
+        };
 
 
         requestQueue.add(jsonObjectRequest);
@@ -270,6 +367,7 @@ public class APIHelper {
     }
 
     public void postReport(ReportModel report) throws JSONException {
+
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", report.getTitle());
         requestBody.put("subCategoryName", report.getSubCategory());
@@ -278,18 +376,17 @@ public class APIHelper {
         requestBody.put("longitude", report.getLongitude());
         requestBody.put("latitude", report.getLatitude());
         requestBody.put("reportingLocationName", report.getLocationName());
+        requestBody.put("additionalPicture", report.getImage());
+
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
-
-                    //Zeige Poi auf der Karte an?
-                    LandingPage.setMarker(report);
-
+                    LandingPage.setMarker(report, context);
                 }, volleyError -> {
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {
-                        Toast.makeText(context, "Stadt ist kein Mitglied !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
                     }
                 }){
             @Override
@@ -302,7 +399,64 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
+    public void getIsLocationMember(GeoPoint geoPoint, LandingPage landingPage, PoiInformationDialog poiInformationDialog){
+
+        String location;
+
+        Geocoder geocoder = new Geocoder(landingPage);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
+            assert addresses != null;
+            location = addresses.get(0).getLocality();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+            StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
+                    response -> {
+                        boolean isMember = Boolean.parseBoolean(response);
+
+                        if (isMember) {
+                            poiInformationDialog.setGifVisibility(View.GONE);
+                            poiInformationDialog.setButtonVisibility(View.VISIBLE);
+                            members.add(location);
+                        } else {
+                            poiInformationDialog.setGifVisibility(View.GONE);
+                            poiInformationDialog.setButtonVisibility(View.INVISIBLE);
+                            Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
+                            notMembers.add(location);
+                        }
+                    },
+                    volleyError -> {
+                        volleyError.printStackTrace();
+                        Log.d("Member", "Volley Error");
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+        requestQueue.add(booleanRequest);
+
+    }
+
+    public List<String> getMembers() {
+        return members;
+    }
+
+    public List<String> getNotMembers() {
+        return notMembers;
+    }
+
     public ArrayList<ReportModel> getAllReportsAsList() {
         return allReports;
     }
+
+    public UserModel getCurrentUser() {
+        return currentUser;
+    }
+
 }

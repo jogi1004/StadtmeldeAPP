@@ -8,38 +8,40 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.os.Bundle;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.citycare.R;
 
 import java.util.List;
 
 
 public class PoiInformationDialog extends Dialog{
-    FragmentDialog fragmentDialog;
+    
     Activity landingpage;
     Context context;
     FragmentManager supportFragmentManager;
     double lat, lon;
     String locationName;
+    ImageView gifImageView;
+    ConstraintLayout reportButton;
 
     public PoiInformationDialog(Context context, Activity landingPage, FragmentManager supportFragmentManager) {
         super(context);
         this.context = context;
         this.landingpage = landingPage;
         this.supportFragmentManager = supportFragmentManager;
-
     }
 
     @Override
@@ -53,13 +55,16 @@ public class PoiInformationDialog extends Dialog{
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 
-        ConstraintLayout reportButton = findViewById(R.id.reportButton);
+        gifImageView = findViewById(R.id.gif);
+        Glide.with(context).asGif().load(R.drawable.gif_punkte_laden).into(gifImageView);
+
+        reportButton = findViewById(R.id.reportButton);
         reportButton.setOnClickListener(v-> {
-            FragmentDialog dialog = new FragmentDialog();
-            FrameLayout dimm = landingpage.findViewById(R.id.dimm);
-            dialog.showFragmentDialog(supportFragmentManager, dimm, lat, lon, locationName);
-            dimm.setVisibility(View.VISIBLE);
-            dismiss();
+                FragmentDialog dialog = new FragmentDialog();
+                FrameLayout dimm = landingpage.findViewById(R.id.dimm);
+                dialog.showFragmentDialog(supportFragmentManager, dimm, lat, lon, locationName);
+                dimm.setVisibility(View.VISIBLE);
+                dismiss();
         });
 
 
@@ -94,4 +99,11 @@ public class PoiInformationDialog extends Dialog{
         show();
     }
 
+    public void setGifVisibility(int visibility) {
+        gifImageView.setVisibility(visibility);
+    }
+
+    public void setButtonVisibility(int visibility) {
+        reportButton.setVisibility(visibility);
+    }
 }
