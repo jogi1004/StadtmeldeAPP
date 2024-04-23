@@ -43,7 +43,11 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         category.setText(report.getMainCategory());
 
         subCategory = rootView.findViewById(R.id.subCategory);
-        subCategory.setText(report.getSubCategory());
+        if(report.getSubCategory().equals("Sonstiges")){
+            subCategory.setText(report.getTitle());
+        }else{
+            subCategory.setText(report.getSubCategory());
+        }
 
         koords = rootView.findViewById(R.id.koords);
         koords.setText(report.getLocationName());

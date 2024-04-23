@@ -364,6 +364,8 @@ public class APIHelper {
 
     public void postReport(ReportModel report) throws JSONException {
 
+        Log.d("report", report.toString());
+
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", report.getTitle());
         requestBody.put("subCategoryName", report.getSubCategory());

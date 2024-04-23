@@ -42,7 +42,6 @@ public class ReportModel {
     public double getLongitude(){ return longitude;}
     public double getLatitude(){ return latitude;}
     public String getLocationName() {return locationName;}
-
     public void setTitle(String title) {this.title = title;}
     public void setImage(Bitmap image) {this.image = image;}
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
