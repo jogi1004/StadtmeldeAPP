@@ -160,4 +160,5 @@ public class CamUtil {
     public Bitmap getBitmap() {
         return bitmap;
     }
+    public void setBitmap(Bitmap bitmap){this.bitmap=bitmap; }
 }

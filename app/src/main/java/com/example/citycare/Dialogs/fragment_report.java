@@ -2,6 +2,7 @@ package com.example.citycare.Dialogs;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -38,7 +40,6 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView =  inflater.inflate(R.layout.fragment_report, container, false);
-
         category = rootView.findViewById(R.id.category);
         category.setText(report.getMainCategory());
 
@@ -61,7 +62,10 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         reportPic = rootView.findViewById(R.id.camReport);
         if (report.getImage()!=null){
             reportPic.setImageBitmap(report.getImage());
+        } else {
+            reportPic.setImageResource(R.drawable.png_placeholder);
         }
+
 
         return rootView;
     }
@@ -80,6 +84,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
             if (fragmentDialog != null) {
                 fragmentDialog.dismiss();
             }
+            LandingPage.getCamUtil().setBitmap(null);
             Toast toast = new Toast(rootView.getContext());
             toast.setText("Meldung erfolgreich abgeschickt!");
             toast.show();
