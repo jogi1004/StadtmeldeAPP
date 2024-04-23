@@ -372,7 +372,11 @@ public class APIHelper {
         requestBody.put("longitude", report.getLongitude());
         requestBody.put("latitude", report.getLatitude());
         requestBody.put("reportingLocationName", report.getLocationName());
-        requestBody.put("additionalPicture", Base64.encodeToString(encodeImage(report.getImage()), Base64.DEFAULT));
+        if (report.getImage()!=null){
+            requestBody.put("additionalPicture", Base64.encodeToString(encodeImage(report.getImage()), Base64.DEFAULT));
+        } else{
+            requestBody.put("additionalPicture", null);
+        }
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest

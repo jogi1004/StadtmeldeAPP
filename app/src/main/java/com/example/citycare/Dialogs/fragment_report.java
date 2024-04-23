@@ -55,7 +55,9 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         sendReport.setOnClickListener(this);
 
         reportPic = rootView.findViewById(R.id.camReport);
-        reportPic.setImageBitmap(report.getImage());
+        if (report.getImage()!=null){
+            reportPic.setImageBitmap(report.getImage());
+        }
 
         return rootView;
     }
