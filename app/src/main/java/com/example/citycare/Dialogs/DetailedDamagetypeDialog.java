@@ -1,6 +1,7 @@
 package com.example.citycare.Dialogs;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -50,11 +51,13 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
     private List<SubCategoryModel> listSub = new ArrayList<>();
     private ReportModel report;
 
+
     public DetailedDamagetypeDialog(View rootView, FragmentManager fragmentManager) {
         super(rootView.getContext());
         this.context = rootView.getContext();
         this.rootView = rootView;
         this.fragmentManager = fragmentManager;
+
     }
 
 

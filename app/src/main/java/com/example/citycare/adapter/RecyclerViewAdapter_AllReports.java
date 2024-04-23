@@ -38,7 +38,9 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_AllReports.MyViewHolder holder, int position) {
         holder.reportName.setText(allReports.get(position).getSubCategory());
         holder.reportDate.setText(allReports.get(position).getTimestamp());
-        //holder.image.setImageResource(R.drawable.png_placeholder);
+        if (allReports.get(position).getImage()!=null){
+            holder.image.setImageBitmap(allReports.get(position).getImage());
+        }
     }
 
     @Override
@@ -55,16 +57,13 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             image = itemView.findViewById(R.id.reportImage);
             reportName = itemView.findViewById(R.id.reportName);
             reportDate = itemView.findViewById(R.id.reportDate);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(recyclerViewInterface != null){
-                        int pos = getAdapterPosition();
-                        if(pos != RecyclerView.NO_POSITION){
-                            recyclerViewInterface.onItemClick(pos);
-                        }
-
+            itemView.setOnClickListener(v -> {
+                if(recyclerViewInterface != null){
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        recyclerViewInterface.onItemClick(pos);
                     }
+
                 }
             });
         }

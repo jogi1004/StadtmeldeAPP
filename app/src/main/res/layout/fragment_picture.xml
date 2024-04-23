@@ -7,17 +7,20 @@
     tools:background="@color/colorPrimary"
     >
 
-    <ImageView
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/cam"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:padding="45dp"
+        android:src="@drawable/png_placeholder"
+        app:civ_border_color="@color/black"
+        app:civ_border_width="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/png_cam"
-        android:background="@drawable/bg_edittextcorner"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <ImageButton
         android:id="@+id/nextFragment"

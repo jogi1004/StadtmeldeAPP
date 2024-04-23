@@ -3,6 +3,7 @@ package com.example.citycare.Dialogs;
 import static com.example.citycare.R.layout.dialog_report;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -30,6 +31,9 @@ public class FragmentDialog extends DialogFragment {
 
     private FrameLayout dimm;
     private ReportModel report;
+
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

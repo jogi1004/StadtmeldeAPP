@@ -15,10 +15,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -62,21 +64,22 @@ import java.util.Locale;
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
     private static MapView mMap;
-    Marker poiMarker;
-    IMapController controller;
-    MyLocationNewOverlay mMyLocationOverlay;
+    private Marker poiMarker;
+    private IMapController controller;
+    private MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
     public PoiInformationDialog poiInformationDialog;
-    SearchDialog searchDialog;
+    private SearchDialog searchDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
     private String cityName, tmp;
-    ConstraintLayout compass;
-    private CamUtil camUtil;
+    private ConstraintLayout compass;
+    private static CamUtil camUtil;
     private ProfilDialog profileDialog;
+    private static ImageView reportImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +89,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
-        camUtil=new CamUtil(this);
+        camUtil=new CamUtil(this, this);
         Log.d("token", apiHelper.getToken() + "");
 
         compass = findViewById(R.id.compass);
@@ -95,7 +98,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
-        profileDialog = new ProfilDialog(this, this);
+        profileDialog = new ProfilDialog(this, this, camUtil);
         ReportDialogPage allReportsDialog = new ReportDialogPage(this);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this,this, poiInformationDialog);
@@ -113,16 +116,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             }
         }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 123);
-        }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 124);
-        }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 125);
-        }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -377,15 +372,36 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             Bitmap bitmap = camUtil.getBitmapFromUri(selectedImageUri);
 
             // Speichern Sie das Bild im internen Speicher
-            profileDialog.saveImageToInternalStorage(bitmap);
+            /*camUtil.saveImageToInternalStorage(bitmap);*/
             profileDialog.getPicture().setImageBitmap(bitmap);
             apiHelper.putProfilePicture(bitmap);
 
 
         } else if (requestCode == 1) {
-            Bitmap bitmap = camUtil.getBitmap(profileDialog.getImageFile());
+            Bitmap bitmap = camUtil.getBitmapFromFile();
             profileDialog.getPicture().setImageBitmap(bitmap);
             apiHelper.putProfilePicture(bitmap);
+        } else if (requestCode == 3 && data != null) {
+            Uri selectedImageUri = data.getData();
+            Bitmap bitmap = camUtil.getBitmapFromUri(selectedImageUri);
+
+            /*camUtil.saveImageToInternalStorage(bitmap);*/
+            reportImageView.setImageBitmap(bitmap);
+
+
+        } else if (requestCode == 4) {
+            Bitmap bitmap = camUtil.getBitmapFromFile();
+            reportImageView.setImageBitmap(bitmap);
+
         }
+    }
+
+    public static CamUtil getCamUtil() {
+        return camUtil;
+    }
+
+    public static void setReportImageView(ImageView reportImagePic) {
+        reportImageView = reportImagePic;
+
     }
 }
