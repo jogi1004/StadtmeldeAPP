@@ -83,7 +83,12 @@ public class MyFloatingActionButtons {
             settingsFAB.setVisibility(View.GONE);
         });
 
-
+        allReportsDialog.getDetailView().setOnDismissListener(v->{
+            allReportsFAB.setVisibility(View.GONE);
+            setAreFabsVisible(false);
+            landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
+            allReportsFAB.setVisibility(View.VISIBLE);
+        });
         allReportsDialog.setOnDismissListener(v->{
             allReportsFAB.setVisibility(View.GONE);
             setAreFabsVisible(false);

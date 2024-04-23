@@ -25,12 +25,14 @@ import com.example.citycare.model.ReportModel;
 import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;;
 import com.example.citycare.util.RecyclerViewInterface;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
-    Context context;
-    FrameLayout dim;
-    ArrayList<ReportModel> allReports = new ArrayList<>();
+    private Context context;
+    private FrameLayout dim;
+    private List<ReportModel> allReports = new ArrayList<>();
+    private DialogReportDetailView detailView;
     private int dialogheight;
     public ReportDialogPage(@NonNull Context context, Activity landingPage) {
         super(context);
@@ -39,7 +41,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         /*DisplayMetrics displayMetrics = new DisplayMetrics();
         landingPage.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         dialogheight = (int) (displayMetrics.heightPixels*0.67);*/
-
+        detailView = new DialogReportDetailView(context);
     }
 
     @Override
@@ -59,6 +61,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
         }
         dialogheight = (int) (displayMetrics.heightPixels * 0.7);
+
     }
 
     private void initAllReports() {
@@ -68,14 +71,19 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
     @Override
     public void onItemClick(int position) {
-        ReportModel ClickedReport = allReports.get(position);
-        DialogReportDetailView detailView = new DialogReportDetailView(context,ClickedReport);
+        ReportModel clickedReport = allReports.get(position);
+        Log.d("Position", clickedReport.toString());
+        detailView.setReportModel(clickedReport);
         detailView.show();
+        detailView.setData();
         Window window = detailView.getWindow();
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
-        this.hide();
 
+    }
+
+    public DialogReportDetailView getDetailView() {
+        return detailView;
     }
 }

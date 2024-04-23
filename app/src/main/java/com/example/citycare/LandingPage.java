@@ -91,7 +91,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
         compass = findViewById(R.id.compass);
         compass.setOnClickListener(this);
-        Log.d("init", "onCreate");
+
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
         profileDialog = new ProfilDialog(this, this);
@@ -319,7 +319,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         return list;
     }
 
-    public static ArrayList<ReportModel> getAllReportsList() {
+    public static List<ReportModel> getAllReportsList() {
         return apiHelper.getAllReportsAsList();
     }
 
