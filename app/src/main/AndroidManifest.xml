@@ -45,7 +45,8 @@
             />
         <activity
             android:name=".LandingPage"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleInstance"/>
         <activity
             android:name=".WelcomePage"
             android:exported="true">
