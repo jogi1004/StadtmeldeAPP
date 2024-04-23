@@ -9,7 +9,6 @@
     tools:background="@color/colorPrimary"
     tools:alpha="0.7">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/damageTypeRecyclerview"
         android:layout_width="match_parent"
@@ -19,5 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+<!--    Waiting gif-->
+<!--    <ImageView-->
+<!--        android:id="@+id/gifMainCategories"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="200dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:scaleType="fitCenter"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:src="@drawable/gif_load_kreis"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

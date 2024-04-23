@@ -7,11 +7,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -55,6 +60,7 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
 
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +78,6 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
-
         other = findViewById(R.id.other);
         other.setOnEditorActionListener((textView, i, keyEvent) -> {
             dismiss();
@@ -81,6 +86,10 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
             transaction.replace(R.id.flFragment, damageTitleF);
             transaction.commitNow();
             title = damageTitleF.getView().findViewById(R.id.title);
+
+            report.setSubCategory("Sonstiges");
+            report.setTitle(String.valueOf(other.getText()));
+
             title.setText(other.getText());
             return true;
         });
@@ -92,33 +101,19 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
         getWindow().setAttributes(params);
     }
 
-//    @Override
-//    public void onClick(View view) {
-//
-//        dismiss();
-//
-//        transaction = fragmentManager.beginTransaction();
-//        transaction.replace(R.id.flFragment, damageTitleF);
-//        transaction.commitNow();
-//
-//        title = damageTitleF.getView().findViewById(R.id.title);
-//
-//
-//    }
-
     @SuppressLint("NotifyDataSetChanged")
-    public void prepList(int position, ReportModel report) {
+    public void prepList(int position, ReportModel report, ImageView gifImageView) {
+
+        listAll = LandingPage.getMainCategoryList();
+        List<SubCategoryModel> test = listAll.get(position).getSubCategorys();
+
         if(!listSub.isEmpty()){
             listSub.clear();
         }
-
         this.report = report;
 
-        listAll = LandingPage.getMainCategoryList();
-        listSub.addAll(listAll.get(position).getSubCategorys());
-        if(adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
+        listSub.addAll(test);
+        if (adapter != null) adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -136,5 +131,6 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
         TextView subCategoryTitle = myViewHolder.title;
 
         title.setText(subCategoryTitle.getText());
+        report.setSubCategory((String) subCategoryTitle.getText());
     }
 }

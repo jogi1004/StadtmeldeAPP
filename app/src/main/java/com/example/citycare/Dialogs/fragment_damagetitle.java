@@ -52,7 +52,6 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        report.setSubCategory(String.valueOf(title.getText()));
         report.setDescription(String.valueOf(description.getText()));
 
         fragment_cam camF = new fragment_cam(report);

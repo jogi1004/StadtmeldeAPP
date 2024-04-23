@@ -20,6 +20,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.citycare.Dialogs.DetailedDamagetypeDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
@@ -270,30 +271,33 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-
     public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories) {
 
         int tmp = 0;
+        //go through mainCategories
         for (MainCategoryModel model : mainCategories) {
             List<SubCategoryModel> allSubCategories = new ArrayList<>();
             int finalI = tmp;
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
                     (Request.Method.GET, subCategoryGetURL + model.getId(), null, response -> {
                         try {
+                            //take all subcategories from mainCategory(i)
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                        jsonObject.getInt("id"),
-                                        jsonObject.getString("title")
-                                );
-                                allSubCategories.add(subCategoryModel);
+                                if(!jsonObject.getString("title").equals("Sonstiges")){
+
+                                    SubCategoryModel subCategoryModel = new SubCategoryModel(
+                                            jsonObject.getInt("id"),
+                                            jsonObject.getString("title")
+                                    );
+                                    allSubCategories.add(subCategoryModel);
+                                }
                             }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
+                        //give mainCategory(i) subcategories
                         model.setSubCategorys(allSubCategories);
-                        Log.d("Subs", "Ganzes Model " + model);
-
 
                         if (finalI == mainCategories.size() - 1) {
                             callback.onSuccess(mainCategories);
@@ -379,6 +383,7 @@ public class APIHelper {
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {
+                        Log.d("reportDBFehler", report.toString());
                         Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
                     }
                 }){
