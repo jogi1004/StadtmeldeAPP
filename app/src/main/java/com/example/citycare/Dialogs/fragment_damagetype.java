@@ -58,8 +58,8 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
 
-        gifImageView = rootView.findViewById(R.id.gifMainCategories);
-        Glide.with(rootView).asGif().load(R.drawable.gif_load_kreis).into(gifImageView);
+//        gifImageView = rootView.findViewById(R.id.gifMainCategories);
+//        Glide.with(rootView).asGif().load(R.drawable.gif_load_kreis).into(gifImageView);
 
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);

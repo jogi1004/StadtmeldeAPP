@@ -296,18 +296,20 @@ public class APIHelper {
                             //take all subcategories from mainCategory(i)
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                        jsonObject.getInt("id"),
-                                        jsonObject.getString("title")
-                                );
-                                allSubCategories.add(subCategoryModel);
+                                if(!jsonObject.getString("title").equals("Sonstiges")){
+
+                                    SubCategoryModel subCategoryModel = new SubCategoryModel(
+                                            jsonObject.getInt("id"),
+                                            jsonObject.getString("title")
+                                    );
+                                    allSubCategories.add(subCategoryModel);
+                                }
                             }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
                         //give mainCategory(i) subcategories
                         model.setSubCategorys(allSubCategories);
-
 
                         if (finalI == mainCategories.size() - 1) {
                             callback.onSuccess(mainCategories);
@@ -388,6 +390,7 @@ public class APIHelper {
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {
+                        Log.d("reportDBFehler", report.toString());
                         Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
                     }
                 }){
