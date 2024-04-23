@@ -37,6 +37,6 @@
     <string name="logout">logout</string>
     <string name="reportTitle">Meldungstitel</string>
     <string name="descriptionHeader">Beschreibung</string>
-    <string name="coordinates">49.250659 , 7.360989 | Zweibrücken</string>
+    <string name="city">Zweibrücken</string>
     <string name="userReport">Max Mustermann</string>
 </resources>

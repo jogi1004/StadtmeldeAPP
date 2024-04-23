@@ -20,8 +20,6 @@ import java.util.Map;
 
 public class WelcomePage extends AppCompatActivity implements View.OnClickListener{
     Button register, signIn;
-    private SharedPreferences loginSharedPreferences;
-    private boolean loggedIn;
     private APIHelper apiHelper;
     private String username;
 
@@ -46,8 +44,7 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
         signIn = findViewById(R.id.signInButton);
         register.setOnClickListener(this);
         signIn.setOnClickListener(this);
-        loginSharedPreferences = getSharedPreferences("loggedInOut", Context.MODE_PRIVATE);
-        loggedIn = loginSharedPreferences.getBoolean("loggedIn", loggedIn);
+
 
     }
 
@@ -66,10 +63,15 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
     }
 
     private void proceedToNextActivity() throws JSONException {
-        Intent intent = new Intent(this, LandingPage.class);
-        startActivity(intent);
         String password = KeyStoreManager.getPassword(this, username);
         apiHelper.loginUser(username, password);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Intent intent = new Intent(this, LandingPage.class);
+        startActivity(intent);
         finish();
     }
 

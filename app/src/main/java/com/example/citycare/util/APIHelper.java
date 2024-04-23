@@ -20,7 +20,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.citycare.Dialogs.DetailedDamagetypeDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
@@ -63,17 +62,18 @@ public class APIHelper {
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
     private Context context;
     private RequestQueue requestQueue;
-
+    private Timer timer;
     private String token;
     private String username;
     List<String> members = new ArrayList<>();
     List<String> notMembers = new ArrayList<>();
     private UserModel currentUser;
-    private ArrayList<ReportModel> allReports = new ArrayList<>();
+    private final ArrayList<ReportModel> allReports = new ArrayList<>();
 
     private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
+        timer = new Timer();
     }
     public static APIHelper getInstance(Context context){
         if(INSTANCE==null){
@@ -274,14 +274,12 @@ public class APIHelper {
     public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories) {
 
         int tmp = 0;
-        //go through mainCategories
         for (MainCategoryModel model : mainCategories) {
             List<SubCategoryModel> allSubCategories = new ArrayList<>();
             int finalI = tmp;
             JsonArrayRequest jsonObjectRequest = new JsonArrayRequest
                     (Request.Method.GET, subCategoryGetURL + model.getId(), null, response -> {
                         try {
-                            //take all subcategories from mainCategory(i)
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 if(!jsonObject.getString("title").equals("Sonstiges")){
@@ -296,8 +294,9 @@ public class APIHelper {
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                        //give mainCategory(i) subcategories
                         model.setSubCategorys(allSubCategories);
+                        Log.d("Subs", "Ganzes Model " + model);
+
 
                         if (finalI == mainCategories.size() - 1) {
                             callback.onSuccess(mainCategories);
@@ -338,17 +337,17 @@ public class APIHelper {
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
-                            Log.d("imageLog", jsonObject.getString("image"));
-                            if (!jsonObject.getString("image").equals("null")){
-                                reportModel.setImage(decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT)));
+                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
+                            if (image!=null){
+                                reportModel.setImage(image);
                             }
                             allReports.add(reportModel);
-                            Log.d("allReports", reportModel + "\n " + allReports.size());
-                            callback.onSuccess();
+                            Log.d("allReportsALL", reportModel + "\n " + allReports.size());
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
                     }
+                    callback.onSuccess(allReports);
                 },
                 error -> error.printStackTrace()
         ){
@@ -359,6 +358,10 @@ public class APIHelper {
                 return headers;
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }
 
