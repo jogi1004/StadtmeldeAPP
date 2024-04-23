@@ -69,12 +69,13 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     @Override
     public void onItemClick(int position) {
         ReportModel ClickedReport = allReports.get(position);
-        DialogReportDetailView detailView = new DialogReportDetailView(context,ClickedReport.getTitle(),ClickedReport.getImage(),ClickedReport.getDescription(),ClickedReport.getLatitude(),ClickedReport.getLongitude(),ClickedReport.getTimestamp());
+        DialogReportDetailView detailView = new DialogReportDetailView(context,ClickedReport);
         detailView.show();
         Window window = detailView.getWindow();
         window.setGravity(Gravity.TOP);
         window.setDimAmount(0.0f);
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, dialogheight);
+        this.hide();
 
     }
 }

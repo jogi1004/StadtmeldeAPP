@@ -14,7 +14,10 @@ import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.RecyclerViewInterface;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<RecyclerViewAdapter_AllReports.MyViewHolder>{
 

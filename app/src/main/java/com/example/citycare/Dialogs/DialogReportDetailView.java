@@ -11,14 +11,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 
 
 public class DialogReportDetailView extends Dialog {
-    TextView headline,descriptionReport,coordinates;
+    TextView headline,descriptionReport,cityTextView;
     ImageView imageReport;
     Bitmap imageBitmap;
-    String title,image,description,timestamp;
-    double longitude,latitude;
+    String title,image,description,timestamp,city;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +28,7 @@ public class DialogReportDetailView extends Dialog {
         headline = findViewById(R.id.headlineReport);
         imageReport = findViewById(R.id.reportImage);
         descriptionReport = findViewById(R.id.descriptionDetail);
-        coordinates = findViewById(R.id.coordinates);
+        cityTextView = findViewById(R.id.city);
         headline.setText(title);
         if(image != null){
             byte[] decodedBytes = Base64.decode(image, Base64.DEFAULT);
@@ -35,20 +36,18 @@ public class DialogReportDetailView extends Dialog {
             imageReport.setImageBitmap(imageBitmap);
         }
         descriptionReport.setText(description);
-        coordinates.setText(longitude + "," + latitude);
-
-
+        cityTextView.setText(city);
 
     }
 
-    public DialogReportDetailView(@NonNull Context context, String title, String image, String description, double longitude, double latitude, String timestamp) {
+    public DialogReportDetailView(@NonNull Context context, ReportModel ClickedReport) {
         super(context);
-        this.title = title;
-        this.image = image;
-        this.description = description;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.timestamp = timestamp;
+        this.title = ClickedReport.getTitle();
+        this.image = ClickedReport.getImage();
+        this.description = ClickedReport.getDescription();
+        this.city = ClickedReport.getLocationName(); // klappt nicht ist leer
+        this.timestamp = ClickedReport.getTimestamp();
+
     }
 
 }

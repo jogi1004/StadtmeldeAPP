@@ -82,13 +82,12 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
-        camUtil=new CamUtil(this);
-
+        camUtil = new CamUtil(this);
+        Log.d("token", apiHelper.getToken() + "");
 
         compass = findViewById(R.id.compass);
         compass.setOnClickListener(this);
