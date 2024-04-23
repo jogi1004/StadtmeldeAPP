@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.example.citycare.Dialogs.DetailedDamagetypeDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.SearchDialog;
@@ -56,7 +58,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
@@ -68,7 +69,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     public PoiInformationDialog poiInformationDialog;
     SearchDialog searchDialog;
     private static APIHelper apiHelper;
-    private static List<MainCategoryModel> list = new ArrayList<>();
+    private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
     private ArrayList<ReportModel> allReports = new ArrayList<>();
@@ -99,7 +100,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this,this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
-
     }
 
 
@@ -262,10 +262,10 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
-                list = categoryModels;
+                mainCategoryList = categoryModels;
                 isMember = true;
                 if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
-                    fragment_damagetype.adapter.setData(list);
+                    fragment_damagetype.adapter.setData(mainCategoryList);
                 }
                 apiHelper.putSubCategories(new CategoryListCallback() {
                     @Override
@@ -276,7 +276,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     public void onError(String errorMessage) {
                         Log.e("errorGetSubCategorys", errorMessage);
                     }
-                }, list);
+                }, mainCategoryList);
             }
             @Override
             public void onError(String errorMessage) {
@@ -315,7 +315,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     }
 
     public static List<MainCategoryModel> getMainCategoryList() {
-        return list;
+        return mainCategoryList;
     }
 
     public static ArrayList<ReportModel> getAllReportsList() {
