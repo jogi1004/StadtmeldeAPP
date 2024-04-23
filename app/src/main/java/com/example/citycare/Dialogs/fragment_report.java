@@ -2,6 +2,8 @@ package com.example.citycare.Dialogs;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +57,20 @@ public class fragment_report extends Fragment implements View.OnClickListener {
 
         description = rootView.findViewById(R.id.endDescription);
         description.setText(report.getDescription());
+        description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Vor der Textänderung
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Während der Textänderung
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                report.setDescription(editable.toString());
+            }
+        });
 
         sendReport = rootView.findViewById(R.id.sendReport);
         sendReport.setOnClickListener(this);
