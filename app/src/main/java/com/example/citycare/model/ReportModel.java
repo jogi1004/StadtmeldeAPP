@@ -1,14 +1,17 @@
 package com.example.citycare.model;
 
 
+import android.graphics.Bitmap;
+
 import java.sql.Timestamp;
 
 
 public class ReportModel {
-    private String title, image, description, subCategory, mainCategory, locationName, icon, timestamp;
+    private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
     private double longitude, latitude;
+    private Bitmap image;
 
-    public ReportModel(String title, String timestamp, String image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
+    public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
         this.image = image;
         this.timestamp = timestamp;
@@ -20,7 +23,7 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, String icon, String timestamp, String image, double longitude, double latitude) {
+    public ReportModel(String title, String icon, String timestamp, Bitmap image, double longitude, double latitude) {
         this.title = title;
         this.icon = icon;
         this.timestamp = timestamp;
@@ -32,7 +35,7 @@ public class ReportModel {
 
     public String getDescription() {return description;}
     public String getTitle() {return title;}
-    public String getImage() {return image;}
+    public Bitmap getImage() {return image;}
     public String getTimestamp(){ return timestamp;}
     public String getMainCategory(){ return mainCategory;}
     public String getSubCategory(){ return subCategory;}
@@ -41,7 +44,7 @@ public class ReportModel {
     public String getLocationName() {return locationName;}
 
     public void setTitle(String title) {this.title = title;}
-    public void setImage(String image) {this.image = image;}
+    public void setImage(Bitmap image) {this.image = image;}
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
     public void setDescription(String description) {this.description = description;}
     public void setSubCategory(String subCategory) {this.subCategory = subCategory;}

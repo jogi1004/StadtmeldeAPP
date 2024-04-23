@@ -332,7 +332,6 @@ public class APIHelper {
     }
 
     public void getAllReports(String cityName, AllReportsCallback callback) {
-        allReports.clear();
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
                 response -> {
@@ -348,6 +347,10 @@ public class APIHelper {
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
+                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
+                            if (image!=null){
+                                reportModel.setImage(image);
+                            }
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel + "\n " + allReports.size());
                         } catch (JSONException e) {
@@ -365,6 +368,10 @@ public class APIHelper {
                 return headers;
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }
 

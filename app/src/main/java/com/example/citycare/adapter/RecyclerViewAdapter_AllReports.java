@@ -42,7 +42,11 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_AllReports.MyViewHolder holder, int position) {
         holder.reportName.setText(allReports.get(position).getTitle());
         holder.reportDate.setText(allReports.get(position).getTimestamp());
-        //holder.image.setImageResource(R.drawable.png_placeholder);
+        if (allReports.get(position).getImage()!=null){
+            holder.image.setImageBitmap(allReports.get(position).getImage());
+        } else {
+            holder.image.setImageResource(R.drawable.png_dummy);
+        }
     }
 
     @Override

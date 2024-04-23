@@ -45,9 +45,10 @@ public class DialogReportDetailView extends Dialog {
     public void setData(){
         headline.setText(reportModel.getTitle());
         if(reportModel.getImage() != null){
-            byte[] decodedBytes = Base64.decode(reportModel.getImage(), Base64.DEFAULT);
-            imageBitmap = BitmapFactory.decodeByteArray(decodedBytes,0, decodedBytes.length);
-            imageReport.setImageBitmap(imageBitmap);
+            Log.d("lol","lol");
+            imageReport.setImageBitmap(reportModel.getImage());
+        }else {
+            imageReport.setImageResource(R.drawable.png_dummy);
         }
         descriptionReport.setText(reportModel.getDescription());
         cityTextView.setText(reportModel.getLocationName());
