@@ -8,8 +8,8 @@ import java.sql.Timestamp;
 
 public class ReportModel {
     private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
-    private Bitmap image;
     private double longitude, latitude;
+    private Bitmap image;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -42,6 +42,7 @@ public class ReportModel {
     public double getLongitude(){ return longitude;}
     public double getLatitude(){ return latitude;}
     public String getLocationName() {return locationName;}
+
     public void setTitle(String title) {this.title = title;}
     public void setImage(Bitmap image) {this.image = image;}
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
@@ -56,7 +57,7 @@ public class ReportModel {
     public String toString() {
         return "ReportModel{" +
                 "title='" + title + '\'' +
-                ", image='"+ image + '\'' +
+                ", image='" + image + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +
