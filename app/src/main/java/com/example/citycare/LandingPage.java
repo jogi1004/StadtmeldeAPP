@@ -88,7 +88,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
-        camUtil = new CamUtil(this);
+        camUtil = new CamUtil(this, this
+        );
 
         Log.d("token", apiHelper.getToken() + "");
 
@@ -99,7 +100,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this,this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
@@ -372,6 +373,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     public void onClick(View view) {
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
             controller.animateTo(mMyLocationOverlay.getMyLocation());
+            controller.setZoom(18.0);
         }));
     }
 
