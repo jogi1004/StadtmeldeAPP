@@ -1,5 +1,6 @@
 package com.example.citycare.util;
 
+//import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -40,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -232,6 +234,12 @@ public class APIHelper {
         return byteArrayOutputStream.toByteArray();
     }
     public Bitmap decodeImage(byte[] imageBytes) {
+        Log.d("decodeImage", Arrays.toString(imageBytes));
+        Log.d("decodeImage", String.valueOf(BitmapFactory.class));
+        Log.d("decodeByteArray", BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length)+ " ");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        Log.d("bitmap", bitmap + " ");
+
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
     public void getMainCategorys(String cityName, CategoryListCallback callback) {
@@ -246,8 +254,24 @@ public class APIHelper {
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
                                     jsonObject.getString("title"),
-                                    R.drawable.png_placeholder
+                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder)
                             );
+                            Bitmap image = null;
+                            Log.d("iconEntity", jsonObject.toString());
+
+                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
+                                Log.d("icon", jsonObject.getJSONObject("iconEntity").getString("icon"));
+                                Log.d("icon", Arrays.toString(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT)));
+//                                Log.d("icon", decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT)).toString());
+
+                                image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
+                                if(image != null){
+                                    Log.d("iconi", image.toString());
+                                }
+                                categoryModel.setIcon(image);
+                            } else {
+                                Log.d("iconEntity", "iconEntity is missing or null");
+                            }
 
                             categoryModelList.add(categoryModel);
 
