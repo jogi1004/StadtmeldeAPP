@@ -1,5 +1,7 @@
 package com.example.citycare.Dialogs;
 
+import static com.example.citycare.LandingPage.getMainCategoryList;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -52,8 +54,8 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
         rootView = inflater.inflate(R.layout.fragment_damagetype, container, false);
 
         adapter = new RecyclerViewAdapter_Categories(rootView.getContext(), new ArrayList<>());
-        if (!LandingPage.getMainCategoryList().isEmpty()){
-            adapter.setData(LandingPage.getMainCategoryList());
+        if (!getMainCategoryList().isEmpty()){
+            adapter.setData(getMainCategoryList());
         }
 
         recyclerView = rootView.findViewById(R.id.damageTypeRecyclerview);
@@ -74,7 +76,7 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
 
     @Override
     public void onItemClick(int position) {
-        List<SubCategoryModel> test = LandingPage.getMainCategoryList().get(position).getSubCategorys();
+        List<SubCategoryModel> test = getMainCategoryList().get(position).getSubCategorys();
         if(test != null) {
 
             RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
@@ -97,7 +99,7 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
                 ddd.setWindow(wlp);
             }
 
-            String category = LandingPage.getMainCategoryList().get(position).getTitle();
+            String category = getMainCategoryList().get(position).getTitle();
             report.setMainCategory(category);
 
             ddd.prepList(position, report, gifImageView);

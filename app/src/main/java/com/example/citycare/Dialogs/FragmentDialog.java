@@ -33,13 +33,9 @@ public class FragmentDialog extends DialogFragment {
     private FrameLayout dimm;
     private ReportModel report;
 
-
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Fügen Sie hier ggf. Initialisierungscode hinzu
     }
     @SuppressLint("MissingInflatedId")
     @Nullable

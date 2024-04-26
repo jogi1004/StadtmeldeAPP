@@ -1,5 +1,6 @@
 package com.example.citycare.util;
 
+//import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -40,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,13 +117,10 @@ public class APIHelper {
                     switch (statuscode){
                         case 401:
                             Toast.makeText(context, "Username bereits vorhanden!",Toast.LENGTH_LONG).show();
-
                             break;
                         default:
                             Toast.makeText(context, "Verbindung fehlgeschlagen!",Toast.LENGTH_LONG).show();
-
                             break;
-
                     }
                 });
         requestQueue.add(jsonObjectRequest);
@@ -246,8 +245,15 @@ public class APIHelper {
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
                                     jsonObject.getString("title"),
-                                    R.drawable.png_placeholder
+                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder)
                             );
+                            Bitmap image = null;
+                            Log.d("iconEntity", jsonObject.toString());
+
+                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
+                                image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
+                                categoryModel.setIcon(image);
+                            }
 
                             categoryModelList.add(categoryModel);
 

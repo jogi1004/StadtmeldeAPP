@@ -349,12 +349,10 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-            Log.d("called 2", "called 2");
                 apiHelper.getAllReports(cityName, new AllReportsCallback(){
 
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
-                        Log.d("called", "called 1");
                         allReports = reports;
                         loadExistingMarkers();
                     }
