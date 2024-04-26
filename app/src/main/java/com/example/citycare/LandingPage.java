@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -65,9 +66,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private MyLocationNewOverlay mMyLocationOverlay;
     public FrameLayout dimm;
     public ProfilDialog profileDialog;
-    public ReportDialogPage allReportsDialog;
     public PoiInformationDialog poiInformationDialog;
-    public SettingDialog settingDialog;
     private SearchDialog searchDialog;
 
     private static APIHelper apiHelper;
@@ -79,7 +78,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private ConstraintLayout compass;
     private static CamUtil camUtil;
     private static ImageView reportImageView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +94,17 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         compass = findViewById(R.id.compass);
         compass.setOnClickListener(this);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("BackPressed", "drin");
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    getSupportFragmentManager().popBackStack();
+                }
+                finish();
+            }
+        });
+
         initPermissions();
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
@@ -105,7 +114,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         searchDialog = new SearchDialog(this,this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
     }
-
 
     protected void initPermissions() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
