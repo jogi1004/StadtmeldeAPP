@@ -117,13 +117,10 @@ public class APIHelper {
                     switch (statuscode){
                         case 401:
                             Toast.makeText(context, "Username bereits vorhanden!",Toast.LENGTH_LONG).show();
-
                             break;
                         default:
                             Toast.makeText(context, "Verbindung fehlgeschlagen!",Toast.LENGTH_LONG).show();
-
                             break;
-
                     }
                 });
         requestQueue.add(jsonObjectRequest);
@@ -234,12 +231,6 @@ public class APIHelper {
         return byteArrayOutputStream.toByteArray();
     }
     public Bitmap decodeImage(byte[] imageBytes) {
-        Log.d("decodeImage", Arrays.toString(imageBytes));
-        Log.d("decodeImage", String.valueOf(BitmapFactory.class));
-        Log.d("decodeByteArray", BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length)+ " ");
-        Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-        Log.d("bitmap", bitmap + " ");
-
         return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
     }
     public void getMainCategorys(String cityName, CategoryListCallback callback) {
@@ -260,17 +251,8 @@ public class APIHelper {
                             Log.d("iconEntity", jsonObject.toString());
 
                             if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
-                                Log.d("icon", jsonObject.getJSONObject("iconEntity").getString("icon"));
-                                Log.d("icon", Arrays.toString(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT)));
-//                                Log.d("icon", decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT)).toString());
-
                                 image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
-                                if(image != null){
-                                    Log.d("iconi", image.toString());
-                                }
                                 categoryModel.setIcon(image);
-                            } else {
-                                Log.d("iconEntity", "iconEntity is missing or null");
                             }
 
                             categoryModelList.add(categoryModel);

@@ -163,8 +163,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/lastFragment"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        android:background="@android:color/transparent"
+        android:rotation="180"
+        android:scaleType="fitCenter"
+        android:src="@drawable/png_next_fragment"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/koords"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
