@@ -363,7 +363,66 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
-                apiHelper.getAllReports(cityName, new AllReportsCallback(){
+            sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            Log.d("sharedPref", "SharedPreferences erstellt");
+            if (sharedPreferences.contains(KEY_REPORT_LIST)) {
+                Log.d("sharedPref", "Liste vorhanden");
+                Gson gson = new Gson();
+                String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
+                Type type = new TypeToken<ArrayList<ReportModel>>() {
+                }.getType();
+                allReports = gson.fromJson(json, type);
+                loadExistingMarkers();
+                Log.d("sharedPref", "Marker geladen, neue Liste im Hintergrund laden");
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        allReportsUpdated = apiHelper.getAllReportsAsList();
+
+                        if (!checkEquality(allReports, allReportsUpdated) && allReports.size() != allReportsUpdated.size()) {
+                            Log.d("sharedPref", "Listen wurden abgeglichen allReports jetzt überschrieben");
+                            allReports.clear();
+                            allReports = allReportsUpdated;
+                            loadExistingMarkers();
+                            for(int j = 0; j < allReportsUpdated.size(); j++){
+                                Log.d("AllReportsUpdated ", String.valueOf(allReportsUpdated.get(j)));
+                            }
+                            for(int i = 0; i < allReports.size(); i++){
+                                Log.d("AllReports ", String.valueOf(allReports.get(i)));
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in checkingListsOfEquality: ", errorMessage);
+                    }
+                });
+
+            } else {
+                Log.d("sharedPref", "Liste nicht vorhanden, neu holen...");
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        allReports = apiHelper.getAllReportsAsList();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(allReports);
+                        editor.putString(KEY_REPORT_LIST, json);
+                        editor.apply();
+                        alreadyCalled = true;
+                        loadExistingMarkers();
+                        Log.d("sharedPref", "Liste da, lade neue Marker...");
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in onLocationReceived: ", errorMessage);
+                    }
+                });
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
@@ -376,63 +435,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         Log.e("Error in onLocationReceived: ", errorMessage);
                     }
                 });
-        }catch(IOException e){
-            sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-            Log.d("sharedPref","SharedPreferences erstellt");
-            if (sharedPreferences.contains(KEY_REPORT_LIST)) {
-                Log.d("sharedPref","Liste vorhanden");
-                Gson gson = new Gson();
-                String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
-                Type type = new TypeToken<ArrayList<ReportModel>>() {
-                }.getType();
-                allReports = gson.fromJson(json, type);
-                loadExistingMarkers();
-                Log.d("sharedPref","Marker geladen, neue Liste im Hintergrund laden");
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
-                    @Override
-                    public void onSuccess() {
-                        allReportsUpdated = apiHelper.getAllReportsAsList();
-                        if(!checkEquality(allReports, allReportsUpdated) && allReports.size() != allReportsUpdated.size()){
-                            Log.d("sharedPref","Listen wurden abgeglichen allReports jetzt überschrieben");
-                            allReports = allReportsUpdated;
-                            loadExistingMarkers();
-                        }
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in checkingListsOfEquality: ", errorMessage);
-                    }
-                });
-
-            } else {
-                Log.d("sharedPref","Liste nicht vorhanden, neu holen...");
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
-                    @Override
-                    public void onSuccess() {
-                        allReports = apiHelper.getAllReportsAsList();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(allReports);
-                        editor.putString(KEY_REPORT_LIST, json);
-                        editor.apply();
-                        alreadyCalled = true;
-                        loadExistingMarkers();
-                        Log.d("sharedPref","Liste da, lade neue Marker...");
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in onLocationReceived: ", errorMessage);
-                    }
-                });
             }
-        } catch (IOException e) {
+        }catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
-
     @Override
     public void onClick(View view) {
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
