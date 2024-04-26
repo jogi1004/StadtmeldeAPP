@@ -11,8 +11,8 @@ import java.util.Objects;
 
 public class ReportModel {
     private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
-    private Bitmap image;
     private double longitude, latitude;
+    private Bitmap image;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -60,7 +60,7 @@ public class ReportModel {
     public String toString() {
         return "ReportModel{" +
                 "title='" + title + '\'' +
-                ", image='"+ image + '\'' +
+                ", image='" + image + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +

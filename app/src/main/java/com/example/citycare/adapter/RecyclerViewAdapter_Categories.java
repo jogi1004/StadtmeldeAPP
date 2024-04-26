@@ -51,7 +51,7 @@ public class RecyclerViewAdapter_Categories extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_Categories.MyViewHolder holder, int position) {
         MainCategoryModel daten = allDamagetypes.get(position);
-        holder.icon.setImageResource(daten.getIcon());
+        holder.icon.setImageBitmap(daten.getIcon());
         holder.title.setText(daten.getTitle());
         holder.field.setOnClickListener(v -> {
             if(mListener != null){
@@ -70,7 +70,6 @@ public class RecyclerViewAdapter_Categories extends RecyclerView.Adapter<Recycle
 
         private ImageView icon;
         private TextView title;
-
         public ConstraintLayout field;
 
 

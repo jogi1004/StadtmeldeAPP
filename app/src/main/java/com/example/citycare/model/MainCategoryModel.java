@@ -1,18 +1,20 @@
 package com.example.citycare.model;
 
+import android.graphics.Bitmap;
+
 import java.util.List;
 
 public class MainCategoryModel {
     private int id;
     private String title;
     private List<SubCategoryModel> subCategorys;
-    private int icon;
+    private Bitmap icon;
 
     public MainCategoryModel(int id) {
         this.id = id;
     }
 
-    public MainCategoryModel(int id, String title, int icon) {
+    public MainCategoryModel(int id, String title, Bitmap icon) {
         this.id = id;
         this.title = title;
         this.icon = icon;
@@ -37,9 +39,8 @@ public class MainCategoryModel {
     public String getTitle() {
         return title;
     }
-    public int getIcon() {
-        return icon;
-    }
+    public Bitmap getIcon() {return icon;}
+    public void setIcon(Bitmap icon) {this.icon = icon;}
 
     public void setTitle(String title) {
         this.title = title;
@@ -51,6 +52,7 @@ public class MainCategoryModel {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", subCategorys=" + subCategorys +
+                ", icon=" + icon +
                 '}';
     }
 }

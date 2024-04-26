@@ -67,8 +67,6 @@ public class PoiInformationDialog extends Dialog{
                 dismiss();
         });
 
-
-
     }
 
     @SuppressLint("SetTextI18n")

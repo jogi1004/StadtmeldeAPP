@@ -1,5 +1,6 @@
 package com.example.citycare.util;
 
+//import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -40,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,17 +64,18 @@ public class APIHelper {
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
     private Context context;
     private RequestQueue requestQueue;
-
+    private Timer timer;
     private String token;
     private String username;
     List<String> members = new ArrayList<>();
     List<String> notMembers = new ArrayList<>();
     private UserModel currentUser;
-    private ArrayList<ReportModel> allReports = new ArrayList<>();
+    private final ArrayList<ReportModel> allReports = new ArrayList<>();
 
     private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
+        timer = new Timer();
     }
     public static APIHelper getInstance(Context context){
         if(INSTANCE==null){
@@ -114,13 +117,10 @@ public class APIHelper {
                     switch (statuscode){
                         case 401:
                             Toast.makeText(context, "Username bereits vorhanden!",Toast.LENGTH_LONG).show();
-
                             break;
                         default:
                             Toast.makeText(context, "Verbindung fehlgeschlagen!",Toast.LENGTH_LONG).show();
-
                             break;
-
                     }
                 });
         requestQueue.add(jsonObjectRequest);
@@ -245,8 +245,15 @@ public class APIHelper {
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
                                     jsonObject.getString("title"),
-                                    R.drawable.png_placeholder
+                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder)
                             );
+                            Bitmap image = null;
+                            Log.d("iconEntity", jsonObject.toString());
+
+                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
+                                image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
+                                categoryModel.setIcon(image);
+                            }
 
                             categoryModelList.add(categoryModel);
 
@@ -270,7 +277,6 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-
     public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories) {
 
         int tmp = 0;
@@ -282,11 +288,14 @@ public class APIHelper {
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
-                                SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                        jsonObject.getInt("id"),
-                                        jsonObject.getString("title")
-                                );
-                                allSubCategories.add(subCategoryModel);
+                                if(!jsonObject.getString("title").equals("Sonstiges")){
+
+                                    SubCategoryModel subCategoryModel = new SubCategoryModel(
+                                            jsonObject.getInt("id"),
+                                            jsonObject.getString("title")
+                                    );
+                                    allSubCategories.add(subCategoryModel);
+                                }
                             }
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -334,17 +343,17 @@ public class APIHelper {
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
-                            Log.d("imageLog", jsonObject.getString("image"));
-                            if (!jsonObject.getString("image").equals("null")){
-                                reportModel.setImage(decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT)));
+                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
+                            if (image!=null){
+                                reportModel.setImage(image);
                             }
                             allReports.add(reportModel);
-                            Log.d("allReports", reportModel + "\n " + allReports.size());
-                            callback.onSuccess();
+                            Log.d("allReportsALL", reportModel + "\n " + allReports.size());
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
                     }
+                    callback.onSuccess(allReports);
                 },
                 error -> error.printStackTrace()
         ){
@@ -355,10 +364,16 @@ public class APIHelper {
                 return headers;
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }
 
     public void postReport(ReportModel report) throws JSONException {
+
+        Log.d("report", report.toString());
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", report.getTitle());
@@ -368,7 +383,11 @@ public class APIHelper {
         requestBody.put("longitude", report.getLongitude());
         requestBody.put("latitude", report.getLatitude());
         requestBody.put("reportingLocationName", report.getLocationName());
-        requestBody.put("additionalPicture", Base64.encodeToString(encodeImage(report.getImage()), Base64.DEFAULT));
+        if (report.getImage()!=null){
+            requestBody.put("additionalPicture", Base64.encodeToString(encodeImage(report.getImage()), Base64.DEFAULT));
+        } else{
+            requestBody.put("additionalPicture", null);
+        }
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -379,6 +398,7 @@ public class APIHelper {
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {
+                        Log.d("reportDBFehler", report.toString());
                         Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
                     }
                 }){

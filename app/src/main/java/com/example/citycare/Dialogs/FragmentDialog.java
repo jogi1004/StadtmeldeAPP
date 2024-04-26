@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,13 +33,9 @@ public class FragmentDialog extends DialogFragment {
     private FrameLayout dimm;
     private ReportModel report;
 
-
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Fügen Sie hier ggf. Initialisierungscode hinzu
     }
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -88,6 +85,7 @@ public class FragmentDialog extends DialogFragment {
         if (fragmentManager != null) {
             show(fragmentManager, "FragmentDialog");
             report = new ReportModel(null, null, null, null, null, lon, lat, null, locationName);
+            Log.d("showFragmentDialog", report.toString());
             this.dimm = dimm;
         }
     }

@@ -14,14 +14,18 @@ import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.RecyclerViewInterface;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<RecyclerViewAdapter_AllReports.MyViewHolder>{
 
     private final RecyclerViewInterface recyclerViewInterface;
-    Context context;
-    ArrayList<ReportModel> allReports;
-    public RecyclerViewAdapter_AllReports(Context context, ArrayList<ReportModel> allReports, RecyclerViewInterface recyclerViewInterface){
+    private Context context;
+    private List<ReportModel> allReports;
+    public RecyclerViewAdapter_AllReports(Context context, List<ReportModel> allReports, RecyclerViewInterface recyclerViewInterface){
         this.context = context;
         this.allReports = allReports;
         this.recyclerViewInterface = recyclerViewInterface;
@@ -40,6 +44,8 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         holder.reportDate.setText(allReports.get(position).getTimestamp());
         if (allReports.get(position).getImage()!=null){
             holder.image.setImageBitmap(allReports.get(position).getImage());
+        } else {
+            holder.image.setImageResource(R.drawable.png_dummy);
         }
     }
 
