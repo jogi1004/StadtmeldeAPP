@@ -8,6 +8,10 @@ import androidx.annotation.Nullable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+/**
+ * Model for database connection that has title,image,description,longitude,latitude,
+ * sub and maincategory, timestamp and icon in it
+ */
 
 public class ReportModel {
     private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
@@ -35,6 +39,10 @@ public class ReportModel {
         this.latitude = latitude;
     }
 
+    /**
+     * setter und getter for Report Model
+     * @return
+     */
 
     public String getDescription() {return description;}
     public String getTitle() {return title;}

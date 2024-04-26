@@ -16,6 +16,9 @@ import com.example.citycare.util.HelperClass;
 
 import org.json.JSONException;
 
+/**
+ * RegisterPage for register with email,username and password
+ */
 public class RegisterPage extends AppCompatActivity implements View.OnClickListener {
 
     HelperClass h = new HelperClass();

@@ -1,6 +1,5 @@
 package com.example.citycare.Dialogs;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -27,6 +26,9 @@ import com.example.citycare.util.RecyclerViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * RecyclerView for list of reports in users neighbourhood
+ */
 public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
     private Context context;

@@ -11,7 +11,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -43,7 +40,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -59,26 +55,23 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+/**
+ *  LandingPage contains MapView with FAB for further Depth in the Application, acts like Homepage for User
+ */
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
     private static MapView mMap;
     private Marker poiMarker;
     private IMapController controller;
     private MyLocationNewOverlay mMyLocationOverlay;
-    public FrameLayout dimm;
-    public ProfilDialog profileDialog;
-    public ReportDialogPage allReportsDialog;
-    public PoiInformationDialog poiInformationDialog;
-    public SettingDialog settingDialog;
+    private FrameLayout dimm;
+    private ProfilDialog profileDialog;
+    private PoiInformationDialog poiInformationDialog;
     private SearchDialog searchDialog;
-
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
@@ -93,7 +86,14 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static final String KEY_REPORT_LIST = "report_list";
     private static SharedPreferences sharedPreferences;
 
-
+    /**
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *      is called when Application starts or after Environmental changes like Darkmode
+     *      camUtil is used for using Camera, apiHelper assists database connections, compass is for User to center
+     *      the location in the middle of screen
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,15 +103,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         apiHelper = APIHelper.getInstance(this);
         camUtil = new CamUtil(this, this
         );
-
         Log.d("token", apiHelper.getToken() + "");
-
         compass = findViewById(R.id.compass);
         compass.setOnClickListener(this);
-
+        // ask for permission to use camera and location
         initPermissions();
+        // initialize dialogs for FAB
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
-
         profileDialog = new ProfilDialog(this, this, camUtil);
         ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
         SettingDialog settingDialog = new SettingDialog(this);
@@ -119,7 +117,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
     }
 
-
+    /**
+     * initPermissions asks User for permissions like using camera or location
+     */
     protected void initPermissions() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             loadMap();
@@ -138,6 +138,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
     }
 
+    /**
+     * loads map after opening the app and sets controller to location of user and zoom of the map
+     */
     public void loadMap() {
         Configuration.getInstance().load(
                 getApplicationContext(),
@@ -203,6 +206,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     }
 
+    /**
+     *
+     * @param geoPoint is the method to set an marker on an point where the user wants to report something
+     *                 geocoder assists to get the exact location from the touch event
+     */
     @SuppressLint("SetTextI18n")
     public void updatePoiMarker(GeoPoint geoPoint) {
 
@@ -261,6 +269,10 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         tmp = cityName;
     }
 
+    /**
+     * after receiving location/cityname the app loads the categories from database
+     * @param cityName from geocoder
+     */
     private void fillListWithData(String cityName) {
         apiHelper.getMainCategorys(cityName, new CategoryListCallback() {
 
@@ -292,12 +304,19 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         });
     }
 
+    /**
+     * updates location from the user
+     */
     @SuppressLint("MissingPermission")
     protected void updateLocation() {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this::onLocationReceived);
     }
 
+    /**
+     * calls method for loading reports at the given location
+     * @param location of the user
+     */
     protected void onLocationReceived(Location location) {
         if (!alreadyCalled) {
             alreadyCalled = true;
@@ -330,11 +349,20 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         return apiHelper.getAllReportsAsList();
     }
 
+    /**
+     * loads the reports from allReports List
+     */
     public void loadExistingMarkers() {
         for (ReportModel m : allReports) {
             setMarker(m, this);
         }
     }
+
+    /**
+     * sets POI on Maps where a report was reported
+     * @param m ReportModel for getting longitude and latitude to set POI
+     * @param context
+     */
 
     public static void setMarker(ReportModel m, Context context) {
         Marker poi = new Marker(mMap);
@@ -344,6 +372,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         mMap.getOverlays().add(poi);
     }
 
+    /**
+     * loads reportList from database based on current loation, only at first start of the app
+     * after initialy loading the list it gets saved in SharedPrefs and after every starting updated
+     * @param location
+     */
     protected void loadListfromDB(Location location) {
         Geocoder geocoder = new Geocoder(this);
         double latitude = location.getLatitude();
