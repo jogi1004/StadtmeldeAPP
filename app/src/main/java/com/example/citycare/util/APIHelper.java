@@ -366,7 +366,7 @@ public class APIHelper {
         };
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
                 5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }

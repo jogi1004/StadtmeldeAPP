@@ -127,27 +127,16 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         } else {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 123);
         }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 124);
         }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 125);
         }
     }
-
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d("onRequest", "onRequest");
-            loadMap();
-            updateLocation();
-        }
-    }*/
 
     public void loadMap() {
         Configuration.getInstance().load(
@@ -188,6 +177,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 }
                 return true;
             }
+
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
@@ -304,15 +294,14 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     @SuppressLint("MissingPermission")
     protected void updateLocation() {
-        Log.d("Locationupdate", "update");
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this::onLocationReceived);
     }
 
     protected void onLocationReceived(Location location) {
-        Log.d("alreadyCalled", String.valueOf(alreadyCalled));
-        if(!alreadyCalled) {
+        if (!alreadyCalled) {
             alreadyCalled = true;
+            Toast.makeText(this, "Aktualisiere Meldungen...", Toast.LENGTH_LONG).show();
             loadListfromDB(location);
 
         }
@@ -364,35 +353,21 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             assert addresses != null;
             String cityName = addresses.get(0).getLocality();
             sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-            Log.d("sharedPref", "SharedPreferences erstellt");
             if (sharedPreferences.contains(KEY_REPORT_LIST)) {
-                Log.d("sharedPref", "Liste vorhanden");
                 Gson gson = new Gson();
                 String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
                 Type type = new TypeToken<ArrayList<ReportModel>>() {
                 }.getType();
                 allReports = gson.fromJson(json, type);
                 loadExistingMarkers();
-                Log.d("sharedPref", "Marker geladen, neue Liste im Hintergrund laden");
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
                         allReportsUpdated = apiHelper.getAllReportsAsList();
-
-                        if (!checkEquality(allReports, allReportsUpdated) && allReports.size() != allReportsUpdated.size()) {
-                            Log.d("sharedPref", "Listen wurden abgeglichen allReports jetzt überschrieben");
-                            allReports.clear();
-                            allReports = allReportsUpdated;
-                            loadExistingMarkers();
-                            for(int j = 0; j < allReportsUpdated.size(); j++){
-                                Log.d("AllReportsUpdated ", String.valueOf(allReportsUpdated.get(j)));
-                            }
-                            for(int i = 0; i < allReports.size(); i++){
-                                Log.d("AllReports ", String.valueOf(allReports.get(i)));
-                            }
-
-                        }
+                        allReports.clear();
+                        allReports = allReportsUpdated;
+                        loadExistingMarkers();
                     }
 
                     @Override
@@ -402,7 +377,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 });
 
             } else {
-                Log.d("sharedPref", "Liste nicht vorhanden, neu holen...");
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
@@ -414,7 +388,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         editor.apply();
                         alreadyCalled = true;
                         loadExistingMarkers();
-                        Log.d("sharedPref", "Liste da, lade neue Marker...");
                     }
 
                     @Override
@@ -436,10 +409,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     }
                 });
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void onClick(View view) {
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
@@ -490,18 +464,4 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     }
 
-    private static boolean checkEquality(List<ReportModel> allReports, ArrayList<ReportModel> allReportsUpdated) {
-        Log.d("sharedPref","CheckEquality...");
-        int minSize = Math.min(allReports.size(), allReportsUpdated.size());
-        for (int i = 0; i < minSize; i++) {
-            ReportModel obj1 = allReports.get(i);
-            ReportModel obj2 = allReportsUpdated.get(i);
-            // Vergleiche die Objekte miteinander
-            if (!obj1.equals(obj2)) {
-                return false;
-            }
-        }
-        // Überprüfe, ob die Listen unterschiedliche Größen haben
-        return allReports.size() == allReportsUpdated.size();
-    }
 }
