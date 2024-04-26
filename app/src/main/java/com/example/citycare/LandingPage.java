@@ -368,6 +368,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReports.clear();
                         allReports = allReportsUpdated;
                         loadExistingMarkers();
+                        Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -388,6 +389,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         editor.apply();
                         alreadyCalled = true;
                         loadExistingMarkers();
+                        Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

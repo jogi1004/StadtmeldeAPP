@@ -1,6 +1,8 @@
 package com.example.citycare.util;
 
 //import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
+import static java.sql.Types.TIMESTAMP;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -40,10 +42,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -353,6 +363,7 @@ public class APIHelper {
                             throw new RuntimeException(e);
                         }
                     }
+
                     callback.onSuccess(allReports);
                 },
                 error -> error.printStackTrace()
