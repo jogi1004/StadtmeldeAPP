@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.HelperClass;
@@ -26,6 +27,7 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
     Button SignIn, register;
     EditText username, password, passwordRepeat, email;
     String usernameContent, passwordContent, passwordRepeatContent, emailContent;
+    ConstraintLayout GoogleRegister;
 
     private APIHelper apiHelper;
     @Override
@@ -41,10 +43,12 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
         email = findViewById(R.id.emailEditText);
         passwordRepeat = findViewById(R.id.passwordRepeatEditText);
         register = findViewById(R.id.RegisterButton);
+        GoogleRegister = findViewById(R.id.GoogleRegisterLayout);
         //OnClickListener auf Buttons setzen
         backButton.setOnClickListener(this);
         SignIn.setOnClickListener(this);
         register.setOnClickListener(this);
+        GoogleRegister.setOnClickListener(this);
     }
 
     @Override
@@ -68,6 +72,8 @@ public class RegisterPage extends AppCompatActivity implements View.OnClickListe
                 }
 
             }
+        } else if(v == GoogleRegister){
+            Toast.makeText(this, "Mit Google registrieren", Toast.LENGTH_SHORT).show();
         }
     }
 

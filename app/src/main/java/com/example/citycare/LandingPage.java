@@ -400,6 +400,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReportsUpdated = apiHelper.getAllReportsAsList();
                         allReports.clear();
                         allReports = allReportsUpdated;
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(allReports);
+                        editor.putString(KEY_REPORT_LIST, json);
+                        editor.apply();
                         loadExistingMarkers();
                         Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
                     }
@@ -411,42 +416,52 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 });
 
             } else {
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
-                    @Override
-                    public void onSuccess(List<ReportModel> reports) {
-                        allReports = apiHelper.getAllReportsAsList();
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(allReports);
-                        editor.putString(KEY_REPORT_LIST, json);
-                        editor.apply();
-                        alreadyCalled = true;
-                        loadExistingMarkers();
-                        Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
-                    }
+                if (WelcomePage.loggedIn && apiHelper.getToken() != null) {
+                    apiHelper.getAllReports(cityName, new AllReportsCallback() {
+                        @Override
+                        public void onSuccess(List<ReportModel> reports) {
+                            allReports = apiHelper.getAllReportsAsList();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            Gson gson = new Gson();
+                            String json = gson.toJson(allReports);
+                            editor.putString(KEY_REPORT_LIST, json);
+                            editor.apply();
+                            alreadyCalled = true;
+                            loadExistingMarkers();
+                            Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
+                        }
 
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in onLocationReceived: ", errorMessage);
-                    }
-                });
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+                        @Override
+                        public void onError(String errorMessage) {
+                            Log.e("Error in onLocationReceived: ", errorMessage);
+                        }
+                    });
+                    apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
-                    @Override
-                    public void onSuccess(List<ReportModel> reports) {
-                        allReports = reports;
-                        loadExistingMarkers();
-                    }
+                        @Override
+                        public void onSuccess(List<ReportModel> reports) {
+                            allReports = reports;
+                            loadExistingMarkers();
+                        }
 
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in onLocationReceived: ", errorMessage);
+                        @Override
+                        public void onError(String errorMessage) {
+                            Log.e("Error in onLocationReceived: ", errorMessage);
+                        }
+                    });
+                } else {
+                    try{
+                        Thread.sleep(1000);
+                        loadListfromDB(location);
+                    } catch(InterruptedException e){
+                        Log.e("InterruptedException", String.valueOf(e));
                     }
-                });
+                }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            } catch(IOException e){
+                throw new RuntimeException(e);
+            }
+
     }
 
     @Override

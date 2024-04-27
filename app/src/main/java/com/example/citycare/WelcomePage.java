@@ -24,6 +24,7 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
     Button register, signIn;
     private APIHelper apiHelper;
     private String username;
+    public static boolean loggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +69,12 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
         String password = KeyStoreManager.getPassword(this, username);
         apiHelper.loginUser(username, password);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         Intent intent = new Intent(this, LandingPage.class);
+        loggedIn = true;
         startActivity(intent);
         finish();
     }
