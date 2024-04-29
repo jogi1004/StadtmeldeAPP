@@ -69,6 +69,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
     }
 
     private void performSearch(String query) {
+        //TODO Maybe noch auswahlmöglichkeiten geben falls mehrere Mögliche Results
         try {
             List<Address> addresses = geocoder.getFromLocationName(query, 1);
             if (addresses != null && addresses.size() > 0) {

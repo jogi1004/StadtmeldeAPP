@@ -198,14 +198,12 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    null,
                                     response.getBoolean("notificationsEnabled")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
-                            currentUser.setProfilePicture(null);
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
 
                         }

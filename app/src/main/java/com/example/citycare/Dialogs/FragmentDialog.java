@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 
@@ -36,6 +38,23 @@ public class FragmentDialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                Log.d("BackPressed", "drin");
+                // Deine Zurück-Taste Behandlung hier
+                if (getFragmentManager().getBackStackEntryCount() > 0) {
+                    getFragmentManager().popBackStack();
+                } else {
+                    // Wenn kein Eintrag im Fragment-Manager-Backstack vorhanden ist,
+                    // kannst du den Dialog schließen
+                    dismiss();
+                }
+            }
+        };
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -54,7 +73,8 @@ public class FragmentDialog extends DialogFragment {
 
         FragmentManager fragmentManager = getChildFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment, damageTypeF);
+        transaction.replace(R.id.flFragment, damageTypeF, "type");
+        transaction.addToBackStack("type");
         transaction.commit();
 
     }
@@ -79,14 +99,16 @@ public class FragmentDialog extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         dimm.setVisibility(View.GONE);
+        LandingPage.getCamUtil().setBitmap(null);
     }
 
     public void showFragmentDialog(FragmentManager fragmentManager, FrameLayout dimm, double lat, double lon, String locationName) {
         if (fragmentManager != null) {
             show(fragmentManager, "FragmentDialog");
             report = new ReportModel(null, null, null, null, null, lon, lat, null, locationName);
-            Log.d("showFragmentDialog", report.toString());
             this.dimm = dimm;
         }
     }
+
+
 }
