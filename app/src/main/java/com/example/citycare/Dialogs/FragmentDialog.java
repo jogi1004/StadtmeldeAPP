@@ -104,7 +104,7 @@ public class FragmentDialog extends DialogFragment {
 
     public void showFragmentDialog(FragmentManager fragmentManager, FrameLayout dimm, double lat, double lon, String locationName) {
         if (fragmentManager != null) {
-            show(fragmentManager, "FragmentDialog");
+            show(fragmentManager, "fragmentManager");
             report = new ReportModel(null, null, null, null, null, lon, lat, null, locationName);
             this.dimm = dimm;
         }

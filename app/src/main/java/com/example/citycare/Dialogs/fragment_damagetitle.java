@@ -1,5 +1,7 @@
 package com.example.citycare.Dialogs;
 
+import static android.app.ProgressDialog.show;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
     private EditText description;
     private ReportModel report;
     private ImageButton backFragment;
+    private String titleText;
 
     public fragment_damagetitle(ReportModel report) {
         this.report = report;
@@ -39,6 +42,7 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
         View rootView =  inflater.inflate(R.layout.fragment_title, container, false);
 
         title = rootView.findViewById(R.id.title);
+        title.setText(titleText);
         description = rootView.findViewById(R.id.newDescription);
 
         ImageButton nextFragment = rootView.findViewById(R.id.nextFragment);
@@ -46,6 +50,7 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
         backFragment = rootView.findViewById(R.id.lastFragment);
         backFragment.setOnClickListener(v->{
+            Log.d("backstack", "At 0: " + getParentFragmentManager().getBackStackEntryAt(0).getName());
             getParentFragmentManager().popBackStack();
         });
 
@@ -89,7 +94,11 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, camF, "cam");
-        transaction.addToBackStack(null);
+        transaction.addToBackStack("title");
         transaction.commit();
+    }
+
+    public void setTitle(CharSequence text) {
+        this.titleText = (String) text;
     }
 }

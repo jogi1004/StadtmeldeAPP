@@ -29,8 +29,10 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("Lebenszyklus", "onCreateView() wird aufgerufen");
         View rootView =  inflater.inflate(R.layout.fragment_picture, container, false);
+        Log.d("backstack", "At 0: " + getParentFragmentManager().getBackStackEntryAt(0).getName());
+        Log.d("backstack", "At 1: " + getParentFragmentManager().getBackStackEntryAt(1).getName());
+
 
         ImageButton nextFragment = rootView.findViewById(R.id.nextFragment);
         nextFragment.setOnClickListener(this);
@@ -78,6 +80,5 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
         transaction.replace(R.id.flFragment, reportF, "report");
         transaction.addToBackStack(null);
         transaction.commit();
-        Log.d("BackStack", "BackStackEntryCount: " + fragmentManager.getBackStackEntryCount());
     }
 }
