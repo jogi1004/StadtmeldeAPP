@@ -351,13 +351,14 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     protected void loadListfromDB(Location location) {
         Geocoder geocoder = new Geocoder(this);
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            assert addresses != null;
-            String cityName = addresses.get(0).getLocality();
-                apiHelper.getAllReports(cityName, new AllReportsCallback(){
+        if(location != null) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            try {
+                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                assert addresses != null;
+                String cityName = addresses.get(0).getLocality();
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
@@ -370,8 +371,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         Log.e("Error in onLocationReceived: ", errorMessage);
                     }
                 });
-        }catch(IOException e){
-            throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
