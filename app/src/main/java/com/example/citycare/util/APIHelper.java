@@ -29,7 +29,9 @@ import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +52,7 @@ public class APIHelper {
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/infoprofilepic";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
+    private final String reportDetailURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/";
     private Context context;
     private RequestQueue requestQueue;
     private String token;
@@ -133,7 +136,15 @@ public class APIHelper {
                     context.startActivity(i);
 
                 }, volleyError -> {
-                    int statuscode = volleyError.networkResponse.statusCode; //gibt oft noch einen Fehler zurück muss gefixt werden
+                    int statuscode = 0;
+                    if(volleyError.networkResponse.statusCode != 0){
+                        try{
+                        statuscode = volleyError.networkResponse.statusCode;
+                        } catch(NullPointerException e){
+                            Log.e("NullPointerException", String.valueOf(e));
+                        }
+                    }
+                     //gibt oft noch einen Fehler zurück muss gefixt werden
 
                     switch (statuscode){
                         case 403:
@@ -441,6 +452,31 @@ public class APIHelper {
             };
         requestQueue.add(booleanRequest);
 
+    }
+    // called when detail view is opened
+    public void loadDetails(int position){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, reportDetailURL + position, null, response -> {
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = response.getJSONObject(null);
+                        jsonObject.getString("description");
+                        jsonObject.getInt("status");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }, volleyError -> {
+                    volleyError.printStackTrace();
+                }){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
     }
 
     public List<String> getMembers() {
