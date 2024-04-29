@@ -198,14 +198,14 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)),
+                                    null,
                                     response.getBoolean("notificationsEnabled")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
-                            currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
+                            currentUser.setProfilePicture(null);
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
 
                         }

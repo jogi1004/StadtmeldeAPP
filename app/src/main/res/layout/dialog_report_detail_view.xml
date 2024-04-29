@@ -72,6 +72,7 @@
             android:layout_marginStart="40sp"
             android:layout_marginTop="24sp"
             android:text="@string/descriptionHeader"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:src="@drawable/png_dummy"
-            android:layout_marginBottom="40dp"
+
              />
 
     </androidx.cardview.widget.CardView>
@@ -34,6 +34,7 @@
         android:id="@+id/informationLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,6 +50,7 @@
             android:layout_height="wrap_content"
             android:text="title"
             android:textSize="25sp"
+            android:textColor="@color/white"
             android:layout_gravity="center"
             android:layout_margin="10dp"/>
 
