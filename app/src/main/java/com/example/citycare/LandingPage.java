@@ -2,6 +2,7 @@ package com.example.citycare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,9 +15,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -26,6 +30,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.example.citycare.Dialogs.PoiDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.SearchDialog;
@@ -81,8 +87,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
-    private List<ReportModel> allReports = new ArrayList<>();
-    private ArrayList<ReportModel> allReportsUpdated = new ArrayList<>();
+    private static List<ReportModel> allReports = new ArrayList<>();
+    private List<ReportModel> allReportsUpdated = new ArrayList<>();
     private String cityName, tmp;
     private ConstraintLayout compass;
     private static CamUtil camUtil;
@@ -90,6 +96,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static final String PREF_NAME = "report_preferences";
     private static final String KEY_REPORT_LIST = "report_list";
     private static SharedPreferences sharedPreferences;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +107,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         apiHelper = APIHelper.getInstance(this);
         camUtil = new CamUtil(this, this
         );
-
+        context = this;
         Log.d("token", apiHelper.getToken() + "");
 
         compass = findViewById(R.id.compass);
@@ -325,7 +332,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     }
 
     public static List<ReportModel> getAllReportsList() {
-        return apiHelper.getAllReportsAsList();
+        return allReports;
     }
 
     public void loadExistingMarkers() {
@@ -339,8 +346,18 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
         poi.setIcon(ContextCompat.getDrawable(context, R.drawable.png_poi));
+
+
+        poi.setOnMarkerClickListener((marker, mapView) -> {
+            PoiDialog poiDialog = new PoiDialog(context,m);
+            poiDialog.show();
+            return true;
+        });
+
         mMap.getOverlays().add(poi);
     }
+
+
 
     protected void loadListfromDB(Location location) {
         Geocoder geocoder = new Geocoder(this);
@@ -354,15 +371,16 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if (sharedPreferences.contains(KEY_REPORT_LIST)) {
                 Gson gson = new Gson();
                 String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
-                Type type = new TypeToken<ArrayList<ReportModel>>() {
+                Type type = new TypeToken<List<ReportModel>>() {
                 }.getType();
                 allReports = gson.fromJson(json, type);
+                Log.d("ReportList", allReports.toString());
                 loadExistingMarkers();
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
-                        allReportsUpdated = apiHelper.getAllReportsAsList();
+                        allReportsUpdated = reports;
                         allReports.clear();
                         allReports = allReportsUpdated;
                         loadExistingMarkers();
@@ -378,26 +396,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
-                        allReports = apiHelper.getAllReportsAsList();
+                        allReports = reports;
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         Gson gson = new Gson();
                         String json = gson.toJson(allReports);
                         editor.putString(KEY_REPORT_LIST, json);
                         editor.apply();
                         alreadyCalled = true;
-                        loadExistingMarkers();
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in onLocationReceived: ", errorMessage);
-                    }
-                });
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
-
-                    @Override
-                    public void onSuccess(List<ReportModel> reports) {
-                        allReports = reports;
                         loadExistingMarkers();
                     }
 

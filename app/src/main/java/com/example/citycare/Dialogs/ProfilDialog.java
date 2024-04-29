@@ -72,7 +72,11 @@ public class ProfilDialog extends Dialog {
         });
 
         picture = findViewById(R.id.circleImageView);
-        picture.setImageBitmap(apiHelper.getCurrentUser().getProfilePicture());
+        if (apiHelper.getCurrentUser().getProfilePicture()!=null){
+            picture.setImageBitmap(apiHelper.getCurrentUser().getProfilePicture());
+        }else {
+            picture.setImageResource(R.drawable.png_dummy);
+        }
         picture.setOnClickListener(v -> camUtil.initDialog(2,1));
     }
 

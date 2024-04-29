@@ -346,7 +346,7 @@ public class APIHelper {
                                 reportModel.setImage(image);
                             }
                             allReports.add(reportModel);
-                            Log.d("allReportsALL", reportModel + "\n " + allReports.size());
+                            Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
