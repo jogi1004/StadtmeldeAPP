@@ -36,6 +36,11 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
         nextFragment.setOnClickListener(this);
 
         imageView = rootView.findViewById(R.id.cam);
+
+        if(report.getImage() != null){
+            imageView.setImageBitmap(report.getImage());
+        }
+
         imageView.setOnClickListener(v->{
             LandingPage.setReportImageView(imageView);
             LandingPage.getCamUtil().initDialog(3,4);
@@ -43,26 +48,23 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
 
         backFragment = rootView.findViewById(R.id.lastFragment);
         backFragment.setOnClickListener(v->{
+            if(LandingPage.getCamUtil().getBitmap() != null){
+                report.setImage(LandingPage.getCamUtil().getBitmap());
+            }
             getParentFragmentManager().popBackStack();
         });
 
         return rootView;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // Speichere relevante Daten im Bundle
-        outState.putString("reportPic", report.getImage().toString());
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("Lebenszyklus", "onViewCreated() wird aufgerufen");
-        if(savedInstanceState != null){
-            String pic = savedInstanceState.getString("reportPic");
-        }
+//        Log.d("Lebenszyklus", "onViewCreated() wird aufgerufen");
+//        if(savedInstanceState != null){
+//            String pic = savedInstanceState.getString("reportPic");
+//        }
     }
 
     @Override
@@ -73,7 +75,7 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
 
         final FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment, reportF);
+        transaction.replace(R.id.flFragment, reportF, "report");
         transaction.addToBackStack(null);
         transaction.commit();
         Log.d("BackStack", "BackStackEntryCount: " + fragmentManager.getBackStackEntryCount());

@@ -88,7 +88,7 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment, camF);
+        transaction.replace(R.id.flFragment, camF, "cam");
         transaction.addToBackStack(null);
         transaction.commit();
     }
