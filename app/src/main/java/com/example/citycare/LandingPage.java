@@ -89,7 +89,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
-    private List<ReportModel> allReports = new ArrayList<>();
+    private static List<ReportModel> allReports = new ArrayList<>();
     private List<ReportModel> allReportsUpdated = new ArrayList<>();
     private String cityName, tmp;
     private ConstraintLayout compass;
@@ -325,7 +325,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     }
 
     public static List<ReportModel> getAllReportsList() {
-        return apiHelper.getAllReportsAsList();
+        return allReports;
     }
 
     public void loadExistingMarkers() {
@@ -367,6 +367,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 Type type = new TypeToken<List<ReportModel>>() {
                 }.getType();
                 allReports = gson.fromJson(json, type);
+                Log.d("ReportList", allReports.toString());
                 loadExistingMarkers();
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
 

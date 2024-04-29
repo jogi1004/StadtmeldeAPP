@@ -40,6 +40,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:elevation="4dp"
         android:background="@drawable/bg_sign_in"
+        android:backgroundTint="@color/dark_green"
         >
 
         <TextView
