@@ -8,6 +8,9 @@
         <item name="colorAccent">@color/dark_green</item>
         <item name="colorPrimary">@color/dark_green</item>
         <item name="colorPrimaryDark">@color/white</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+
 
         <!--<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>-->
     </style>
@@ -23,5 +26,9 @@
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="android:background">@drawable/bg_edittextcorner</item>
     </style>
+
+
+
+
 
 </resources>

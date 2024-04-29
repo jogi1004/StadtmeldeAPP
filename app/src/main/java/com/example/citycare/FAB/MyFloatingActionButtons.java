@@ -109,13 +109,11 @@ public class MyFloatingActionButtons {
             setAreFabsVisible(false);
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
         });
-        poiInformationDialog.setOnDismissListener(v->{
-            hideFABS();
-        });
+
 
 
     }
-    private void hideFABS(){
+    public void hideFABS(){
         searchFAB.setVisibility(View.GONE);
         allReportsFAB.setVisibility(View.GONE);
         profilFAB.setVisibility(View.GONE);
