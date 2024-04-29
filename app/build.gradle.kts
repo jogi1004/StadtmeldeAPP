@@ -54,4 +54,6 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
     //Splash Screen API
     implementation ("androidx.core:core-splashscreen:1.0.0")
+    implementation ("com.google.code.gson:gson:2.8.8")
+
 }

@@ -4,12 +4,14 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,11 +21,11 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.SearchDialog;
@@ -39,6 +41,9 @@ import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CategoryListCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -54,6 +59,9 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -74,10 +82,14 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
     private List<ReportModel> allReports = new ArrayList<>();
+    private ArrayList<ReportModel> allReportsUpdated = new ArrayList<>();
     private String cityName, tmp;
     private ConstraintLayout compass;
     private static CamUtil camUtil;
     private static ImageView reportImageView;
+    private static final String PREF_NAME = "report_preferences";
+    private static final String KEY_REPORT_LIST = "report_list";
+    private static SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +123,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         profileDialog = new ProfilDialog(this, this, camUtil);
         ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
         SettingDialog settingDialog = new SettingDialog(this);
-        searchDialog = new SearchDialog(this,this, poiInformationDialog);
+        searchDialog = new SearchDialog(this, this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
     }
 
@@ -122,27 +134,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         } else {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 123);
-        }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, 124);
-        }
-        if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 125);
-        }
     }
-
-
-    /*@Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d("onRequest", "onRequest");
-            loadMap();
-            updateLocation();
-        }
-    }*/
 
     public void loadMap() {
         Configuration.getInstance().load(
@@ -171,18 +163,19 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     throw new RuntimeException(e);
                 }
 
-                if(apiHelper.getMembers().contains(location)){
+                if (apiHelper.getMembers().contains(location)) {
                     poiInformationDialog.setGifVisibility(View.GONE);
                     poiInformationDialog.setButtonVisibility(View.VISIBLE);
                 } else if (apiHelper.getNotMembers().contains(location)) {
                     poiInformationDialog.setGifVisibility(View.GONE);
                     poiInformationDialog.setButtonVisibility(View.INVISIBLE);
                     Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
-                } else{
+                } else {
                     apiHelper.getIsLocationMember(geoPoint, LandingPage.this, poiInformationDialog);
                 }
                 return true;
             }
+
             @Override
             public boolean longPressHelper(GeoPoint geoPoint) {
                 return false;
@@ -207,7 +200,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         mMap.addMapListener(this);
 
     }
-
 
     @SuppressLint("SetTextI18n")
     public void updatePoiMarker(GeoPoint geoPoint) {
@@ -282,12 +274,14 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     public void onSuccess(List<MainCategoryModel> categoryModels) {
                         fullList = categoryModels;
                     }
+
                     @Override
                     public void onError(String errorMessage) {
                         Log.e("errorGetSubCategorys", errorMessage);
                     }
                 }, mainCategoryList);
             }
+
             @Override
             public void onError(String errorMessage) {
                 isMember = false;
@@ -298,15 +292,14 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     @SuppressLint("MissingPermission")
     protected void updateLocation() {
-        Log.d("Locationupdate", "update");
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this::onLocationReceived);
     }
 
     protected void onLocationReceived(Location location) {
-        Log.d("alreadyCalled", String.valueOf(alreadyCalled));
-        if(!alreadyCalled) {
+        if (!alreadyCalled) {
             alreadyCalled = true;
+            Toast.makeText(this, "Aktualisiere Meldungen...", Toast.LENGTH_LONG).show();
             loadListfromDB(location);
 
         }
@@ -341,7 +334,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
     }
 
-    public static void setMarker(ReportModel m, Context context){
+    public static void setMarker(ReportModel m, Context context) {
         Marker poi = new Marker(mMap);
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
@@ -351,13 +344,55 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     protected void loadListfromDB(Location location) {
         Geocoder geocoder = new Geocoder(this);
-        if(location != null) {
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            try {
-                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                assert addresses != null;
-                String cityName = addresses.get(0).getLocality();
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            assert addresses != null;
+            String cityName = addresses.get(0).getLocality();
+            sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            if (sharedPreferences.contains(KEY_REPORT_LIST)) {
+                Gson gson = new Gson();
+                String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
+                Type type = new TypeToken<ArrayList<ReportModel>>() {
+                }.getType();
+                allReports = gson.fromJson(json, type);
+                loadExistingMarkers();
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        allReportsUpdated = apiHelper.getAllReportsAsList();
+                        allReports.clear();
+                        allReports = allReportsUpdated;
+                        loadExistingMarkers();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in checkingListsOfEquality: ", errorMessage);
+                    }
+                });
+
+            } else {
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        allReports = apiHelper.getAllReportsAsList();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(allReports);
+                        editor.putString(KEY_REPORT_LIST, json);
+                        editor.apply();
+                        alreadyCalled = true;
+                        loadExistingMarkers();
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in onLocationReceived: ", errorMessage);
+                    }
+                });
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
@@ -371,9 +406,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         Log.e("Error in onLocationReceived: ", errorMessage);
                     }
                 });
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -389,7 +424,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 2 && data != null){
+        if (requestCode == 2 && data != null) {
             Uri selectedImageUri = data.getData();
             Bitmap bitmap = camUtil.getBitmapFromUri(selectedImageUri);
 
@@ -426,4 +461,5 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         reportImageView = reportImagePic;
 
     }
+
 }

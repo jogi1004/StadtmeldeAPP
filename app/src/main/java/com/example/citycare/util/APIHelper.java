@@ -198,14 +198,12 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)),
                                     response.getBoolean("notificationsEnabled")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
-                            currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
 
                         }
@@ -366,7 +364,7 @@ public class APIHelper {
         };
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
                 5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }

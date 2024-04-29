@@ -3,7 +3,10 @@ package com.example.citycare.model;
 
 import android.graphics.Bitmap;
 
+import androidx.annotation.Nullable;
+
 import java.sql.Timestamp;
+import java.util.Objects;
 
 
 public class ReportModel {
@@ -63,4 +66,30 @@ public class ReportModel {
                 ", subCategory='" + subCategory +'\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+
+            if (this == obj) {
+                return true;
+            }
+
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            // Downcast des Objekts
+            ReportModel other = (ReportModel) obj;
+            // Vergleiche die Felder auf Gleichheit
+            return Objects.equals(title, other.title) &&
+                    Objects.equals(timestamp, other.timestamp) &&
+                    Objects.equals(description, other.description) &&
+                    Objects.equals(mainCategory, other.mainCategory) &&
+                    Objects.equals(subCategory, other.subCategory) &&
+                    Objects.equals(locationName, other.locationName) &&
+                    Objects.equals(icon, other.icon) &&
+                    Objects.equals(image, other.image) &&
+                    Double.compare(other.longitude, longitude) == 0 &&
+                    Double.compare(other.latitude, latitude) == 0;
+        }
+
 }

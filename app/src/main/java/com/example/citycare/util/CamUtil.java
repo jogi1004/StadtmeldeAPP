@@ -1,6 +1,5 @@
 package com.example.citycare.util;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -37,7 +36,7 @@ public class CamUtil {
     private File imageFile;
     private Activity landingPage;
     private Bitmap bitmap;
-    public CamUtil(Context context, Activity landingPage) {
+    public CamUtil(Context context,Activity landingPage) {
         this.context = context;
         this.landingPage = landingPage;
     }
