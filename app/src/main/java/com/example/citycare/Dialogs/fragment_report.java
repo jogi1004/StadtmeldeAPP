@@ -36,6 +36,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     private ReportModel report;
     private ConstraintLayout sendReport;
     private View rootView;
+    LandingPage l;
 
     public fragment_report(ReportModel report) {
         this.report = report;
@@ -47,6 +48,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         rootView =  inflater.inflate(R.layout.fragment_report, container, false);
         category = rootView.findViewById(R.id.category);
         category.setText(report.getMainCategory());
+        l = new LandingPage();
 
         subCategory = rootView.findViewById(R.id.subCategory);
         if(report.getSubCategory().equals("Sonstiges")){
@@ -101,6 +103,8 @@ public class fragment_report extends Fragment implements View.OnClickListener {
             apiHelper.postReport(report);
             List<ReportModel> reports = apiHelper.getAllReportsAsList();
             reports.add(report);
+            l.loadExistingMarkers();
+            l.addToList(report);
             FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
             if (fragmentDialog != null) {
                 fragmentDialog.dismiss();

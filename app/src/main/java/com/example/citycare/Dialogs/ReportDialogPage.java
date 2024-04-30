@@ -10,13 +10,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-import android.widget.WrapperListAdapter;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
@@ -36,12 +33,14 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     private List<ReportModel> allReports = new ArrayList<>();
     private DialogReportDetailView detailView;
     private int dialogheight;
-    private static RecyclerViewAdapter_AllReports recyclerAdapter;
-    public ReportDialogPage(@NonNull Context context, Activity landingPage) {
+    public static RecyclerViewAdapter_AllReports recyclerAdapter;
+    RecyclerView recyclerView;
+    public ReportDialogPage(@NonNull Context context, Activity landingPage, RecyclerViewAdapter_AllReports adapterAllReports) {
         super(context);
         this.context = context;
         this.dim = findViewById(R.id.dimm);
         detailView = new DialogReportDetailView(context);
+        recyclerAdapter = adapterAllReports;
     }
 
     @Override
@@ -51,9 +50,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         setContentView(R.layout.dialog_reports);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         initAllReports();
-        RecyclerView recyclerView = findViewById(R.id.reportsrecyclerview);
-        initAdapter(recyclerView);
-
+        initAdapter();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (windowManager != null) {
@@ -62,10 +59,16 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         dialogheight = (int) (displayMetrics.heightPixels * 0.7);
 
     }
-    protected void initAdapter(RecyclerView recyclerView){
-        recyclerAdapter = new RecyclerViewAdapter_AllReports(context, allReports, this);
-        recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+    protected void initAdapter(){
+        recyclerView = findViewById(R.id.reportsrecyclerview);
+        if(recyclerAdapter != null) {
+            recyclerView.setAdapter(recyclerAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerAdapter = new RecyclerViewAdapter_AllReports(context, allReports, this);
+            recyclerView.setAdapter(recyclerAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
     }
 
     private void initAllReports() {

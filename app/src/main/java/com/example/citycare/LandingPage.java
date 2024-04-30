@@ -30,6 +30,7 @@ import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
+import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -85,6 +86,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static final String PREF_NAME = "report_preferences";
     private static final String KEY_REPORT_LIST = "report_list";
     private static SharedPreferences sharedPreferences;
+    private static RecyclerViewAdapter_AllReports adapterAllReports;
 
     /**
      * @param savedInstanceState If the activity is being re-initialized after
@@ -111,7 +113,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         // initialize dialogs for FAB
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this, adapterAllReports);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
@@ -513,7 +515,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         reportImageView = reportImagePic;
 
     }
-
+    public void addToList(ReportModel r){
+        allReports.add(r);
+    }
 
 
 }
