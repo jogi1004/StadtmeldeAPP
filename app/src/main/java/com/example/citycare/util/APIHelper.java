@@ -1,6 +1,5 @@
 package com.example.citycare.util;
 
-//import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,16 +8,13 @@ import android.location.Geocoder;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.Dialogs.PoiInformationDialog;
@@ -28,28 +24,22 @@ import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.model.UserModel;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
-
-
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import android.location.Address;
 
-
+/**
+ * Helper class for dataase connection and database communication
+ */
 public class APIHelper {
 
     private static volatile APIHelper INSTANCE = null;
@@ -60,11 +50,11 @@ public class APIHelper {
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
-    private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
+    private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/infoprofilepic";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
+    private final String reportDetailURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/";
     private Context context;
     private RequestQueue requestQueue;
-    private Timer timer;
     private String token;
     private String username;
     List<String> members = new ArrayList<>();
@@ -75,7 +65,6 @@ public class APIHelper {
     private APIHelper(Context context){
         this.context = context;
         requestQueue = getRequestQueue();
-        timer = new Timer();
     }
     public static APIHelper getInstance(Context context){
         if(INSTANCE==null){
@@ -147,7 +136,15 @@ public class APIHelper {
                     context.startActivity(i);
 
                 }, volleyError -> {
-                    int statuscode = volleyError.networkResponse.statusCode;
+                    int statuscode = 0;
+                    if(volleyError.networkResponse.statusCode != 0){
+                        try{
+                        statuscode = volleyError.networkResponse.statusCode;
+                        } catch(NullPointerException e){
+                            Log.e("NullPointerException", String.valueOf(e));
+                        }
+                    }
+
 
                     switch (statuscode){
                         case 403:
@@ -351,6 +348,7 @@ public class APIHelper {
                             throw new RuntimeException(e);
                         }
                     }
+
                     callback.onSuccess(allReports);
                 },
                 error -> error.printStackTrace()
@@ -451,6 +449,34 @@ public class APIHelper {
                 }
             };
         requestQueue.add(booleanRequest);
+
+    }
+    // called when detail view is opened
+    public void loadDetails(int position){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, reportDetailURL + position, null, response -> {
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = response.getJSONObject(null);
+                        jsonObject.getString("description");
+                        jsonObject.getInt("status");
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }, volleyError -> {
+                    volleyError.printStackTrace();
+                }){
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
+    }
+    public void setEmailNotification(){
 
     }
 

@@ -17,11 +17,14 @@ import org.json.JSONException;
 
 import java.util.Map;
 
-
+/**
+ * Starting Page of App, where user chooses register or sign in
+ */
 public class WelcomePage extends AppCompatActivity implements View.OnClickListener{
     Button register, signIn;
     private APIHelper apiHelper;
     private String username;
+    public static boolean loggedIn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +69,12 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
         String password = KeyStoreManager.getPassword(this, username);
         apiHelper.loginUser(username, password);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         Intent intent = new Intent(this, LandingPage.class);
+        loggedIn = true;
         startActivity(intent);
         finish();
     }

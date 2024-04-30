@@ -1,6 +1,5 @@
 package com.example.citycare.Dialogs;
 
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,13 +10,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
-import android.widget.WrapperListAdapter;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
@@ -27,6 +23,9 @@ import com.example.citycare.util.RecyclerViewInterface;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * RecyclerView for list of reports in users neighbourhood
+ */
 public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
     private Context context;
@@ -34,14 +33,14 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     private List<ReportModel> allReports = new ArrayList<>();
     private DialogReportDetailView detailView;
     private int dialogheight;
-    public ReportDialogPage(@NonNull Context context, Activity landingPage) {
+    public static RecyclerViewAdapter_AllReports recyclerAdapter;
+    RecyclerView recyclerView;
+    public ReportDialogPage(@NonNull Context context, Activity landingPage, RecyclerViewAdapter_AllReports adapterAllReports) {
         super(context);
         this.context = context;
         this.dim = findViewById(R.id.dimm);
-        /*DisplayMetrics displayMetrics = new DisplayMetrics();
-        landingPage.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        dialogheight = (int) (displayMetrics.heightPixels*0.67);*/
         detailView = new DialogReportDetailView(context);
+        recyclerAdapter = adapterAllReports;
     }
 
     @Override
@@ -51,10 +50,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         setContentView(R.layout.dialog_reports);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         initAllReports();
-        RecyclerView recyclerView = findViewById(R.id.reportsrecyclerview);
-        RecyclerViewAdapter_AllReports recyclerAdapter = new RecyclerViewAdapter_AllReports(context, allReports, this);
-        recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        initAdapter();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (windowManager != null) {
@@ -62,6 +58,17 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         }
         dialogheight = (int) (displayMetrics.heightPixels * 0.7);
 
+    }
+    protected void initAdapter(){
+        recyclerView = findViewById(R.id.reportsrecyclerview);
+        if(recyclerAdapter != null) {
+            recyclerView.setAdapter(recyclerAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerAdapter = new RecyclerViewAdapter_AllReports(context, allReports, this);
+            recyclerView.setAdapter(recyclerAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        }
     }
 
     private void initAllReports() {
@@ -72,7 +79,6 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     @Override
     public void onItemClick(int position) {
         ReportModel clickedReport = allReports.get(position);
-        Log.d("Position", clickedReport.toString());
         detailView.setReportModel(clickedReport);
         detailView.show();
         detailView.setData();

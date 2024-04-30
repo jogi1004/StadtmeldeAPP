@@ -27,6 +27,8 @@ import com.example.citycare.util.CamUtil;
 
 import org.json.JSONException;
 
+import java.util.List;
+
 public class fragment_report extends Fragment implements View.OnClickListener {
 
     private TextView category, subCategory, koords;
@@ -36,6 +38,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     private ConstraintLayout sendReport;
     private View rootView;
     private ImageButton backFragment;
+    LandingPage l;
 
     public fragment_report(ReportModel report) {
         this.report = report;
@@ -47,6 +50,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         rootView =  inflater.inflate(R.layout.fragment_report, container, false);
         category = rootView.findViewById(R.id.category);
         category.setText(report.getMainCategory());
+        l = new LandingPage();
 
         subCategory = rootView.findViewById(R.id.subCategory);
         if(report.getSubCategory().equals("Sonstiges")){
@@ -105,6 +109,10 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         APIHelper apiHelper = APIHelper.getInstance(this.getContext());
         try {
             apiHelper.postReport(report);
+            List<ReportModel> reports = apiHelper.getAllReportsAsList();
+            reports.add(report);
+            l.loadExistingMarkers();
+            l.addToList(report);
             FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
             if (fragmentDialog != null) {
                 fragmentDialog.dismiss();
