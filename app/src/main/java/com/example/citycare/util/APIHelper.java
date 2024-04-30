@@ -62,6 +62,7 @@ public class APIHelper {
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
+    private final String getUserReports = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/user/";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
@@ -71,6 +72,7 @@ public class APIHelper {
     List<String> notMembers = new ArrayList<>();
     private UserModel currentUser;
     private final ArrayList<ReportModel> allReports = new ArrayList<>();
+    private List<ReportModel> userReports = new ArrayList<>();
 
     private APIHelper(Context context){
         this.context = context;
@@ -160,6 +162,7 @@ public class APIHelper {
                     }
                 });
         requestQueue.add(jsonObjectRequest);
+
     }
 
 
@@ -273,6 +276,7 @@ public class APIHelper {
 
 
         requestQueue.add(jsonObjectRequest);
+
     }
 
     public void putSubCategories(CategoryListCallback callback, List<MainCategoryModel> mainCategories) {
@@ -314,6 +318,7 @@ public class APIHelper {
                 }
             };
             requestQueue.add(jsonObjectRequest);
+
             tmp++;
         }
     }
@@ -367,6 +372,7 @@ public class APIHelper {
                 2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
+
     }
 
     public void postReport(ReportModel report) throws JSONException {
@@ -408,6 +414,7 @@ public class APIHelper {
             }
         };
         requestQueue.add(jsonObjectRequest);
+
     }
 
     public void getIsLocationMember(GeoPoint geoPoint, LandingPage landingPage, PoiInformationDialog poiInformationDialog){
@@ -451,6 +458,54 @@ public class APIHelper {
                 }
             };
         requestQueue.add(booleanRequest);
+
+    }
+
+    public void getUserReports(AllReportsCallback callback){
+
+
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
+                Request.Method.GET,getUserReports + currentUser.getId(),null,
+                response->{
+                    for (int i=0;i<response.length();i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            ReportModel report = new ReportModel(
+                                    jsonObject.getString("titleOrsubcategoryName"),
+                                    null,
+                                    jsonObject.getString("timestamp"),
+                                    null,
+                                    jsonObject.getDouble("longitude"),
+                                    jsonObject.getDouble("latitude")
+                            );
+
+                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
+                            if (image!=null){
+                                report.setImage(image);
+                            }
+                            Log.d("reportModel", report.toString());
+                            userReports.add(report);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    callback.onSuccess(userReports);
+                 },volleyerror->{
+                    volleyerror.printStackTrace();
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                5000,
+                2,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        requestQueue.add(jsonObjectRequest);
 
     }
 

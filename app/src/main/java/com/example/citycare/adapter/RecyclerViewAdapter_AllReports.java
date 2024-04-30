@@ -38,6 +38,11 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         return new RecyclerViewAdapter_AllReports.MyViewHolder(view, recyclerViewInterface);
     }
 
+    public void updateList(List<ReportModel> reports){
+        allReports = reports;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_AllReports.MyViewHolder holder, int position) {
         holder.reportName.setText(allReports.get(position).getTitle());
