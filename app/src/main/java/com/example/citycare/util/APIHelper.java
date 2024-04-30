@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -147,6 +148,8 @@ public class APIHelper {
                     context.startActivity(i);
 
                 }, volleyError -> {
+                    NetworkResponse networkResponse = volleyError.networkResponse;
+                    Log.d("NetworkResponse", networkResponse + " ");
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     switch (statuscode){

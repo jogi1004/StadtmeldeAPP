@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -71,9 +72,11 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
+    private static final String PREF_LASTADRESSES = "lastAdresses";
     private static MapView mMap;
     private Marker poiMarker;
     private IMapController controller;
@@ -131,6 +134,42 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
+
+        searchDialog.setOnShowListener(dialogInterface -> {
+            SearchDialog alertDialog = (SearchDialog) dialogInterface;
+
+            SharedPreferences SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
+            Map<String, ?> allEntries = SPLastAdresses.getAll();
+
+            TextView address1 = alertDialog.findViewById(R.id.adress1);
+            TextView address2 = alertDialog.findViewById(R.id.adress2);
+            TextView address3 = alertDialog.findViewById(R.id.adress3);
+
+            if(!allEntries.isEmpty()){
+                int i = 0;
+                for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                    if (i < 3) {
+                        String prompt = (String) entry.getValue();
+                        String[] teile = prompt.split(",");
+
+                        switch (i) {
+                            case 0:
+                                address1.setText(teile[0]);
+                                break;
+                            case 1:
+                                address2.setText(teile[0]);
+                                break;
+                            case 2:
+                                address3.setText(teile[0]);
+                                break;
+                            default:
+                                break;
+                        }
+                        i++;
+                    }
+                }
+            }
+        });
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
     }
 
@@ -210,6 +249,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     @SuppressLint("SetTextI18n")
     public void updatePoiMarker(GeoPoint geoPoint) {
+
+        Log.d("lastAddresses", "geopoint: " + geoPoint);
 
         Geocoder geocoder = new Geocoder(this);
         try {
