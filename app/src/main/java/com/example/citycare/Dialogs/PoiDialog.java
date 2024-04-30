@@ -26,7 +26,7 @@ import java.util.List;
 public class PoiDialog extends Dialog {
 
     private ImageView imageView;
-    private TextView title, description, adress;
+    private TextView title;
     private Context context;
     private int dialogheight;
     private ReportModel m;
@@ -46,8 +46,6 @@ public class PoiDialog extends Dialog {
 
         imageView =  findViewById(R.id.poi_report_pic);
         title = findViewById(R.id.poiTitle);
-        description = findViewById(R.id.poiDescription);
-        adress = findViewById(R.id.poiAdress);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (windowManager != null) {
@@ -60,23 +58,11 @@ public class PoiDialog extends Dialog {
         getWindow().setDimAmount(0.0f);
 
 
-        String cityname;
+
         if (m.getImage()!=null){
             imageView.setImageBitmap(m.getImage());
         }
         title.setText(m.getTitle());
-        if (m.getDescription() != null){
-            description.setText(m.getDescription());
-        }else {
-            description.setText("keine Beschreibung");
-        }
-        Geocoder geocoder = new Geocoder(context);
-        try {
-            List<Address> addresses = geocoder.getFromLocation(m.getLatitude(), m.getLongitude(), 1);
-            cityname = addresses.get(0).getLocality();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        adress.setText(cityname);
+
     }
 }

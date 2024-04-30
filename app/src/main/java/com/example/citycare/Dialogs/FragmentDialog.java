@@ -38,24 +38,8 @@ public class FragmentDialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
-            @Override
-            public void handleOnBackPressed() {
-                Log.d("BackPressed", "drin");
-                // Deine Zurück-Taste Behandlung hier
-                if (getFragmentManager().getBackStackEntryCount() > 0) {
-                    getFragmentManager().popBackStack();
-                } else {
-                    // Wenn kein Eintrag im Fragment-Manager-Backstack vorhanden ist,
-                    // kannst du den Dialog schließen
-                    dismiss();
-                }
-            }
-        };
-
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
+    
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override

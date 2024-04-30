@@ -43,14 +43,17 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
         title = rootView.findViewById(R.id.title);
         title.setText(titleText);
+
         description = rootView.findViewById(R.id.newDescription);
+    if(report.getDescription() != null){
+        description.setText(report.getDescription());
+    }
 
         ImageButton nextFragment = rootView.findViewById(R.id.nextFragment);
         nextFragment.setOnClickListener(this);
 
         backFragment = rootView.findViewById(R.id.lastFragment);
         backFragment.setOnClickListener(v->{
-            Log.d("backstack", "At 0: " + getParentFragmentManager().getBackStackEntryAt(0).getName());
             getParentFragmentManager().popBackStack();
         });
 

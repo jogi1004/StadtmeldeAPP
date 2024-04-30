@@ -34,9 +34,7 @@ public class KeyStoreManager {
             KeyStore keyStore = KeyStore.getInstance(ANDROID_KEYSTORE);
             keyStore.load(null);
 
-            // Überprüfen, ob der Schlüssel bereits vorhanden ist
             if (!keyStore.containsAlias(KEY_ALIAS)) {
-                // Generieren Sie einen neuen Schlüssel, wenn er noch "nicht" vorhanden ist
                 KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);
                 keyGenerator.init(new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                         .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
@@ -45,20 +43,16 @@ public class KeyStoreManager {
                 SecretKey secretKey = keyGenerator.generateKey();
             }
 
-            // Jetzt verschlüsseln wir das Passwort und speichern es im KeyStore
             KeyStore.SecretKeyEntry secretKeyEntry = (KeyStore.SecretKeyEntry) keyStore.getEntry(KEY_ALIAS, null);
             SecretKey secretKey = secretKeyEntry.getSecretKey();
 
             byte[] encryptedPassword = AESUtils.encrypt(password, secretKey);
 
-            // Speichern Sie das verschlüsselte Passwort in SharedPreferences oder einer anderen sicheren Speicherungsmethode
-            // In diesem Beispiel verwenden wir SharedPreferences
             saveEncryptedPasswordToSharedPreferences(context, username, encryptedPassword);
 
         } catch (IOException | InvalidAlgorithmParameterException | UnrecoverableEntryException |
                  CertificateException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException e) {
             throw new RuntimeException(e);
-            // Fehlerbehandlung
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

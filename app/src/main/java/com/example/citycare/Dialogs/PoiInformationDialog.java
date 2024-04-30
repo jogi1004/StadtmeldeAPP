@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 
 import java.util.List;
 
