@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     private ReportModel report;
     private ConstraintLayout sendReport;
     private View rootView;
+    private ImageButton backFragment;
 
     public fragment_report(ReportModel report) {
         this.report = report;
@@ -82,6 +84,11 @@ public class fragment_report extends Fragment implements View.OnClickListener {
             reportPic.setImageResource(R.drawable.png_placeholder);
         }
 
+
+        backFragment = rootView.findViewById(R.id.lastFragment);
+        backFragment.setOnClickListener(v->{
+            getParentFragmentManager().popBackStack();
+        });
 
         return rootView;
     }

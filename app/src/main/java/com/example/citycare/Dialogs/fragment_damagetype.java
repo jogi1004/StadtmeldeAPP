@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -109,6 +110,12 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
                 fragmentDialog.dismiss();
             }
 
+            FragmentManager fragmentManager = getParentFragmentManager();
+            if(fragmentManager != null){
+                Log.d("FragmentManager", "nicht null");
+            }else {
+                Log.d("FragmentManager", "null");
+            }
             ddd.show();
             ddd.setOnDismissListener(v -> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));
         }else{

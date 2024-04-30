@@ -1,5 +1,8 @@
 package com.example.citycare.Dialogs;
 
+import static android.app.ProgressDialog.show;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +28,8 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
     public TextView title;
     private EditText description;
     private ReportModel report;
-
+    private ImageButton backFragment;
+    private String titleText;
 
     public fragment_damagetitle(ReportModel report) {
         this.report = report;
@@ -34,22 +38,46 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("Lebenszyklus", "onCreateView() wird aufgerufen");
         View rootView =  inflater.inflate(R.layout.fragment_title, container, false);
 
         title = rootView.findViewById(R.id.title);
+        title.setText(titleText);
+
         description = rootView.findViewById(R.id.newDescription);
+    if(report.getDescription() != null){
+        description.setText(report.getDescription());
+    }
 
         ImageButton nextFragment = rootView.findViewById(R.id.nextFragment);
         nextFragment.setOnClickListener(this);
+
+        backFragment = rootView.findViewById(R.id.lastFragment);
+        backFragment.setOnClickListener(v->{
+            getParentFragmentManager().popBackStack();
+        });
 
         return rootView;
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Speichere relevante Daten im Bundle
+        outState.putString("reportTitle", report.getTitle());
+        outState.putString("reportDesc", report.getDescription());
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d("Lebenszyklus", "onViewCreated() wird aufgerufen");
+        if(savedInstanceState != null){
+            String pic = savedInstanceState.getString("reportPic");
+        }
+    }
+
+    @SuppressLint("RestrictedApi")
     @Override
     public void onClick(View view) {
         report.setDescription(String.valueOf(description.getText()));
@@ -66,8 +94,14 @@ public class fragment_damagetitle extends Fragment implements View.OnClickListen
             Log.d("Fragment", "Fragment == null");
         }
 
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.flFragment, camF);
-        transaction.commitNow();
+        transaction.replace(R.id.flFragment, camF, "cam");
+        transaction.addToBackStack("title");
+        transaction.commit();
+    }
+
+    public void setTitle(CharSequence text) {
+        this.titleText = (String) text;
     }
 }

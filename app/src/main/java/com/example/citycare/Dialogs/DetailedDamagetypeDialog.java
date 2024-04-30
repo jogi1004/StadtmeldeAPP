@@ -122,15 +122,16 @@ public class DetailedDamagetypeDialog extends Dialog implements OnItemClickListe
 
         transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.flFragment, damageTitleF);
-        transaction.commitNow();
+        transaction.addToBackStack("type").commit();
 
-        title = damageTitleF.getView().findViewById(R.id.title);
+//        title = damageTitleF.getView().findViewById(R.id.title);
 
         RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
         RecyclerViewAdapter_SubCategories.MyViewHolder myViewHolder = (RecyclerViewAdapter_SubCategories.MyViewHolder) viewHolder;
         TextView subCategoryTitle = myViewHolder.title;
 
-        title.setText(subCategoryTitle.getText());
+        damageTitleF.setTitle(subCategoryTitle.getText());
+//        title.setText(subCategoryTitle.getText());
         report.setSubCategory((String) subCategoryTitle.getText());
     }
 }
