@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.Nullable;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
@@ -14,7 +13,8 @@ import java.util.Objects;
  */
 
 public class ReportModel {
-    private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
+    private String title, description, subCategory, mainCategory, locationName, icon;
+    String timestamp;
     private double longitude, latitude;
     private Bitmap image;
 

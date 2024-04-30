@@ -144,7 +144,7 @@ public class APIHelper {
                             Log.e("NullPointerException", String.valueOf(e));
                         }
                     }
-                     //gibt oft noch einen Fehler zurück muss gefixt werden
+
 
                     switch (statuscode){
                         case 403:
@@ -195,14 +195,12 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)),
                                     response.getBoolean("notificationsEnabled")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
-                            currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
 
                         }
@@ -477,6 +475,9 @@ public class APIHelper {
             }
         };
         requestQueue.add(jsonObjectRequest);
+    }
+    public void setEmailNotification(){
+
     }
 
     public List<String> getMembers() {

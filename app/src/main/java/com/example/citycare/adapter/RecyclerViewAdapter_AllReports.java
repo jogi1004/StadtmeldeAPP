@@ -14,6 +14,7 @@ import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.RecyclerViewInterface;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,8 +41,8 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_AllReports.MyViewHolder holder, int position) {
-        holder.reportName.setText(allReports.get(position).getTitle());
-        holder.reportDate.setText(allReports.get(position).getTimestamp());
+        holder.reportName.setText(allReports.get(position).getTitle());;
+        holder.reportDate.setText(String.valueOf(allReports.get(position).getTimestamp()));
         if (allReports.get(position).getImage()!=null){
             holder.image.setImageBitmap(allReports.get(position).getImage());
         } else {

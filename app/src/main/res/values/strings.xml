@@ -40,4 +40,5 @@
     <string name="descriptionHeader">Beschreibung</string>
     <string name="city">Zweibrücken</string>
     <string name="userReport">Max Mustermann</string>
+    <string name="messages">Benachrichtigungen per E-Mail</string>
 </resources>

@@ -20,10 +20,13 @@ import androidx.fragment.app.Fragment;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
 
 import org.json.JSONException;
+
+import java.util.List;
 
 public class fragment_report extends Fragment implements View.OnClickListener {
 
@@ -96,6 +99,8 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         APIHelper apiHelper = APIHelper.getInstance(this.getContext());
         try {
             apiHelper.postReport(report);
+            List<ReportModel> reports = apiHelper.getAllReportsAsList();
+            reports.add(report);
             FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
             if (fragmentDialog != null) {
                 fragmentDialog.dismiss();
