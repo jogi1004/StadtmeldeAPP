@@ -15,6 +15,7 @@ import com.example.citycare.Dialogs.ProfilDialog;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SearchDialog;
 import com.example.citycare.Dialogs.SettingDialog;
+import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -97,6 +98,7 @@ public class MyFloatingActionButtons {
             profilFAB.setVisibility(View.GONE);
             setAreFabsVisible(false);
             landingPage.findViewById(R.id.dimm).setVisibility(View.GONE);
+            LandingPage.getCamUtil().setBitmap(null);
         });
 
         settingDialog.setOnDismissListener(v->{

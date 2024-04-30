@@ -39,6 +39,7 @@ public class fragment_cam extends Fragment implements View.OnClickListener {
 
         if(report.getImage() != null){
             imageView.setImageBitmap(report.getImage());
+            imageView.setRotation(LandingPage.getCamUtil().showImage());
         }
 
         imageView.setOnClickListener(v->{

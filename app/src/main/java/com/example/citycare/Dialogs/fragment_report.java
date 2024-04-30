@@ -23,6 +23,7 @@ import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CamUtil;
 
 import org.json.JSONException;
 
@@ -80,6 +81,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         reportPic = rootView.findViewById(R.id.camReport);
         if (report.getImage()!=null){
             reportPic.setImageBitmap(report.getImage());
+            reportPic.setRotation(LandingPage.getCamUtil().showImage());
         } else {
             reportPic.setImageResource(R.drawable.png_placeholder);
         }
