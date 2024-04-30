@@ -74,6 +74,7 @@ public class ProfilDialog extends Dialog {
         picture = findViewById(R.id.circleImageView);
         if (apiHelper.getCurrentUser().getProfilePicture()!=null){
             picture.setImageBitmap(apiHelper.getCurrentUser().getProfilePicture());
+            picture.setRotation(camUtil.showImage());
         }else {
             picture.setImageResource(R.drawable.png_dummy);
         }
