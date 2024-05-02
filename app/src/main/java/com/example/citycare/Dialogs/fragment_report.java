@@ -105,8 +105,12 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         APIHelper apiHelper = APIHelper.getInstance(this.getContext());
         try {
             apiHelper.postReport(report);
+            LandingPage.getAllReportsList().add(report);
+            LandingPage.getAdapterReportList().updateList(LandingPage.getAllReportsList());
+
             FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
             if (fragmentDialog != null) {
+                Log.d("FragmentDialog", "dismiss");
                 fragmentDialog.dismiss();
             }
             LandingPage.getCamUtil().setBitmap(null);

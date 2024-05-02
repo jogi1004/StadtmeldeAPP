@@ -48,6 +48,7 @@ import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
+import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -108,6 +109,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static Context context;
     private static MyFloatingActionButtons myFloatingActionButtons;
 
+    private static RecyclerViewAdapter_AllReports adapterReportList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,7 +125,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         //um status und navbar komplett transparent zu machen
         /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);*/
 
-        //
+        adapterReportList = new RecyclerViewAdapter_AllReports(context, allReports);
 
         /*setStatusBarTransparent();*/
         getWindow().getDecorView().setSystemUiVisibility(
@@ -147,7 +150,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this,adapterReportList );
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
         myFloatingActionButtons = new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
@@ -424,6 +427,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReportsUpdated = reports;
                         allReports.clear();
                         allReports = allReportsUpdated;
+                        adapterReportList.updateList(allReports);
                         loadExistingMarkers();
                     }
 
@@ -509,4 +513,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     }
 
+    public static RecyclerViewAdapter_AllReports getAdapterReportList() {
+        return adapterReportList;
+    }
 }
