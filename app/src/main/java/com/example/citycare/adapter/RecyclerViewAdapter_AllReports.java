@@ -1,7 +1,6 @@
 package com.example.citycare.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +22,13 @@ import java.util.Locale;
 
 public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<RecyclerViewAdapter_AllReports.MyViewHolder>{
 
-    private final RecyclerViewInterface recyclerViewInterface;
+    private RecyclerViewInterface recyclerViewInterface;
     private Context context;
     private List<ReportModel> allReports;
-    public RecyclerViewAdapter_AllReports(Context context, List<ReportModel> allReports, RecyclerViewInterface recyclerViewInterface){
+    public RecyclerViewAdapter_AllReports(Context context, List<ReportModel> allReports){
         this.context = context;
         this.allReports = allReports;
-        this.recyclerViewInterface = recyclerViewInterface;
+
     }
     @NonNull
     @Override
@@ -46,8 +45,19 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_AllReports.MyViewHolder holder, int position) {
-        holder.reportName.setText(allReports.get(position).getTitle());
-        holder.reportDate.setText(allReports.get(position).getTimestamp());
+        if (allReports.get(position).getTitle()!=null){
+            holder.reportName.setText(allReports.get(position).getTitle());
+        } else {
+            holder.reportName.setText(allReports.get(position).getSubCategory());
+        }
+        if (allReports.get(position).getTimestamp()!=null){
+            holder.reportDate.setText(allReports.get(position).getTimestamp());
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MMMM yyyy, HH:mm", Locale.getDefault());
+            Date date = new Date();
+            String formattedDate = sdf.format(date);
+            holder.reportDate.setText(formattedDate);
+        }
         if (allReports.get(position).getImage()!=null){
             holder.image.setImageBitmap(allReports.get(position).getImage());
         } else {
@@ -78,14 +88,18 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             reportDate = itemView.findViewById(R.id.reportDate);
             icon = itemView.findViewById(R.id.categoryIcon);
             itemView.setOnClickListener(v -> {
-                if(recyclerViewInterface != null){
+                if (recyclerViewInterface != null) {
                     int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
+                    if (pos != RecyclerView.NO_POSITION) {
                         recyclerViewInterface.onItemClick(pos);
                     }
 
                 }
             });
         }
+    }
+
+    public void setRecyclerViewInterface(RecyclerViewInterface recyclerViewInterface) {
+        this.recyclerViewInterface = recyclerViewInterface;
     }
 }

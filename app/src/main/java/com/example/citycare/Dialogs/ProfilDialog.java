@@ -76,7 +76,8 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
 
 
         RecyclerView recyclerView = findViewById(R.id.personalReportsView);
-        RecyclerViewAdapter_AllReports recyclerAdapter = new RecyclerViewAdapter_AllReports(context, new ArrayList<>(), this);
+        RecyclerViewAdapter_AllReports recyclerAdapter = new RecyclerViewAdapter_AllReports(context, new ArrayList<>());
+        recyclerAdapter.setRecyclerViewInterface(this);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 

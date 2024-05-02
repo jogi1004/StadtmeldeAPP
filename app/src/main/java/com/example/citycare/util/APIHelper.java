@@ -343,6 +343,7 @@ public class APIHelper {
     }
 
     public void getAllReports(String cityName, AllReportsCallback callback) {
+
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
                 response -> {
