@@ -23,6 +23,7 @@ import com.example.citycare.LandingPage;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.CamUtil;
 
 import org.json.JSONException;
 
@@ -83,6 +84,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         reportPic = rootView.findViewById(R.id.camReport);
         if (report.getImage()!=null){
             reportPic.setImageBitmap(report.getImage());
+            reportPic.setRotation(LandingPage.getCamUtil().showImage());
         } else {
             reportPic.setImageResource(R.drawable.png_placeholder);
         }
@@ -106,9 +108,13 @@ public class fragment_report extends Fragment implements View.OnClickListener {
 
         try {
             apiHelper.postReport(report);
+
+            LandingPage.getAllReportsList().add(report);
+            LandingPage.getAdapterReportList().updateList(LandingPage.getAllReportsList());
+
             FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("fragmentManager");
             if (fragmentDialog != null) {
-                Log.d("fragmentDialog", "ist nicht null");
+                Log.d("FragmentDialog", "dismiss");
                 fragmentDialog.dismiss();
             }else{
                 Log.d("fragmentDialog", "ist null");

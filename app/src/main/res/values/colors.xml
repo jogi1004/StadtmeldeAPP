@@ -15,4 +15,6 @@
     <color name="colorPrimary">#4C956C</color>
     <color name="colorPrimaryVariant">#2C6E49</color>
 
+    <color name="transparent">#00FFFFFF</color>
+
 </resources>

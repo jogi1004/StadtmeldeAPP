@@ -2,13 +2,16 @@ package com.example.citycare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -19,6 +22,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,6 +37,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.citycare.Dialogs.PoiDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
@@ -40,6 +49,7 @@ import com.example.citycare.Dialogs.fragment_damagetype;
 import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
+import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -100,11 +110,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static final String KEY_REPORT_LIST = "report_list";
     private static SharedPreferences sharedPreferences;
     private static Context context;
+    private static MyFloatingActionButtons myFloatingActionButtons;
+
+    private static RecyclerViewAdapter_AllReports adapterReportList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landing_page);
         dimm = findViewById(R.id.dimm);
         apiHelper = APIHelper.getInstance(this);
@@ -112,6 +124,16 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         );
         context = this;
         Log.d("token", apiHelper.getToken() + "");
+
+        //um status und navbar komplett transparent zu machen
+        /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);*/
+
+        adapterReportList = new RecyclerViewAdapter_AllReports(context, allReports);
+
+        /*setStatusBarTransparent();*/
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         compass = findViewById(R.id.compass);
         compass.setOnClickListener(this);
@@ -131,7 +153,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this);
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this,adapterReportList );
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
 
@@ -188,6 +210,25 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             }
         });
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
+        myFloatingActionButtons = new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
+    }
+
+    public static MyFloatingActionButtons getMyFloatingActionButtons() {
+        return myFloatingActionButtons;
+    }
+
+    private void setStatusBarTransparent() {
+        Window window = getWindow();
+        WindowInsetsController controller = getWindow().getInsetsController();
+        if (window != null) {
+            // Statusleiste transparent machen
+
+
+            // Navigationsleistenfarbe beibehalten
+            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
+
+
+        }
     }
 
     protected void initPermissions() {
@@ -206,6 +247,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         );
 
         mMap = findViewById(R.id.osmmap);
+        int navigationBarHeight = getResources().getDimensionPixelSize(R.dimen.navigation_bar_height);
+        mMap.setPadding(0, 0, 0, navigationBarHeight);
         mMap.setTileSource(TileSourceFactory.MAPNIK);
         mMap.setMultiTouchControls(true);
         mMap.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
@@ -308,6 +351,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 toast.show();
             } else {
                 poiInformationDialog.show();
+                myFloatingActionButtons.hideFABS();
 
                 ConstraintLayout createReportBtn = poiInformationDialog.findViewById(R.id.reportButton);
 
@@ -431,6 +475,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             }
             poiDialog.show();
             markers.add(marker);
+            myFloatingActionButtons.hideFABS();
             return true;
         });
 
@@ -463,6 +508,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReportsUpdated = reports;
                         allReports.clear();
                         allReports = allReportsUpdated;
+                        adapterReportList.updateList(allReports);
                         loadExistingMarkers();
                     }
 
@@ -529,12 +575,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
             /*camUtil.saveImageToInternalStorage(bitmap);*/
             reportImageView.setImageBitmap(bitmap);
+            reportImageView.setRotation(camUtil.showImage());
 
 
         } else if (requestCode == 4) {
             Bitmap bitmap = camUtil.getBitmapFromFile();
             reportImageView.setImageBitmap(bitmap);
-
+            reportImageView.setRotation(camUtil.showImage());
         }
     }
 
@@ -547,4 +594,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     }
 
+    public static RecyclerViewAdapter_AllReports getAdapterReportList() {
+        return adapterReportList;
+    }
 }

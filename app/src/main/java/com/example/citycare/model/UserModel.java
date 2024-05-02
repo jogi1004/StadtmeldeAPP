@@ -9,6 +9,7 @@ public class UserModel {
     private String email;
     private Bitmap profilePicture;
     private Boolean notificationsEnabled;
+    private Integer picID;
 
     public UserModel(int id, String username, String email, Bitmap profilePicture, Boolean notificationsEnabled) {
         this.id = id;
@@ -18,11 +19,12 @@ public class UserModel {
         this.notificationsEnabled = notificationsEnabled;
     }
 
-    public UserModel(int id, String username, String email, Boolean notificationsEnabled) {
+    public UserModel(int id, String username, String email, Boolean notificationsEnabled, Integer picID) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.notificationsEnabled = notificationsEnabled;
+        this.picID = picID;
     }
 
     public int getId() {
@@ -63,6 +65,14 @@ public class UserModel {
 
     public void setNotificationsEnabled(Boolean notificationsEnabled) {
         this.notificationsEnabled = notificationsEnabled;
+    }
+
+    public Integer getPicID() {
+        return picID;
+    }
+
+    public void setPicID(Integer picID) {
+        this.picID = picID;
     }
 
     @Override
