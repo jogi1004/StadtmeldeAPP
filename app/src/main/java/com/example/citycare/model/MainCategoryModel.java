@@ -8,16 +8,15 @@ public class MainCategoryModel {
     private int id;
     private String title;
     private List<SubCategoryModel> subCategorys;
-    private Bitmap icon;
+    private IconModel icon;
 
     public MainCategoryModel(int id) {
         this.id = id;
     }
 
-    public MainCategoryModel(int id, String title, Bitmap icon) {
+    public MainCategoryModel(int id, String title) {
         this.id = id;
         this.title = title;
-        this.icon = icon;
     }
 
     public List<SubCategoryModel> getSubCategorys() {
@@ -39,8 +38,8 @@ public class MainCategoryModel {
     public String getTitle() {
         return title;
     }
-    public Bitmap getIcon() {return icon;}
-    public void setIcon(Bitmap icon) {this.icon = icon;}
+    public IconModel getIconModel() {return icon;}
+    public void setIcon(IconModel icon) {this.icon = icon;}
 
     public void setTitle(String title) {
         this.title = title;
@@ -48,11 +47,18 @@ public class MainCategoryModel {
 
     @Override
     public String toString() {
-        return "MainCategoryModel{" +
+        String b = "MainCategoryModel{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", subCategorys=" + subCategorys +
-                ", icon=" + icon +
-                '}';
+                ", subCategorys=" + subCategorys;
+
+        if (icon != null) {
+            b += ", icon=" + icon;
+        }else {
+            b += ", icon=null";
+        }
+        b += '}';
+
+        return b;
     }
 }

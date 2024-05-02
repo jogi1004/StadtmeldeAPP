@@ -1,6 +1,7 @@
 package com.example.citycare.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,13 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         } else {
             holder.image.setImageResource(R.drawable.png_dummy);
         }
+        if(allReports.get(position).getMainCategoryModel()!=null){
+            Log.d("icon", allReports.get(position).toString());
+            holder.icon.setImageBitmap(allReports.get(position).getMainCategoryModel().getIconModel().getIcon());
+        } else {
+            Log.d("icon", "immer da");
+            holder.icon.setImageResource(android.R.drawable.ic_dialog_alert);
+        }
     }
 
     @Override
@@ -60,7 +68,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView image;
+        ImageView image, icon;
         TextView reportName,reportDate;
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
@@ -68,6 +76,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             image = itemView.findViewById(R.id.reportImage);
             reportName = itemView.findViewById(R.id.reportName);
             reportDate = itemView.findViewById(R.id.reportDate);
+            icon = itemView.findViewById(R.id.categoryIcon);
             itemView.setOnClickListener(v -> {
                 if(recyclerViewInterface != null){
                     int pos = getAdapterPosition();

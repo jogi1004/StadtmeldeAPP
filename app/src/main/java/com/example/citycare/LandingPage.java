@@ -316,6 +316,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
                     fragment_damagetype.adapter.setData(mainCategoryList);
                 }
+                Log.d("MainCategoryList", mainCategoryList.toString());
                 apiHelper.putSubCategories(new CategoryListCallback() {
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {
@@ -327,6 +328,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         Log.e("errorGetSubCategorys", errorMessage);
                     }
                 }, mainCategoryList);
+                reportsToMaincatecory();
             }
 
             @Override
@@ -425,6 +427,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReports.clear();
                         allReports = allReportsUpdated;
                         loadExistingMarkers();
+
                     }
 
                     @Override
@@ -445,6 +448,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         editor.apply();
                         alreadyCalled = true;
                         loadExistingMarkers();
+
                     }
 
                     @Override
@@ -455,6 +459,21 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+    private void reportsToMaincatecory(){
+        Log.d("MainCategory", "start");
+        for (ReportModel m : allReports) {
+            for (MainCategoryModel mc : mainCategoryList){
+                if (mc.getIconModel()!=null){
+                    Log.d("reportIconID", m.getIconID()+"");
+                    Log.d("MainCategoryIconID", mc.getIconModel().getId()+"");
+                    if(m.getIconID() == mc.getIconModel().getId()){
+                        Log.d("MainCategory", "zuweisung");
+                        m.setMainCategoryModel(mc);
+                    }
+                }
+            }
         }
     }
 

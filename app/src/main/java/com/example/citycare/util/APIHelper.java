@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
@@ -247,16 +248,24 @@ public class APIHelper {
                             JSONObject jsonObject = response.getJSONObject(i);
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
-                                    jsonObject.getString("title"),
-                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder)
+                                    jsonObject.getString("title")
                             );
-                            Bitmap image = null;
+                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")){
+                                categoryModel.setIcon(new IconModel(
+                                        jsonObject.getJSONObject("iconEntity").getInt("id"),
+                                        jsonObject.getJSONObject("iconEntity").getString("name"),
+                                        decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT))));
+
+                            }else{
+                                categoryModel.setIcon(null);
+                            }
+                           /* Bitmap image = null;
                             Log.d("iconEntity", jsonObject.toString());
 
                             if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
                                 image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
                                 categoryModel.setIcon(image);
-                            }
+                            }*/
 
                             categoryModelList.add(categoryModel);
 
@@ -342,7 +351,7 @@ public class APIHelper {
                             JSONObject jsonObject = response.getJSONObject(i);
                             ReportModel reportModel = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
-                                    null,
+                                    jsonObject.getInt("iconId"),
                                     jsonObject.getString("timestamp"),
                                     null,
                                     jsonObject.getDouble("longitude"),
@@ -352,6 +361,7 @@ public class APIHelper {
                             /*if (image!=null){
                                 reportModel.setImage(image);
                             }*/
+                            reportModel.setLocationName(cityName);
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {
@@ -474,7 +484,7 @@ public class APIHelper {
                             JSONObject jsonObject = response.getJSONObject(i);
                             ReportModel report = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
-                                    null,
+                                    jsonObject.getInt("iconId"),
                                     jsonObject.getString("timestamp"),
                                     null,
                                     jsonObject.getDouble("longitude"),

@@ -10,9 +10,12 @@ import java.util.Objects;
 
 
 public class ReportModel {
-    private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
+    private String title, description, subCategory, mainCategory, locationName, timestamp;
+
+    private int iconID;
     private double longitude, latitude;
     private Bitmap image;
+    private MainCategoryModel mainCategoryModel;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -26,9 +29,9 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, String icon, String timestamp, Bitmap image, double longitude, double latitude) {
+    public ReportModel(String title, int icon, String timestamp, Bitmap image, double longitude, double latitude) {
         this.title = title;
-        this.icon = icon;
+        this.iconID = icon;
         this.timestamp = timestamp;
         this.image = image;
         this.longitude = longitude;
@@ -46,6 +49,14 @@ public class ReportModel {
     public double getLatitude(){ return latitude;}
     public String getLocationName() {return locationName;}
 
+    public int getIconID() {
+        return iconID;
+    }
+
+    public void setIconID(int iconID) {
+        this.iconID = iconID;
+    }
+
     public void setTitle(String title) {this.title = title;}
     public void setImage(Bitmap image) {this.image = image;}
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
@@ -55,6 +66,13 @@ public class ReportModel {
     public void setLongitude(double longitude) {this.longitude = longitude;}
     public void setLatitude(double latitude) {this.latitude = latitude;}
     public void setLocationName(String locationName) {this.locationName = locationName;}
+
+    public MainCategoryModel getMainCategoryModel() {
+        return mainCategoryModel;
+    }
+    public void setMainCategoryModel(MainCategoryModel mainCategoryModel) {
+        this.mainCategoryModel = mainCategoryModel;
+    }
 
     @Override
     public String toString() {
@@ -86,7 +104,6 @@ public class ReportModel {
                     Objects.equals(mainCategory, other.mainCategory) &&
                     Objects.equals(subCategory, other.subCategory) &&
                     Objects.equals(locationName, other.locationName) &&
-                    Objects.equals(icon, other.icon) &&
                     Objects.equals(image, other.image) &&
                     Double.compare(other.longitude, longitude) == 0 &&
                     Double.compare(other.latitude, latitude) == 0;
