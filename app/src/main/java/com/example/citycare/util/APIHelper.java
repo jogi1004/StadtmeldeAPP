@@ -341,13 +341,20 @@ public class APIHelper {
                                     null,
                                     jsonObject.getString("timestamp"),
                                     null,
+                                    null,
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
-                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
-                            if (image!=null){
-                                reportModel.setImage(image);
+
+                            if (!jsonObject.isNull("reportPictureId")) {
+                                reportModel.setImageId(jsonObject.getInt("reportPictureId"));
                             }
+
+//                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
+//                            if (image != null){
+//                                reportModel.setImage(image);
+//                            }
+                            
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {

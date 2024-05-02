@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.Nullable;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 
 
@@ -13,6 +12,7 @@ public class ReportModel {
     private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
     private double longitude, latitude;
     private Bitmap image;
+    Integer imageId;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -26,16 +26,23 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, String icon, String timestamp, Bitmap image, double longitude, double latitude) {
+    public ReportModel(String title, String icon, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude) {
         this.title = title;
         this.icon = icon;
         this.timestamp = timestamp;
         this.image = image;
+        this.imageId = imageId;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
+    public Integer getImageId() {
+        return imageId;
+    }
 
+    public void setImageId(Integer imageId) {
+        this.imageId = imageId;
+    }
     public String getDescription() {return description;}
     public String getTitle() {return title;}
     public Bitmap getImage() {return image;}
@@ -61,6 +68,7 @@ public class ReportModel {
         return "ReportModel{" +
                 "title='" + title + '\'' +
                 ", image='" + image + '\'' +
+                ", imageId='" + imageId + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +
