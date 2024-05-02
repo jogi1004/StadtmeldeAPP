@@ -47,6 +47,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
     TextView address1, address2, address3;
     private static final String PREF_LASTADRESSES = "lastAdresses";
     private ConstraintLayout layout1, layout2, layout3;
+    SharedPreferences SPLastAdresses;
 
     public SearchDialog(@NonNull Context context, LandingPage landingPage, PoiInformationDialog poiInformationDialog) {
         super(context);
@@ -77,18 +78,30 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
         address2.setText("");
         address3.setText("");
 
+        SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
+
         layout1 = findViewById(R.id.layout1);
-        layout1.setOnClickListener(this);
         layout2 = findViewById(R.id.layout2);
-        layout2.setOnClickListener(this);
         layout3 = findViewById(R.id.layout3);
-        layout3.setOnClickListener(this);
+
+        if (SPLastAdresses.contains("LastAddresses1")){
+            layout1.setVisibility(View.VISIBLE);
+            layout1.setOnClickListener(this);
+        }
+        if (SPLastAdresses.contains("LastAddresses2")){
+            layout2.setVisibility(View.VISIBLE);
+            layout2.setOnClickListener(this);
+        }
+        if (SPLastAdresses.contains("LastAddresses3")){
+            layout3.setVisibility(View.VISIBLE);
+            layout3.setOnClickListener(this);
+        }
+
     }
 
     @Override
     public void onClick(View view) {
 
-        SharedPreferences SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
         String inside = "";
 
         if(view == searchBtn) {
@@ -100,14 +113,11 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
             return;
         }else if(view == layout1){
             inside = SPLastAdresses.getString("LastAddresses1", null);
-            Log.d("lastAddresses", "1: " + inside);
         }else if(view == layout2){
             inside = SPLastAdresses.getString("LastAddresses2", null);
-            Log.d("lastAddresses", "2:" + inside);
         }else{
             assert view == layout3;
             inside = SPLastAdresses.getString("LastAddresses3", null);
-            Log.d("lastAddresses", "3: " + inside);
         }
 
         GeoPoint geoPoint = convertText(inside);

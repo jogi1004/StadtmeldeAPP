@@ -150,7 +150,7 @@ public class APIHelper {
 
                 }, volleyError -> {
                     NetworkResponse networkResponse = volleyError.networkResponse;
-                    Log.d("NetworkResponse", networkResponse + " ");
+                    Log.d("Lieblingsfehler", networkResponse + " ");
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     switch (statuscode){

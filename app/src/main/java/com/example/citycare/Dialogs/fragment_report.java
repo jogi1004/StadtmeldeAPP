@@ -35,6 +35,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
     private ConstraintLayout sendReport;
     private View rootView;
     private ImageButton backFragment;
+    private APIHelper apiHelper;
 
     public fragment_report(ReportModel report) {
         this.report = report;
@@ -46,6 +47,8 @@ public class fragment_report extends Fragment implements View.OnClickListener {
         rootView =  inflater.inflate(R.layout.fragment_report, container, false);
         category = rootView.findViewById(R.id.category);
         category.setText(report.getMainCategory());
+
+        apiHelper = APIHelper.getInstance(this.getContext());
 
         subCategory = rootView.findViewById(R.id.subCategory);
         if(report.getSubCategory().equals("Sonstiges")){
@@ -100,12 +103,15 @@ public class fragment_report extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        APIHelper apiHelper = APIHelper.getInstance(this.getContext());
+
         try {
             apiHelper.postReport(report);
-            FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
+            FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("fragmentManager");
             if (fragmentDialog != null) {
+                Log.d("fragmentDialog", "ist nicht null");
                 fragmentDialog.dismiss();
+            }else{
+                Log.d("fragmentDialog", "ist null");
             }
             LandingPage.getCamUtil().setBitmap(null);
             Toast toast = new Toast(rootView.getContext());

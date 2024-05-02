@@ -136,14 +136,31 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
 
         searchDialog.setOnShowListener(dialogInterface -> {
-            SearchDialog alertDialog = (SearchDialog) dialogInterface;
+            SearchDialog searchDialog = (SearchDialog) dialogInterface;
 
             SharedPreferences SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
             Map<String, ?> allEntries = SPLastAdresses.getAll();
 
-            TextView address1 = alertDialog.findViewById(R.id.adress1);
-            TextView address2 = alertDialog.findViewById(R.id.adress2);
-            TextView address3 = alertDialog.findViewById(R.id.adress3);
+            TextView address1 = searchDialog.findViewById(R.id.adress1);
+            TextView address2 = searchDialog.findViewById(R.id.adress2);
+            TextView address3 = searchDialog.findViewById(R.id.adress3);
+
+            ConstraintLayout layout1 = searchDialog.findViewById(R.id.layout1);
+            ConstraintLayout layout2 = searchDialog.findViewById(R.id.layout2);
+            ConstraintLayout layout3 = searchDialog.findViewById(R.id.layout3);
+
+            if (SPLastAdresses.contains("LastAddresses1")){
+                layout1.setVisibility(View.VISIBLE);
+                layout1.setOnClickListener(this);
+            }
+            if (SPLastAdresses.contains("LastAddresses2")){
+                layout2.setVisibility(View.VISIBLE);
+                layout2.setOnClickListener(this);
+            }
+            if (SPLastAdresses.contains("LastAddresses3")){
+                layout3.setVisibility(View.VISIBLE);
+                layout3.setOnClickListener(this);
+            }
 
             if(!allEntries.isEmpty()){
                 int i = 0;
