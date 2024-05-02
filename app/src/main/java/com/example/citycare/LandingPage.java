@@ -173,15 +173,30 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
             if (SPLastAdresses.contains("LastAddresses1")){
                 layout1.setVisibility(View.VISIBLE);
-                layout1.setOnClickListener(this);
+                layout1.setOnClickListener(v ->{
+                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses1", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();
+                });
             }
             if (SPLastAdresses.contains("LastAddresses2")){
                 layout2.setVisibility(View.VISIBLE);
-                layout2.setOnClickListener(this);
+                layout2.setOnClickListener(v ->{
+                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses2", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();
+                });
             }
             if (SPLastAdresses.contains("LastAddresses3")){
                 layout3.setVisibility(View.VISIBLE);
-                layout3.setOnClickListener(this);
+                layout3.setOnClickListener(v -> {
+                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses3", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();
+                });
             }
 
             if(!allEntries.isEmpty()){

@@ -17,6 +17,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
@@ -135,6 +136,7 @@ public class APIHelper {
         requestBody.put("username", username);
         requestBody.put("password", password);
 
+        int MY_SOCKET_TIMEOUT_MS = 10000;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, loginPostURL, requestBody, jsonObject -> {
                     try {
@@ -165,7 +167,15 @@ public class APIHelper {
                             break;
 
                     }
-                });
+                }){
+            @Override
+            public RetryPolicy getRetryPolicy() {
+                return new DefaultRetryPolicy(
+                        MY_SOCKET_TIMEOUT_MS,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            }
+        };
         requestQueue.add(jsonObjectRequest);
 
     }

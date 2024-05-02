@@ -81,54 +81,37 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
         SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
 
         layout1 = findViewById(R.id.layout1);
+        layout1.setOnClickListener(this);
+
         layout2 = findViewById(R.id.layout2);
+        layout2.setOnClickListener(this);
+
         layout3 = findViewById(R.id.layout3);
+        layout3.setOnClickListener(this);
+
 
         if (SPLastAdresses.contains("LastAddresses1")){
             layout1.setVisibility(View.VISIBLE);
-            layout1.setOnClickListener(this);
         }
         if (SPLastAdresses.contains("LastAddresses2")){
             layout2.setVisibility(View.VISIBLE);
-            layout2.setOnClickListener(this);
         }
         if (SPLastAdresses.contains("LastAddresses3")){
             layout3.setVisibility(View.VISIBLE);
-            layout3.setOnClickListener(this);
         }
 
     }
 
     @Override
     public void onClick(View view) {
-
-        String inside = "";
-
-        if(view == searchBtn) {
             String query = address.getText().toString();
             address.setText("");
             if (!query.isEmpty()) {
                 performSearch(query);
             }
-            return;
-        }else if(view == layout1){
-            inside = SPLastAdresses.getString("LastAddresses1", null);
-        }else if(view == layout2){
-            inside = SPLastAdresses.getString("LastAddresses2", null);
-        }else{
-            assert view == layout3;
-            inside = SPLastAdresses.getString("LastAddresses3", null);
-        }
-
-        GeoPoint geoPoint = convertText(inside);
-        Log.d("lastAddresses", "geopoint: " + geoPoint);
-        landingPage.updatePoiMarker(geoPoint);
-        apiHelper.getIsLocationMember(geoPoint, landingPage, poiInformationDialog);
-        dismiss();
-
     }
 
-    private GeoPoint convertText(String inside) {
+    public GeoPoint convertText(String inside) {
         String[] teile = inside.split(",");
         return new GeoPoint(Double.parseDouble(teile[teile.length-2]), Double.parseDouble(teile[teile.length-1]));
     }
