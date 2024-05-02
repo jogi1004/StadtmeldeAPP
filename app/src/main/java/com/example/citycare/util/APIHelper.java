@@ -60,6 +60,7 @@ public class APIHelper {
     private final String subCategoryGetURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/categories/sub/main/";
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
+    private final String getReportPicture = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/reportPicture/";
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
@@ -213,16 +214,16 @@ public class APIHelper {
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                Log.d("userDATA", currentUser.toString());
+                    Log.d("userDATA", currentUser.toString());
                 }, volleyError -> volleyError.printStackTrace())
-                {
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", "Bearer "+token);
-                        return headers;
-                    }
-                };
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer "+token);
+                return headers;
+            }
+        };
         requestQueue.add(jsonObjectRequest);
     }
 
@@ -344,7 +345,7 @@ public class APIHelper {
                                     null,
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
-                                    );
+                            );
 
                             if (!jsonObject.isNull("reportPictureId")) {
                                 reportModel.setImageId(jsonObject.getInt("reportPictureId"));
@@ -354,7 +355,7 @@ public class APIHelper {
 //                            if (image != null){
 //                                reportModel.setImage(image);
 //                            }
-                            
+
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {
@@ -378,6 +379,43 @@ public class APIHelper {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
     }
+
+    public void getReportPic(Integer reportPicId, final BitmapCallback callback) {
+        if(reportPicId != null) {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET, getReportPicture + reportPicId, null,
+                    response -> {
+                        try {
+                            if (!response.isNull("picture")) {
+                                Bitmap image = decodeImage(Base64.decode(response.getString("picture"), Base64.DEFAULT));
+                                callback.onBitmapLoaded(image);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback.onBitmapError(e);
+                        }
+                    },
+                    error -> {
+                        error.printStackTrace();
+                        callback.onBitmapError(new Exception("Error fetching report picture"));
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+        requestQueue.add(jsonObjectRequest);
+        }
+    }
+
+    public interface BitmapCallback {
+        void onBitmapLoaded(Bitmap bitmap);
+        void onBitmapError(Exception e);
+    }
+
 
     public void postReport(ReportModel report) throws JSONException {
 
@@ -433,33 +471,33 @@ public class APIHelper {
             throw new RuntimeException(e);
         }
 
-            StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
-                    response -> {
-                        boolean isMember = Boolean.parseBoolean(response);
+        StringRequest booleanRequest = new StringRequest(Request.Method.GET, getIsLocationMember + location,
+                response -> {
+                    boolean isMember = Boolean.parseBoolean(response);
 
-                        if (isMember) {
-                            poiInformationDialog.setGifVisibility(View.GONE);
-                            poiInformationDialog.setButtonVisibility(View.VISIBLE);
-                            members.add(location);
-                        } else {
-                            poiInformationDialog.setGifVisibility(View.GONE);
-                            poiInformationDialog.setButtonVisibility(View.INVISIBLE);
-                            Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
-                            notMembers.add(location);
-                        }
-                    },
-                    volleyError -> {
-                        volleyError.printStackTrace();
-                        Log.d("Member", "Volley Error");
+                    if (isMember) {
+                        poiInformationDialog.setGifVisibility(View.GONE);
+                        poiInformationDialog.setButtonVisibility(View.VISIBLE);
+                        members.add(location);
+                    } else {
+                        poiInformationDialog.setGifVisibility(View.GONE);
+                        poiInformationDialog.setButtonVisibility(View.INVISIBLE);
+                        Toast.makeText(poiInformationDialog.getContext(), "Stadt ist kein Mitglied", Toast.LENGTH_LONG).show();
+                        notMembers.add(location);
                     }
-            ) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
+                },
+                volleyError -> {
+                    volleyError.printStackTrace();
+                    Log.d("Member", "Volley Error");
                 }
-            };
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
         requestQueue.add(booleanRequest);
 
     }

@@ -387,11 +387,33 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
         poi.setIcon(ContextCompat.getDrawable(context, R.drawable.png_poi));
+        List<Marker> markers = new ArrayList<>();
 
 
         poi.setOnMarkerClickListener((marker, mapView) -> {
             PoiDialog poiDialog = new PoiDialog(context,m);
+            if(!markers.contains(marker)) {
+                if(m.getImageId() != null) {
+                    poiDialog.existsImage(true);
+                    apiHelper.getReportPic(m.getImageId(), new APIHelper.BitmapCallback() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap) {
+                            poiDialog.updateImage(bitmap);
+                            m.setImage(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapError(Exception e) {
+                            Log.e("onBitmapError", e.toString());
+                            Toast.makeText(context, "Bild wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    poiDialog.existsImage(false);
+                }
+            }
             poiDialog.show();
+            markers.add(marker);
             return true;
         });
 
