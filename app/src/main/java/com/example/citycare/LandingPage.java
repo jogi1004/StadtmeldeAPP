@@ -528,4 +528,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     }
 
+    public static void setAllReports(List<ReportModel> allReports) {
+        LandingPage.allReports = allReports;
+    }
 }

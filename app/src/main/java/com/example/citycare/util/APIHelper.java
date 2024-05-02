@@ -450,6 +450,17 @@ public class APIHelper {
                             poiInformationDialog.setGifVisibility(View.GONE);
                             poiInformationDialog.setButtonVisibility(View.VISIBLE);
                             members.add(location);
+                            getAllReports(location, new AllReportsCallback(){
+                                @Override
+                                public void onSuccess(List<ReportModel> reportModels) {
+                                    LandingPage.setAllReports(reportModels);
+
+                                }
+                                @Override
+                                public void onError(String errorMessage) {
+                                    Log.e("getAllReportsAfterSearch", errorMessage);
+                                }
+                            });
                         } else {
                             poiInformationDialog.setGifVisibility(View.GONE);
                             poiInformationDialog.setButtonVisibility(View.INVISIBLE);
