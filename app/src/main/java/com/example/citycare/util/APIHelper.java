@@ -201,13 +201,15 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    response.getBoolean("notificationsEnabled")
+                                    response.getBoolean("notificationsEnabled"),
+                                    response.getInt("profilePictureId")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
+                            currentUser.setPicID(response.getInt("profilePictureId"));
 
                         }
                     } catch (JSONException e) {
@@ -346,10 +348,10 @@ public class APIHelper {
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
-                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
-                            if (image!=null){
+                            /*Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));*/
+                            /*if (image!=null){
                                 reportModel.setImage(image);
-                            }
+                            }*/
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {
@@ -479,10 +481,7 @@ public class APIHelper {
                                     jsonObject.getDouble("latitude")
                             );
 
-                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
-                            if (image!=null){
-                                report.setImage(image);
-                            }
+
                             Log.d("reportModel", report.toString());
                             userReports.add(report);
                         } catch (Exception e) {
