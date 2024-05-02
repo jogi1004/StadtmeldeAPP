@@ -49,7 +49,7 @@ public class PoiDialog extends Dialog {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         gifImageView = findViewById(R.id.gif);
-        Glide.with(context).asGif().load(R.drawable.gif_load_pic).into(gifImageView);
+        Glide.with(context).asGif().load(R.drawable.gif_load_pic_green).into(gifImageView);
 
         imageView =  findViewById(R.id.poi_report_pic);
         title = findViewById(R.id.poiTitle);
