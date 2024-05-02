@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -81,9 +82,11 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
+    private static final String PREF_LASTADRESSES = "lastAdresses";
     private static MapView mMap;
     private Marker poiMarker;
     private IMapController controller;
@@ -153,6 +156,75 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         ReportDialogPage allReportsDialog = new ReportDialogPage(this, this,adapterReportList );
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
+
+        searchDialog.setOnShowListener(dialogInterface -> {
+            SearchDialog searchDialog = (SearchDialog) dialogInterface;
+
+            SharedPreferences SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
+            Map<String, ?> allEntries = SPLastAdresses.getAll();
+
+            TextView address1 = searchDialog.findViewById(R.id.adress1);
+            TextView address2 = searchDialog.findViewById(R.id.adress2);
+            TextView address3 = searchDialog.findViewById(R.id.adress3);
+
+            ConstraintLayout layout1 = searchDialog.findViewById(R.id.layout1);
+            ConstraintLayout layout2 = searchDialog.findViewById(R.id.layout2);
+            ConstraintLayout layout3 = searchDialog.findViewById(R.id.layout3);
+
+            if (SPLastAdresses.contains("LastAddresses1")){
+                layout1.setVisibility(View.VISIBLE);
+                layout1.setOnClickListener(v ->{
+                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses1", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();
+                });
+            }
+            if (SPLastAdresses.contains("LastAddresses2")){
+                layout2.setVisibility(View.VISIBLE);
+                layout2.setOnClickListener(v ->{
+                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses2", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();
+                });
+            }
+            if (SPLastAdresses.contains("LastAddresses3")){
+                layout3.setVisibility(View.VISIBLE);
+                layout3.setOnClickListener(v -> {
+                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses3", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();
+                });
+            }
+
+            if(!allEntries.isEmpty()){
+                int i = 0;
+                for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+                    if (i < 3) {
+                        String prompt = (String) entry.getValue();
+                        String[] teile = prompt.split(",");
+
+                        switch (i) {
+                            case 0:
+                                address1.setText(teile[0]);
+                                break;
+                            case 1:
+                                address2.setText(teile[0]);
+                                break;
+                            case 2:
+                                address3.setText(teile[0]);
+                                break;
+                            default:
+                                break;
+                        }
+                        i++;
+                    }
+                }
+            }
+        });
+        new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
         myFloatingActionButtons = new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
     }
 
@@ -252,6 +324,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     @SuppressLint("SetTextI18n")
     public void updatePoiMarker(GeoPoint geoPoint) {
+
+        Log.d("lastAddresses", "geopoint: " + geoPoint);
 
         Geocoder geocoder = new Geocoder(this);
         try {
@@ -389,11 +463,33 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
         poi.setIcon(ContextCompat.getDrawable(context, R.drawable.png_poi));
+        List<Marker> markers = new ArrayList<>();
 
 
         poi.setOnMarkerClickListener((marker, mapView) -> {
             PoiDialog poiDialog = new PoiDialog(context,m);
+            if(!markers.contains(marker)) {
+                if(m.getImageId() != null) {
+                    poiDialog.existsImage(true);
+                    apiHelper.getReportPic(m.getImageId(), new APIHelper.BitmapCallback() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap) {
+                            poiDialog.updateImage(bitmap);
+                            m.setImage(bitmap);
+                        }
+
+                        @Override
+                        public void onBitmapError(Exception e) {
+                            Log.e("onBitmapError", e.toString());
+                            Toast.makeText(context, "Bild wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    poiDialog.existsImage(false);
+                }
+            }
             poiDialog.show();
+            markers.add(marker);
             myFloatingActionButtons.hideFABS();
             return true;
         });
