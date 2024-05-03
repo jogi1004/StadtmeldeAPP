@@ -74,6 +74,7 @@ public class APIHelper {
     private UserModel currentUser;
     private final ArrayList<ReportModel> allReports = new ArrayList<>();
     private List<ReportModel> userReports = new ArrayList<>();
+    private int i=1;
 
     private APIHelper(Context context){
         this.context = context;
@@ -150,6 +151,8 @@ public class APIHelper {
                     context.startActivity(i);
 
                 }, volleyError -> {
+                    volleyError.printStackTrace();
+
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     switch (statuscode){
@@ -268,6 +271,7 @@ public class APIHelper {
                             }*/
 
                             categoryModelList.add(categoryModel);
+                            Log.d("Maincategorys", categoryModel.toString());
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -343,6 +347,7 @@ public class APIHelper {
     }
 
     public void getAllReports(String cityName, AllReportsCallback callback) {
+        Log.d("getAllReports", cityName + i);
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
@@ -385,6 +390,7 @@ public class APIHelper {
                 2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
+        i++;
 
     }
 
@@ -409,7 +415,7 @@ public class APIHelper {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
-                    LandingPage.setMarker(report, context);
+                    LandingPage.setMarker(report);
                 }, volleyError -> {
                     volleyError.printStackTrace();
                     int statuscode = volleyError.networkResponse.statusCode;
@@ -451,17 +457,7 @@ public class APIHelper {
                             poiInformationDialog.setGifVisibility(View.GONE);
                             poiInformationDialog.setButtonVisibility(View.VISIBLE);
                             members.add(location);
-                            getAllReports(location, new AllReportsCallback(){
-                                @Override
-                                public void onSuccess(List<ReportModel> reportModels) {
-                                    LandingPage.setAllReports(reportModels);
 
-                                }
-                                @Override
-                                public void onError(String errorMessage) {
-                                    Log.e("getAllReportsAfterSearch", errorMessage);
-                                }
-                            });
                         } else {
                             poiInformationDialog.setGifVisibility(View.GONE);
                             poiInformationDialog.setButtonVisibility(View.INVISIBLE);

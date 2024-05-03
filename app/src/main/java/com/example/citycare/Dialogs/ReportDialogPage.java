@@ -58,6 +58,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         RecyclerView recyclerView = findViewById(R.id.reportsrecyclerview);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (windowManager != null) {
@@ -69,7 +70,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
     private void initAllReports() {
         allReports = LandingPage.getAllReportsList();
-
+        LandingPage.getAdapterReportList().updateList(allReports);
     }
 
     @Override

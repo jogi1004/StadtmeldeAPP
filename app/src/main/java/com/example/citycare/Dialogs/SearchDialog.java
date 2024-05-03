@@ -18,7 +18,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.AllReportsCallback;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
@@ -81,7 +83,17 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
 
                 landingPage.updatePoiMarker(new GeoPoint(address.getLatitude(), address.getLongitude()));
                 apiHelper.getIsLocationMember(new GeoPoint(address.getLatitude(), address.getLongitude()), landingPage, poiInformationDialog);
+                apiHelper.getAllReports(address.getLocality(), new AllReportsCallback(){
+                    @Override
+                    public void onSuccess(List<ReportModel> reportModels) {
+                        LandingPage.setAllReports(reportModels);
 
+                    }
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("getAllReportsAfterSearch", errorMessage);
+                    }
+                });
                 dismiss();
             } else {
                 Log.d("Search","No results found for query: " + query);

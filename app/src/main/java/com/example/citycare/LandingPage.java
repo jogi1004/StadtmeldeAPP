@@ -150,7 +150,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this );
+        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this, adapterReportList);
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
         myFloatingActionButtons = new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
@@ -314,6 +314,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
+                mainCategoryList.clear();
                 mainCategoryList = categoryModels;
                 isMember = true;
                 if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
@@ -378,13 +379,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         return allReports;
     }
 
-    public void loadExistingMarkers() {
+    public static void loadExistingMarkers() {
         for (ReportModel m : allReports) {
-            setMarker(m, this);
+            setMarker(m);
         }
     }
 
-    public static void setMarker(ReportModel m, Context context) {
+    public static void setMarker(ReportModel m) {
         Marker poi = new Marker(mMap);
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
@@ -420,6 +421,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 allReports = gson.fromJson(json, type);
                 Log.d("ReportList", allReports.toString());
                 loadExistingMarkers();
+
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
@@ -437,6 +439,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 });
 
             } else {
+
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
@@ -529,6 +532,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     public static void setAllReports(List<ReportModel> allReports) {
         LandingPage.allReports = allReports;
+        adapterReportList.updateList(allReports);
+        loadExistingMarkers();
     }
     public static RecyclerViewAdapter_AllReports getAdapterReportList() {
         return adapterReportList;
