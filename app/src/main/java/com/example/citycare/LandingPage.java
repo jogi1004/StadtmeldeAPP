@@ -506,6 +506,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReports = allReportsUpdated;
                         loadExistingMarkers();
                         Log.d("updateallReportsLandingSP", String.valueOf(allReports.size()));
+                        Toast.makeText(LandingPage.this, "Meldungen aktualisiert", Toast.LENGTH_LONG).show();
                         adapterReportList.updateList(allReports);
                         for (ReportModel m: reports) {
                             if (m.getImageId()!=null){
