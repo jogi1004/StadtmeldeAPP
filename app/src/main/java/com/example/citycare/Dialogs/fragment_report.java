@@ -108,7 +108,7 @@ public class fragment_report extends Fragment implements View.OnClickListener {
             LandingPage.getAllReportsList().add(report);
             LandingPage.getAdapterReportList().updateList(LandingPage.getAllReportsList());
 
-            FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("FragmentDialog");
+            FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("fragmentManager");
             if (fragmentDialog != null) {
                 Log.d("FragmentDialog", "dismiss");
                 fragmentDialog.dismiss();

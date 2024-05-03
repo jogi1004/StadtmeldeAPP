@@ -1,6 +1,5 @@
 package com.example.citycare.util;
 
-//import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,7 +8,6 @@ import android.location.Geocoder;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -18,7 +16,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.Dialogs.PoiInformationDialog;
@@ -32,23 +29,18 @@ import com.example.citycare.model.UserModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
 
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
-import android.location.Address;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import android.location.Address;
 
 public class APIHelper {
 
@@ -63,6 +55,7 @@ public class APIHelper {
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
     private final String getUserReports = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/user/";
+    private final String notificationURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/notifications";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
@@ -73,6 +66,7 @@ public class APIHelper {
     private UserModel currentUser;
     private final ArrayList<ReportModel> allReports = new ArrayList<>();
     private List<ReportModel> userReports = new ArrayList<>();
+
 
     private APIHelper(Context context){
         this.context = context;
@@ -349,10 +343,6 @@ public class APIHelper {
                                     jsonObject.getDouble("longitude"),
                                     jsonObject.getDouble("latitude")
                                     );
-                            /*Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));*/
-                            /*if (image!=null){
-                                reportModel.setImage(image);
-                            }*/
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {
@@ -507,6 +497,27 @@ public class APIHelper {
 
         requestQueue.add(jsonObjectRequest);
 
+    }
+    public void setEmailNotification(boolean enable){
+        Log.d("Enable: ", enable + "");
+        JSONObject body = new JSONObject();
+        try{
+            body.put("",enable);
+            Log.d("body", body.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        JsonObjectRequest jOr = new JsonObjectRequest(
+                Request.Method.PUT, notificationURL,body,null, volleyError -> volleyError.printStackTrace()
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        requestQueue.add(jOr);
     }
 
     public List<String> getMembers() {

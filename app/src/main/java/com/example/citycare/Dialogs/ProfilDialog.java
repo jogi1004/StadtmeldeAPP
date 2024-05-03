@@ -5,25 +5,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.citycare.R;
 import com.example.citycare.WelcomePage;
@@ -33,12 +26,9 @@ import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CamUtil;
 import com.example.citycare.util.RecyclerViewInterface;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfilDialog extends Dialog implements RecyclerViewInterface {
@@ -51,7 +41,6 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
     private CamUtil camUtil;
     private TextView username;
     private ImageView gifImageView;
-    private List<ReportModel> userReports = new ArrayList<>();
     public ProfilDialog(@NonNull Context context, Activity landingPage, CamUtil camUtil) {
         super(context);
         this.context = context;
@@ -59,7 +48,6 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
         this.landingPage = landingPage;
         apiHelper = APIHelper.getInstance(context);
         this.camUtil= camUtil;
-
     }
 
     @Override
@@ -73,7 +61,6 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
 
         gifImageView = findViewById(R.id.gifProfil);
         Glide.with(context).asGif().load(R.drawable.gif_punkte_laden).into(gifImageView);
-
 
         RecyclerView recyclerView = findViewById(R.id.personalReportsView);
         RecyclerViewAdapter_AllReports recyclerAdapter = new RecyclerViewAdapter_AllReports(context, new ArrayList<>());
@@ -94,7 +81,6 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
                 Log.e("getUserReportsError", errorMessage);
             }
         });
-
 
         ImageView logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> {
