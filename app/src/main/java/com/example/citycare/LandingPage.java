@@ -171,34 +171,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             ConstraintLayout layout2 = searchDialog.findViewById(R.id.layout2);
             ConstraintLayout layout3 = searchDialog.findViewById(R.id.layout3);
 
-            if (SPLastAdresses.contains("LastAddresses1")){
-                layout1.setVisibility(View.VISIBLE);
-                layout1.setOnClickListener(v ->{
-                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses1", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();
-                });
-            }
-            if (SPLastAdresses.contains("LastAddresses2")){
-                layout2.setVisibility(View.VISIBLE);
-                layout2.setOnClickListener(v ->{
-                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses2", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();
-                });
-            }
-            if (SPLastAdresses.contains("LastAddresses3")){
-                layout3.setVisibility(View.VISIBLE);
-                layout3.setOnClickListener(v -> {
-                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses3", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();
-                });
-            }
-
             if(!allEntries.isEmpty()){
                 int i = 0;
                 for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -223,6 +195,40 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     }
                 }
             }
+
+            if (SPLastAdresses.contains("LastAddresses1")){
+                layout1.setVisibility(View.VISIBLE);
+                layout1.setOnClickListener(v ->{
+                    /*GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses1", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);*/
+
+                    searchDialog.performSearch(address1.getText().toString());
+
+                    /*searchDialog.dismiss();*/
+                });
+            }
+            if (SPLastAdresses.contains("LastAddresses2")){
+                layout2.setVisibility(View.VISIBLE);
+                layout2.setOnClickListener(v ->{
+                    /*GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses2", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();*/
+                    searchDialog.performSearch(address2.getText().toString());
+                });
+            }
+            if (SPLastAdresses.contains("LastAddresses3")){
+                layout3.setVisibility(View.VISIBLE);
+                layout3.setOnClickListener(v -> {
+                    /*GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses3", null));
+                    updatePoiMarker(geoPoint);
+                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
+                    searchDialog.dismiss();*/
+                    searchDialog.performSearch(address3.getText().toString());
+                });
+            }
+
         });
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
         myFloatingActionButtons = new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);

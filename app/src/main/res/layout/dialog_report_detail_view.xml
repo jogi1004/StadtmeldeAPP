@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_profile_dialog"
@@ -82,7 +83,7 @@
             android:id="@+id/iconReportDetail"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="20sp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="30sp"
             android:scaleType="centerCrop"
             android:src="@drawable/png_dummy"
@@ -92,9 +93,14 @@
         <TextView
             android:id="@+id/descriptionDetail"
             style="@style/EditTextStyle"
+            android:gravity="top|left"
+            android:padding="15dp"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_margin="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/detailsDescriptionHeader" />
 
         <TextView

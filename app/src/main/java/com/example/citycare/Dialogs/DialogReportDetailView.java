@@ -43,9 +43,12 @@ public class DialogReportDetailView extends Dialog {
 
     }
     public void setData(){
-        headline.setText(reportModel.getTitle());
+        if (reportModel.getTitle()!=null){
+            headline.setText(reportModel.getTitle());
+        } else {
+            headline.setText(reportModel.getSubCategory());
+        }
         if(reportModel.getImage() != null){
-            Log.d("lol","lol");
             imageReport.setImageBitmap(reportModel.getImage());
         }else {
             imageReport.setImageResource(R.drawable.png_dummy);

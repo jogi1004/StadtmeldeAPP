@@ -380,7 +380,8 @@ public class APIHelper {
                                     null,
                                     null,
                                     jsonObject.getDouble("longitude"),
-                                    jsonObject.getDouble("latitude")
+                                    jsonObject.getDouble("latitude"),
+                                    jsonObject.getString("description")
                             );
 
                             if (!jsonObject.isNull("reportPictureId")) {
@@ -556,7 +557,8 @@ public class APIHelper {
                                     null,
                                     null,
                                     jsonObject.getDouble("longitude"),
-                                    jsonObject.getDouble("latitude")
+                                    jsonObject.getDouble("latitude"),
+                                    jsonObject.getString("description")
                             );
 
 
@@ -571,7 +573,7 @@ public class APIHelper {
                     volleyerror.printStackTrace();
                 }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + token);
                 return headers;
