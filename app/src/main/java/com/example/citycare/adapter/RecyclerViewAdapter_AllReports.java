@@ -63,6 +63,9 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         } else {
             holder.image.setImageResource(R.drawable.png_dummy);
         }
+        if(allReports.get(position).getIconId() != -1){
+            holder.icon.setImageBitmap(allReports.get(position).getIcon());
+        }
     }
 
     @Override
@@ -71,7 +74,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
+        ImageView image, icon;
         TextView reportName, reportDate;
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
@@ -79,6 +82,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             image = itemView.findViewById(R.id.reportImage);
             reportName = itemView.findViewById(R.id.reportName);
             reportDate = itemView.findViewById(R.id.reportDate);
+            icon = itemView.findViewById(R.id.categoryIcon);
             itemView.setOnClickListener(v -> {
                 if (recyclerViewInterface != null) {
                     int pos = getAdapterPosition();

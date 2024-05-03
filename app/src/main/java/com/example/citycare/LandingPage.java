@@ -95,7 +95,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     public ProfilDialog profileDialog;
     public PoiInformationDialog poiInformationDialog;
     private SearchDialog searchDialog;
-
+    private ReportDialogPage allReportsDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
@@ -153,7 +153,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this,adapterReportList );
+        allReportsDialog = new ReportDialogPage(this, this,adapterReportList );
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
 
@@ -524,6 +524,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReports.clear();
                         allReports = allReportsUpdated;
                         adapterReportList.updateList(allReports);
+
+                        loadIconsForReports(allReports);
+
                         loadExistingMarkers();
                     }
 
@@ -555,6 +558,24 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void loadIconsForReports(List<ReportModel> allReports) {
+        for (ReportModel report: allReports) {
+            apiHelper.getIcon(report.getIconId(), new APIHelper.BitmapCallback() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap) {
+                    adapterReportList.notifyDataSetChanged();
+                    report.setIcon(bitmap);
+                }
+
+                @Override
+                public void onBitmapError(Exception e) {
+                    Log.e("onBitmapError", e.toString());
+                    Toast.makeText(context, "Icon wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

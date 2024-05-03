@@ -62,6 +62,7 @@ public class APIHelper {
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
     private final String getReportPicture = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/reportPicture/";
+    private final String getIcon = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/icons/";
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
@@ -363,6 +364,7 @@ public class APIHelper {
                             ReportModel reportModel = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
                                     null,
+                                    null,
                                     jsonObject.getString("timestamp"),
                                     null,
                                     null,
@@ -374,10 +376,9 @@ public class APIHelper {
                                 reportModel.setImageId(jsonObject.getInt("reportPictureId"));
                             }
 
-//                            Bitmap image = decodeImage(Base64.decode(jsonObject.getString("image"), Base64.DEFAULT));
-//                            if (image != null){
-//                                reportModel.setImage(image);
-//                            }
+                            if (!jsonObject.isNull("iconId")) {
+                                reportModel.setIconId(jsonObject.getInt("iconId"));
+                            }
 
                             allReports.add(reportModel);
                             Log.d("allReportsALL", reportModel+"");
@@ -432,6 +433,38 @@ public class APIHelper {
                 }
             };
         requestQueue.add(jsonObjectRequest);
+        }
+    }
+
+    public void getIcon(Integer IconId, final BitmapCallback callback) {
+        if(IconId != -1) {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET, getIcon + IconId, null,
+                    response -> {
+                        try {
+                            if (!response.isNull("icon")) {
+                                Bitmap icon = decodeImage(Base64.decode(response.getString("icon"), Base64.DEFAULT));
+                                Log.d("Icon", icon + " ");
+                                callback.onBitmapLoaded(icon);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback.onBitmapError(e);
+                        }
+                    },
+                    error -> {
+                        error.printStackTrace();
+                        callback.onBitmapError(new Exception("Error fetching icon"));
+                    }
+            ) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
+            requestQueue.add(jsonObjectRequest);
         }
     }
 
@@ -538,6 +571,7 @@ public class APIHelper {
                             ReportModel report = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
                                     null,
+                                    null,
                                     jsonObject.getString("timestamp"),
                                     null,
                                     null,
@@ -545,6 +579,9 @@ public class APIHelper {
                                     jsonObject.getDouble("latitude")
                             );
 
+                            if (!jsonObject.isNull("iconId")) {
+                                report.setIconId(jsonObject.getInt("iconId"));
+                            }
 
                             Log.d("reportModel", report.toString());
                             userReports.add(report);

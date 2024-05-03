@@ -7,6 +7,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -89,4 +91,5 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     public DialogReportDetailView getDetailView() {
         return detailView;
     }
+
 }

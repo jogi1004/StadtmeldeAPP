@@ -9,10 +9,10 @@ import java.util.Objects;
 
 
 public class ReportModel {
-    private String title, description, subCategory, mainCategory, locationName, icon, timestamp;
+    private String title, description, subCategory, mainCategory, locationName, timestamp;
     private double longitude, latitude;
-    private Bitmap image;
-    Integer imageId;
+    private Bitmap image, icon;
+    private Integer imageId, iconId;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -26,9 +26,10 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, String icon, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude) {
+    public ReportModel(String title, Bitmap icon, Integer iconId, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude) {
         this.title = title;
         this.icon = icon;
+        this.iconId = iconId;
         this.timestamp = timestamp;
         this.image = image;
         this.imageId = imageId;
@@ -36,10 +37,19 @@ public class ReportModel {
         this.latitude = latitude;
     }
 
+    public Bitmap getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Bitmap icon) {
+        this.icon = icon;
+    }
+
+    public Integer getIconId() {return iconId;}
+    public void setIconId(Integer iconId) {this.iconId = iconId;}
     public Integer getImageId() {
         return imageId;
     }
-
     public void setImageId(Integer imageId) {
         this.imageId = imageId;
     }
@@ -69,6 +79,7 @@ public class ReportModel {
                 "title='" + title + '\'' +
                 ", image='" + image + '\'' +
                 ", imageId='" + imageId + '\'' +
+                ", iconId='" + iconId + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +
