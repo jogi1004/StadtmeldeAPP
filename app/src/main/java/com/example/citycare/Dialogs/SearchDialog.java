@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -137,7 +138,22 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                     @Override
                     public void onSuccess(List<ReportModel> reportModels) {
                         LandingPage.setAllReports(reportModels);
+                        for (ReportModel m: reportModels) {
 
+                            if (m.getImageId()!=null) {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
                     }
                     @Override
                     public void onError(String errorMessage) {

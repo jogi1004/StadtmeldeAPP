@@ -199,32 +199,18 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if (SPLastAdresses.contains("LastAddresses1")){
                 layout1.setVisibility(View.VISIBLE);
                 layout1.setOnClickListener(v ->{
-                    /*GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses1", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);*/
-
                     searchDialog.performSearch(address1.getText().toString());
-
-                    /*searchDialog.dismiss();*/
                 });
             }
             if (SPLastAdresses.contains("LastAddresses2")){
                 layout2.setVisibility(View.VISIBLE);
                 layout2.setOnClickListener(v ->{
-                    /*GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses2", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();*/
                     searchDialog.performSearch(address2.getText().toString());
                 });
             }
             if (SPLastAdresses.contains("LastAddresses3")){
                 layout3.setVisibility(View.VISIBLE);
                 layout3.setOnClickListener(v -> {
-                    /*GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses3", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();*/
                     searchDialog.performSearch(address3.getText().toString());
                 });
             }
@@ -238,19 +224,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         return myFloatingActionButtons;
     }
 
-    private void setStatusBarTransparent() {
-        Window window = getWindow();
-        WindowInsetsController controller = getWindow().getInsetsController();
-        if (window != null) {
-            // Statusleiste transparent machen
-
-
-            // Navigationsleistenfarbe beibehalten
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
-
-
-        }
-    }
 
     protected void initPermissions() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -258,6 +231,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             updateLocation();
         } else {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            initPermissions();
         }
     }
 
@@ -478,11 +452,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if(!markers.contains(marker)) {
                 if(m.getImageId() != null) {
                     poiDialog.existsImage(true);
-                    apiHelper.getReportPic(m.getImageId(), new APIHelper.BitmapCallback() {
+                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
                         @Override
-                        public void onBitmapLoaded(Bitmap bitmap) {
-                            poiDialog.updateImage(bitmap);
-                            m.setImage(bitmap);
+                        public void onBitmapLoaded(ReportModel model) {
+                            poiDialog.updateImage(model.getImage());
+
                         }
 
                         @Override
@@ -521,7 +495,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 Type type = new TypeToken<List<ReportModel>>() {
                 }.getType();
                 allReports = gson.fromJson(json, type);
-                Log.d("ReportList", allReports.toString());
                 loadExistingMarkers();
 
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
@@ -532,6 +505,22 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReports.clear();
                         allReports = allReportsUpdated;
                         loadExistingMarkers();
+                        Log.d("updateallReportsLandingSP", String.valueOf(allReports.size()));
+                        adapterReportList.updateList(allReports);
+                        for (ReportModel m: reports) {
+                            if (m.getImageId()!=null){
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
                     }
 
                     @Override
@@ -553,6 +542,22 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         editor.apply();
                         alreadyCalled = true;
                         loadExistingMarkers();
+
+                        for (ReportModel m: allReports) {
+                            if (m.getImageId()!=null) {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
                     }
 
                     @Override

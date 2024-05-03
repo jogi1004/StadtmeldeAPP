@@ -40,7 +40,8 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     }
 
     public void updateList(List<ReportModel> reports){
-        allReports = reports;
+        Log.d("updateallReports", String.valueOf(reports.size()));
+        this.allReports = reports;
         notifyDataSetChanged();
     }
 
@@ -63,7 +64,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
 
         if (allReports.get(position).getImage()!=null){
             holder.image.setImageBitmap(allReports.get(position).getImage());
-        } else {
+        }else {
             holder.image.setImageResource(R.drawable.png_dummy);
         }
 

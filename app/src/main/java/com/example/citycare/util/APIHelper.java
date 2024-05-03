@@ -415,19 +415,21 @@ public class APIHelper {
                 2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
-        i++;
+
+
 
     }
 
-    public void getReportPic(Integer reportPicId, final BitmapCallback callback) {
-        if(reportPicId != null) {
+    public void getReportPic(ReportModel model, final BitmapCallback callback) {
+        if(model.getImageId() != null) {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.GET, getReportPicture + reportPicId, null,
+                    Request.Method.GET, getReportPicture + model.getImageId(), null,
                     response -> {
                         try {
                             if (!response.isNull("picture")) {
                                 Bitmap image = decodeImage(Base64.decode(response.getString("picture"), Base64.DEFAULT));
-                                callback.onBitmapLoaded(image);
+                                model.setImage(image);
+                                callback.onBitmapLoaded(model);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -451,7 +453,7 @@ public class APIHelper {
     }
 
     public interface BitmapCallback {
-        void onBitmapLoaded(Bitmap bitmap);
+        void onBitmapLoaded(ReportModel model);
         void onBitmapError(Exception e);
     }
 
