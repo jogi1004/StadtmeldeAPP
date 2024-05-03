@@ -9,15 +9,17 @@ public class MainCategoryModel {
     private String title;
     private List<SubCategoryModel> subCategorys;
     private Bitmap icon;
+    private Integer iconId;
 
     public MainCategoryModel(int id) {
         this.id = id;
     }
 
-    public MainCategoryModel(int id, String title, Bitmap icon) {
+    public MainCategoryModel(int id, String title, Bitmap icon, Integer iconId) {
         this.id = id;
         this.title = title;
         this.icon = icon;
+        this.iconId = iconId;
     }
 
     public List<SubCategoryModel> getSubCategorys() {
@@ -26,6 +28,14 @@ public class MainCategoryModel {
 
     public void setSubCategorys(List<SubCategoryModel> subCategorys) {
         this.subCategorys = subCategorys;
+    }
+
+    public Integer getIconId() {
+        return iconId;
+    }
+
+    public void setIconId(Integer iconId) {
+        this.iconId = iconId;
     }
 
     public int getId() {

@@ -268,14 +268,11 @@ public class APIHelper {
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
                                     jsonObject.getString("title"),
-                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder)
+                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder),
+                                    null
                             );
-                            Bitmap image = null;
-                            Log.d("iconEntity", jsonObject.toString());
-
-                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
-                                image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
-                                categoryModel.setIcon(image);
+                            if (!jsonObject.isNull("iconId")) {
+                                categoryModel.setIconId(jsonObject.getInt("iconId"));
                             }
 
                             categoryModelList.add(categoryModel);
@@ -437,7 +434,7 @@ public class APIHelper {
     }
 
     public void getIcon(Integer IconId, final BitmapCallback callback) {
-        if(IconId != -1) {
+        if(IconId != null && IconId != -1) {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET, getIcon + IconId, null,
                     response -> {

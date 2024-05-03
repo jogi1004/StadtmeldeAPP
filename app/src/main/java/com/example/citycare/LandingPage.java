@@ -325,8 +325,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     @SuppressLint("SetTextI18n")
     public void updatePoiMarker(GeoPoint geoPoint) {
 
-        Log.d("lastAddresses", "geopoint: " + geoPoint);
-
         Geocoder geocoder = new Geocoder(this);
         try {
             List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
@@ -349,7 +347,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi_dark));
 
         mMap.getOverlays().add(poiMarker);
-
 
         poiInformationDialog.setOnDismissListener(dialog -> {
             mMap.getOverlays().remove(poiMarker);
@@ -390,9 +387,31 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             public void onSuccess(List<MainCategoryModel> categoryModels) {
                 mainCategoryList = categoryModels;
                 isMember = true;
+
+
                 if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
                     fragment_damagetype.adapter.setData(mainCategoryList);
                 }
+
+                for (MainCategoryModel mainCategory: mainCategoryList) {
+                    apiHelper.getIcon(mainCategory.getIconId(), new APIHelper.BitmapCallback() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap) {
+//                            poiDialog.updateImage(bitmap);
+                            mainCategory.setIcon(bitmap);
+                            if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
+                                fragment_damagetype.adapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onBitmapError(Exception e) {
+                            Log.e("onBitmapError", e.toString());
+                            Toast.makeText(context, "Icon wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
                 apiHelper.putSubCategories(new CategoryListCallback() {
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {
