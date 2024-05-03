@@ -16,6 +16,7 @@ public class ReportModel {
     private double longitude, latitude;
     private Bitmap image;
     private MainCategoryModel mainCategoryModel;
+    private int imageId;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -29,16 +30,23 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, int icon, String timestamp, Bitmap image, double longitude, double latitude) {
+    public ReportModel(String title, int icon, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude) {
         this.title = title;
         this.iconID = icon;
         this.timestamp = timestamp;
         this.image = image;
+        this.imageId = imageId;
         this.longitude = longitude;
         this.latitude = latitude;
     }
 
+    public Integer getImageId() {
+        return imageId;
+    }
 
+    public void setImageId(Integer imageId) {
+        this.imageId = imageId;
+    }
     public String getDescription() {return description;}
     public String getTitle() {return title;}
     public Bitmap getImage() {return image;}
@@ -79,6 +87,7 @@ public class ReportModel {
         return "ReportModel{" +
                 "title='" + title + '\'' +
                 ", image='" + image + '\'' +
+                ", imageId='" + imageId + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +
