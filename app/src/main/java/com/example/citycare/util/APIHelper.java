@@ -272,22 +272,8 @@ public class APIHelper {
                                     jsonObject.getInt("id"),
                                     jsonObject.getString("title")
                             );
-                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")){
-                                categoryModel.setIcon(new IconModel(
-                                        jsonObject.getJSONObject("iconEntity").getInt("id"),
-                                        jsonObject.getJSONObject("iconEntity").getString("name"),
-                                        decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT))));
 
-                            }else{
-                                categoryModel.setIcon(null);
-                            }
-                           /* Bitmap image = null;
-                            Log.d("iconEntity", jsonObject.toString());
-
-                            if (jsonObject.has("iconEntity") && !jsonObject.isNull("iconEntity")) {
-                                image = decodeImage(Base64.decode(jsonObject.getJSONObject("iconEntity").getString("icon"), Base64.DEFAULT));
-                                categoryModel.setIcon(image);
-                            }*/
+                            categoryModel.setIcon(null);
 
                             categoryModelList.add(categoryModel);
                             Log.d("Maincategorys", categoryModel.toString());
@@ -327,7 +313,7 @@ public class APIHelper {
                                 if(!jsonObject.getString("title").equals("Sonstiges")){
 
                                     SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                            jsonObject.getInt("id"),
+                                            jsonObject.getInt("maincategoryId"),
                                             jsonObject.getString("title")
                                     );
                                     allSubCategories.add(subCategoryModel);
@@ -453,8 +439,8 @@ public class APIHelper {
         }
     }
 
-    public interface BitmapCallback {
-        void onBitmapLoaded(ReportModel model);
+    public interface BitmapCallback<T> {
+        void onBitmapLoaded(T model);
         void onBitmapError(Exception e);
     }
 

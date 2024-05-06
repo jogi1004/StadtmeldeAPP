@@ -378,6 +378,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {
                         fullList = categoryModels;
+                        for (MainCategoryModel m: categoryModels) {
+                            Log.d("maincategorywithsub", m.toString());
+                        }
                     }
 
                     @Override
@@ -452,7 +455,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if(!markers.contains(marker)) {
                 if(m.getImageId() != null) {
                     poiDialog.existsImage(true);
-                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback<ReportModel>() {
                         @Override
                         public void onBitmapLoaded(ReportModel model) {
                             poiDialog.updateImage(model.getImage());
@@ -509,7 +512,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         adapterReportList.updateList(allReports);
                         for (ReportModel m: reports) {
                             if (m.getImageId()!=null){
-                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback<ReportModel>() {
                                     @Override
                                     public void onBitmapLoaded(ReportModel model) {
                                     }
@@ -545,7 +548,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
                         for (ReportModel m: allReports) {
                             if (m.getImageId()!=null) {
-                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback<ReportModel>() {
                                     @Override
                                     public void onBitmapLoaded(ReportModel model) {
 

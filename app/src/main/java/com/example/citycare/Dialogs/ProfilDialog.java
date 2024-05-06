@@ -96,7 +96,7 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
 
                 for (ReportModel m: userReports) {
                     if (m.getImageId()!=null) {
-                        apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                        apiHelper.getReportPic(m, new APIHelper.BitmapCallback<ReportModel>() {
                             @Override
                             public void onBitmapLoaded(ReportModel model) {
                                 recyclerAdapter.updateList(userReports);

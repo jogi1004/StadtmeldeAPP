@@ -1,20 +1,20 @@
 package com.example.citycare.model;
 
 public class SubCategoryModel{
-    private int id;
+    private int maincategoryId;
     private String title;
 
-    public SubCategoryModel(int id, String title) {
-        this.id = id;
+    public SubCategoryModel(int maincategoryId, String title) {
+        this.maincategoryId = maincategoryId;
         this.title = title;
     }
 
     public int getId() {
-        return id;
+        return maincategoryId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.maincategoryId = id;
     }
 
     public String getTitle() {
@@ -28,7 +28,7 @@ public class SubCategoryModel{
     @Override
     public String toString() {
         return "SubCategoryModel{" +
-                "id=" + id +
+                "id=" + maincategoryId +
                 ", title='" + title + '\'' +
                 '}';
     }

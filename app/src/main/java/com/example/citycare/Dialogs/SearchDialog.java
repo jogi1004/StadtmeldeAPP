@@ -141,7 +141,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                         for (ReportModel m: reportModels) {
 
                             if (m.getImageId()!=null) {
-                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback<ReportModel>() {
                                     @Override
                                     public void onBitmapLoaded(ReportModel model) {
 
