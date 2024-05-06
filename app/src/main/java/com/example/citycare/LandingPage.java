@@ -575,21 +575,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             throw new RuntimeException(e);
         }
     }
-    private void reportsToMaincatecory(){
-        Log.d("MainCategory", "start");
-        for (ReportModel m : allReports) {
-            for (MainCategoryModel mc : mainCategoryList){
-                if (mc.getIcon()!=null){
-                    Log.d("reportIconID", m.getIcon().getId()+"");
-                    Log.d("MainCategoryIconID", mc.getIcon().getId()+"");
-                    if(m.getIcon().getId() == mc.getIcon().getId()){
-                        Log.d("MainCategory", "zuweisung");
-                        m.setMainCategoryModel(mc);
-                    }
-                }
-            }
-        }
-    }
 
     private void loadIconsForReports(List<ReportModel> allReports) {
         for (ReportModel report: allReports) {

@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
@@ -99,6 +100,7 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
 
             String category = getMainCategoryList().get(position).getTitle();
             report.setMainCategory(category);
+            report.setIcon(new IconModel(getMainCategoryList().get(position).getIcon().getId(), getMainCategoryList().get(position).getIcon().getIcon()));
 
             ddd.prepList(position, report, gifImageView);
 

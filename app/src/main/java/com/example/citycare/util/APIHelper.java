@@ -307,7 +307,6 @@ public class APIHelper {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject jsonObject = response.getJSONObject(i);
                                 if(!jsonObject.getString("title").equals("Sonstiges")){
-
                                     SubCategoryModel subCategoryModel = new SubCategoryModel(
                                             jsonObject.getInt("maincategoryId"),
                                             jsonObject.getString("title")
@@ -511,7 +510,7 @@ public class APIHelper {
 
     public void postReport(ReportModel report) throws JSONException {
 
-        Log.d("report", report.toString());
+        Log.d("Check", report.toString());
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", report.getTitle());
@@ -547,6 +546,7 @@ public class APIHelper {
                 return headers;
             }
         };
+        Log.d("Check", "2: " + report.toString());
         requestQueue.add(jsonObjectRequest);
 
     }

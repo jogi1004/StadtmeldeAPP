@@ -66,15 +66,13 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         }else {
             holder.image.setImageResource(R.drawable.png_dummy);
         }
-//        if(allReports.get(position).getIconId() != -1){
-//            holder.icon.setImageBitmap(allReports.get(position).getIcon());
 
-        if(allReports.get(position).getMainCategoryModel()!=null){
-            Log.d("icon", allReports.get(position).toString());
-            holder.icon.setImageBitmap(allReports.get(position).getMainCategoryModel().getIcon().getIcon());
-        } else {
+        if(allReports.get(position).getIcon().getId() != -1) {
+            holder.icon.setImageBitmap(allReports.get(position).getIcon().getIcon());
+        }else{
             holder.icon.setImageResource(android.R.drawable.ic_dialog_alert);
         }
+
     }
 
     @Override

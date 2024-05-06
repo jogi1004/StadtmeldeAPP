@@ -14,7 +14,6 @@ public class ReportModel {
     private IconModel icon;
     private double longitude, latitude;
     private Bitmap image;
-    private MainCategoryModel mainCategoryModel;
     private Integer imageId;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
@@ -73,13 +72,6 @@ public class ReportModel {
     public void setLongitude(double longitude) {this.longitude = longitude;}
     public void setLatitude(double latitude) {this.latitude = latitude;}
     public void setLocationName(String locationName) {this.locationName = locationName;}
-
-    public MainCategoryModel getMainCategoryModel() {
-        return mainCategoryModel;
-    }
-    public void setMainCategoryModel(MainCategoryModel mainCategoryModel) {
-        this.mainCategoryModel = mainCategoryModel;
-    }
 
     @Override
     public String toString() {
