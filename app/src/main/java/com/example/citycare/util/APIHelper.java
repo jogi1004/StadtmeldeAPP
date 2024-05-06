@@ -63,6 +63,7 @@ public class APIHelper {
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
     private final String getReportPicture = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/reportPicture/";
     private final String getIcon = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/icons/";
+    private final String getIconFromLocation = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/icons/location/";
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
@@ -429,7 +430,7 @@ public class APIHelper {
                     return headers;
                 }
             };
-        requestQueue.add(jsonObjectRequest);
+            requestQueue.add(jsonObjectRequest);
         }
     }
 
@@ -463,6 +464,42 @@ public class APIHelper {
             };
             requestQueue.add(jsonObjectRequest);
         }
+    }
+
+    public void getIconFromLocation(String location, final BitmapCallback callback) {
+
+        List<Bitmap> icons = new ArrayList<>();
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, getIconFromLocation + location, null,
+                response -> {
+                    for (int i=0;i<response.length();i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            if (!jsonObject.isNull("icon")) {
+                                Bitmap icon = decodeImage(Base64.decode(response.getString("icon"), Base64.DEFAULT));
+                                Log.d("Icon", icon + " ");
+                                callback.onBitmapLoaded(icon);
+                            }
+//                            icons.add()
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            callback.onBitmapError(e);
+                        }
+                    }
+                },
+                error -> {
+                    error.printStackTrace();
+                    callback.onBitmapError(new Exception("Error fetching icon"));
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+        requestQueue.add(jsonObjectRequest);
     }
 
     public interface BitmapCallback {
@@ -587,9 +624,9 @@ public class APIHelper {
                         }
                     }
                     callback.onSuccess(userReports);
-                 },volleyerror->{
-                    volleyerror.printStackTrace();
-                }){
+                },volleyerror->{
+            volleyerror.printStackTrace();
+        }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();

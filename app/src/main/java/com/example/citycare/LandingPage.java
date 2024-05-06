@@ -598,6 +598,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
     }
 
+
     @Override
     public void onClick(View view) {
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {
