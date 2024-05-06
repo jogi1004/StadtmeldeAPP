@@ -142,7 +142,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                 location.setLongitude(address.getLongitude());
                 landingPage.loadIconsFromLocation(location);
 
-
+                LandingPage.getAdapterReportList().clear();
                 apiHelper.getAllReports(address.getLocality(), new AllReportsCallback(){
                     @Override
                     public void onSuccess(List<ReportModel> reportModels) {

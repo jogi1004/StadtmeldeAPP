@@ -80,6 +80,11 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         return allReports.size();
     }
 
+    public void clear() {
+        allReports.clear();
+        notifyDataSetChanged();
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView image, icon;
         TextView reportName, reportDate;
