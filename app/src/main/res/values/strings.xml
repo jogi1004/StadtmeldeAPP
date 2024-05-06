@@ -41,4 +41,5 @@
     <string name="city">Zweibrücken</string>
     <string name="userReport">Max Mustermann</string>
     <string name="messages">Benachrichtigungen per E-Mail</string>
+    <string name="settingsText">weitere Einstellungen sind \n in der Entwicklung...</string>
 </resources>

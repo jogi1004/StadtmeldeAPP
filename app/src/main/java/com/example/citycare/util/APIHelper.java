@@ -33,6 +33,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -498,17 +499,17 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
 
     }
+
     public void setEmailNotification(boolean enable){
-        Log.d("Enable: ", enable + "");
-        JSONObject body = new JSONObject();
-        try{
-            body.put("",enable);
-            Log.d("body", body.toString());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
+        JSONObject j = new JSONObject();
+        try {
+            j.put("notification", enable);
+        }catch(JSONException e){
+            Log.e("JSON", "Error", e);
         }
+        Log.d("Enable: ", enable + "");
         JsonObjectRequest jOr = new JsonObjectRequest(
-                Request.Method.PUT, notificationURL,body,null, volleyError -> volleyError.printStackTrace()
+                Request.Method.PUT, notificationURL,j,null, volleyError -> volleyError.printStackTrace()
         ) {
             @Override
             public Map<String, String> getHeaders() {

@@ -43,45 +43,24 @@
             android:layout_height="wrap_content"
             android:text="@string/messages" />
 
-        <TextView
+        <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="3dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_placeholder_profile"
-            android:gravity="center"
-            android:hint="Meldeort" />
+            android:background="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/messages"
+            tools:layout_editor_absoluteX="15dp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="@drawable/bg_placeholder_profile"
-            android:gravity="center"
-            android:hint="Meldeort" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_placeholder_profile"
-            android:gravity="center"
-            android:hint="Meldeort" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_placeholder_profile"
-            android:gravity="center"
-            android:hint="Meldeort" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/bg_placeholder_profile"
-            android:gravity="center"
-            android:hint="Meldeort" />
+            android:textAlignment="textStart"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryVariant"
+            android:padding="10dp"
+            android:text="@string/settingsText" />
 
 
     </LinearLayout>
