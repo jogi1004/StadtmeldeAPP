@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.Callback;
 import com.example.citycare.util.HelperClass;
 
 import org.json.JSONException;
@@ -59,7 +60,17 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
             passwordContent = String.valueOf(password.getText());
             if(checkLoginData(usernameContent, passwordContent)){
                 try {
-                    apiHelper.loginUser(usernameContent.trim(),passwordContent.trim());
+                    apiHelper.loginUser(usernameContent.trim(), passwordContent.trim(), new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+
+                        }
+                    });
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

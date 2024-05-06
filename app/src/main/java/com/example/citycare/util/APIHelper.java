@@ -129,7 +129,7 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void loginUser(String username, String password) throws JSONException {
+    public void loginUser(String username, String password, Callback callback) throws JSONException {
         JSONObject requestBody = new JSONObject();
         requestBody.put("username", username);
         requestBody.put("password", password);
@@ -147,13 +147,13 @@ public class APIHelper {
 
                     KeyStoreManager.savePassword(context, username, password);
 
-                    Intent i = new Intent(context, LandingPage.class);
-                    context.startActivity(i);
+                    /*Intent i = new Intent(context, LandingPage.class);
+                    context.startActivity(i);*/
+                    callback.onSuccess();
 
                 }, volleyError -> {
-                    NetworkResponse networkResponse = volleyError.networkResponse;
-                    Log.d("Lieblingsfehler", "Volley error: " + volleyError + " ");
-                    Log.d("Lieblingsfehler", networkResponse + " ");
+                    callback.onError(volleyError.getMessage());
+
                     int statuscode = volleyError.networkResponse.statusCode;
 
                     switch (statuscode){
@@ -334,7 +334,6 @@ public class APIHelper {
                 }
             };
             requestQueue.add(jsonObjectRequest);
-
             tmp++;
         }
     }
@@ -494,6 +493,7 @@ public class APIHelper {
         requestBody.put("longitude", report.getLongitude());
         requestBody.put("latitude", report.getLatitude());
         requestBody.put("reportingLocationName", report.getLocationName());
+
         if (report.getImage()!=null){
             requestBody.put("additionalPicture", Base64.encodeToString(encodeImage(report.getImage()), Base64.DEFAULT));
         } else{
@@ -506,12 +506,12 @@ public class APIHelper {
                     LandingPage.setMarker(report);
                 }, volleyError -> {
                     volleyError.printStackTrace();
-                    int statuscode = volleyError.networkResponse.statusCode;
+                    /*int statuscode = volleyError.networkResponse.statusCode;
 
                     if (statuscode == 404) {
                         Log.d("reportDBFehler", report.toString());
                         Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
-                    }
+                    }*/
                 }){
             @Override
             public Map<String, String> getHeaders() {
@@ -578,7 +578,7 @@ public class APIHelper {
                             JSONObject jsonObject = response.getJSONObject(i);
                             ReportModel report = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
-                                    null,
+                                    new IconModel(null, null),
                                     jsonObject.getString("timestamp"),
                                     null,
                                     null,
@@ -594,7 +594,6 @@ public class APIHelper {
                             if (!jsonObject.isNull("reportPictureId")){
                                 report.setImageId(jsonObject.getInt("reportPictureId"));
                             }
-                            Log.d("reportModel", report.toString());
                             userReports.add(report);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -620,7 +619,7 @@ public class APIHelper {
 
     }
 
-    public void getProfilePic(PicCallback picCallback){
+    public void getProfilePic(Callback picCallback){
         JSONObject body = new JSONObject();
         try {
             body.put("id", currentUser.getPicID());
@@ -631,7 +630,7 @@ public class APIHelper {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getProfilePic+currentUser.getPicID(),body,
                 response->{
                     try {
-                        currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("image"), Base64.DEFAULT)));
+                        currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
                         picCallback.onSuccess();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);

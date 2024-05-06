@@ -535,7 +535,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         }
     }
 
-    private void loadIconsForReports(List<ReportModel> allReports) {
+    public static void loadIconsForReports(List<ReportModel> allReports) {
         for (ReportModel report: allReports) {
             for (IconModel iconModel: iconsFromLocationList) {
                 if (Objects.equals(iconModel.getId(), report.getIcon().getId())){

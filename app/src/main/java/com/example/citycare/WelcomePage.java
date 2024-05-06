@@ -11,6 +11,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.Callback;
 import com.example.citycare.util.KeyStoreManager;
 
 import org.json.JSONException;
@@ -22,10 +23,12 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
     Button register, signIn;
     private APIHelper apiHelper;
     private String username;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = this;
         apiHelper = APIHelper.getInstance(this);
 
         try {
@@ -36,7 +39,6 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
         setContentView(R.layout.activity_welcome_page);
 
 
@@ -64,15 +66,22 @@ public class WelcomePage extends AppCompatActivity implements View.OnClickListen
 
     private void proceedToNextActivity() throws JSONException {
         String password = KeyStoreManager.getPassword(this, username);
-        apiHelper.loginUser(username, password);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        Intent intent = new Intent(this, LandingPage.class);
-        startActivity(intent);
-        finish();
+        apiHelper.loginUser(username, password, new Callback() {
+
+            @Override
+            public void onSuccess() {
+                Intent intent = new Intent(context, LandingPage.class);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+
+            }
+        });
+
+
     }
 
     @Override
