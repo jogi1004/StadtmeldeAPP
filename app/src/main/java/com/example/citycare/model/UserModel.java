@@ -82,6 +82,7 @@ public class UserModel {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", profilePicture=" + profilePicture +
+                ", profilePictureID=" + picID +
                 ", notificationsEnabled=" + notificationsEnabled +
                 '}';
     }

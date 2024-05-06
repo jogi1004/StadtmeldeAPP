@@ -59,6 +59,16 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/profilPicGif"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutDPN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/layoutDPN" />
     <LinearLayout
         android:layout_width="45dp"
         android:layout_height="45dp"
@@ -108,7 +118,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layoutDPN"
-        app:srcCompat="@drawable/gif_punkte_laden" />
+        app:srcCompat="@drawable/gif_load_pic_green" />
 
 
 
