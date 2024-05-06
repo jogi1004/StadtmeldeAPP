@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -23,7 +24,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
+import com.example.citycare.util.AllReportsCallback;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.util.GeoPoint;
@@ -35,19 +38,19 @@ import java.util.Map;
 
 public class SearchDialog extends Dialog implements View.OnClickListener {
 
-    Context context;
-    FrameLayout dimm;
+    private Context context;
+    private FrameLayout dimm;
     private Geocoder geocoder;
     private EditText address;
     private ConstraintLayout searchBtn;
-    LandingPage landingPage;
-    APIHelper apiHelper;
+    private LandingPage landingPage;
+    private APIHelper apiHelper;
     private PoiInformationDialog poiInformationDialog;
     private List<Address> lastAdresses = new ArrayList<>();
-    TextView address1, address2, address3;
+    private TextView address1, address2, address3;
     private static final String PREF_LASTADRESSES = "lastAdresses";
     private ConstraintLayout layout1, layout2, layout3;
-    SharedPreferences SPLastAdresses;
+    private SharedPreferences SPLastAdresses;
 
     public SearchDialog(@NonNull Context context, LandingPage landingPage, PoiInformationDialog poiInformationDialog) {
         super(context);
@@ -116,8 +119,9 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
         return new GeoPoint(Double.parseDouble(teile[teile.length-2]), Double.parseDouble(teile[teile.length-1]));
     }
 
-    private void performSearch(String query) {
+    public void performSearch(String query) {
         //TODO Maybe noch auswahlmöglichkeiten geben falls mehrere Mögliche Results
+        Log.d("search", query);
         try {
             List<Address> addresses = geocoder.getFromLocationName(query, 1);
             if (addresses != null && addresses.size() > 0) {
@@ -129,7 +133,33 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
 
                 landingPage.updatePoiMarker(new GeoPoint(address.getLatitude(), address.getLongitude()));
                 apiHelper.getIsLocationMember(new GeoPoint(address.getLatitude(), address.getLongitude()), landingPage, poiInformationDialog);
+                Log.d("adress", address.getLocality());
+                apiHelper.getAllReports(address.getLocality(), new AllReportsCallback(){
+                    @Override
+                    public void onSuccess(List<ReportModel> reportModels) {
+                        LandingPage.setAllReports(reportModels);
+                        for (ReportModel m: reportModels) {
 
+                            if (m.getImageId()!=null) {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("getAllReportsAfterSearch", errorMessage);
+                    }
+                });
 
                 SharedPreferences SPLastAdresses = context.getSharedPreferences(PREF_LASTADRESSES, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = SPLastAdresses.edit();

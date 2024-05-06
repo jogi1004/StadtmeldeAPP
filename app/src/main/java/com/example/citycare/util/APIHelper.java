@@ -9,7 +9,6 @@ import android.location.Geocoder;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -20,12 +19,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
@@ -34,21 +33,16 @@ import com.example.citycare.model.UserModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.Marker;
 
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
+
 import android.location.Address;
 
 
@@ -78,6 +72,7 @@ public class APIHelper {
     private UserModel currentUser;
     private final ArrayList<ReportModel> allReports = new ArrayList<>();
     private List<ReportModel> userReports = new ArrayList<>();
+    private int i=1;
 
     private APIHelper(Context context){
         this.context = context;
@@ -218,20 +213,21 @@ public class APIHelper {
                                     response.getInt("id"),
                                     response.getString("username"),
                                     response.getString("email"),
-                                    response.getBoolean("notificationsEnabled"),
-                                    null
+                                    null,
+                                    response.getBoolean("notificationsEnabled")
                             );
                         } else{
                             currentUser.setId(response.getInt("id"));
                             currentUser.setUsername(response.getString("username"));
                             currentUser.setEmail(response.getString("email"));
                             currentUser.setNotificationsEnabled(response.getBoolean("notificationsEnabled"));
-                            currentUser.setPicID(null);
+
                         }
 
                         if (!response.isNull("profilePictureId")) {
                             Log.d("profilePictureId", "ist nicht Null");
                             currentUser.setPicID(response.getInt("profilePictureId"));
+
                         }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
@@ -269,14 +265,14 @@ public class APIHelper {
                             MainCategoryModel categoryModel = new MainCategoryModel(
                                     jsonObject.getInt("id"),
                                     jsonObject.getString("title"),
-                                    BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder),
-                                    null
+                                    new IconModel(null, BitmapFactory.decodeResource(context.getResources(),R.drawable.png_placeholder))
                             );
                             if (!jsonObject.isNull("iconId")) {
-                                categoryModel.setIconId(jsonObject.getInt("iconId"));
+                                categoryModel.getIcon().setId(jsonObject.getInt("iconId"));
                             }
 
                             categoryModelList.add(categoryModel);
+                            Log.d("Maincategorys", categoryModel.toString());
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -313,7 +309,7 @@ public class APIHelper {
                                 if(!jsonObject.getString("title").equals("Sonstiges")){
 
                                     SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                            jsonObject.getInt("id"),
+                                            jsonObject.getInt("maincategoryId"),
                                             jsonObject.getString("title")
                                     );
                                     allSubCategories.add(subCategoryModel);
@@ -352,6 +348,7 @@ public class APIHelper {
     }
 
     public void getAllReports(String cityName, AllReportsCallback callback) {
+        Log.d("getAllReports", cityName + i);
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
@@ -361,13 +358,13 @@ public class APIHelper {
                             JSONObject jsonObject = response.getJSONObject(i);
                             ReportModel reportModel = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
-                                    null,
-                                    null,
+                                    new IconModel(null, null),
                                     jsonObject.getString("timestamp"),
                                     null,
                                     null,
                                     jsonObject.getDouble("longitude"),
-                                    jsonObject.getDouble("latitude")
+                                    jsonObject.getDouble("latitude"),
+                                    jsonObject.getString("description")
                             );
 
                             if (!jsonObject.isNull("reportPictureId")) {
@@ -375,7 +372,7 @@ public class APIHelper {
                             }
 
                             if (!jsonObject.isNull("iconId")) {
-                                reportModel.setIconId(jsonObject.getInt("iconId"));
+                                reportModel.getIcon().setId(jsonObject.getInt("iconId"));
                             }
 
                             allReports.add(reportModel);
@@ -401,17 +398,20 @@ public class APIHelper {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
 
+
+
     }
 
-    public void getReportPic(Integer reportPicId, final BitmapCallback callback) {
-        if(reportPicId != null) {
+    public void getReportPic(ReportModel model, final BitmapCallback callback) {
+        if(model.getImageId() != null) {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.GET, getReportPicture + reportPicId, null,
+                    Request.Method.GET, getReportPicture + model.getImageId(), null,
                     response -> {
                         try {
                             if (!response.isNull("picture")) {
                                 Bitmap image = decodeImage(Base64.decode(response.getString("picture"), Base64.DEFAULT));
-                                callback.onBitmapLoaded(image);
+                                model.setImage(image);
+                                callback.onBitmapLoaded(model);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -474,7 +474,7 @@ public class APIHelper {
                 response -> {
                     for (int i=0;i<response.length();i++) {
                         try {
-                            JSONObject jsonObject = response.getJSONObject(i);
+                            JSONObject jsonObject = response.getJSONObject(String.valueOf(i));
                             if (!jsonObject.isNull("icon")) {
                                 Bitmap icon = decodeImage(Base64.decode(response.getString("icon"), Base64.DEFAULT));
                                 Log.d("Icon", icon + " ");
@@ -502,8 +502,9 @@ public class APIHelper {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public interface BitmapCallback {
-        void onBitmapLoaded(Bitmap bitmap);
+    public interface BitmapCallback <T>{
+        void onBitmapLoaded(T model);
+//        void onBitmapLoaded(Bitmap bitmap);
         void onBitmapError(Exception e);
     }
 
@@ -529,7 +530,7 @@ public class APIHelper {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, reportPostURL, requestBody, jsonObject -> {
-                    LandingPage.setMarker(report, context);
+                    LandingPage.setMarker(report);
                 }, volleyError -> {
                     volleyError.printStackTrace();
                     int statuscode = volleyError.networkResponse.statusCode;
@@ -605,16 +606,16 @@ public class APIHelper {
                             ReportModel report = new ReportModel(
                                     jsonObject.getString("titleOrsubcategoryName"),
                                     null,
-                                    null,
                                     jsonObject.getString("timestamp"),
                                     null,
                                     null,
                                     jsonObject.getDouble("longitude"),
-                                    jsonObject.getDouble("latitude")
+                                    jsonObject.getDouble("latitude"),
+                                    jsonObject.getString("description")
                             );
 
                             if (!jsonObject.isNull("iconId")) {
-                                report.setIconId(jsonObject.getInt("iconId"));
+                                report.getIcon().setId(jsonObject.getInt("iconId"));
                             }
 
                             Log.d("reportModel", report.toString());
@@ -628,7 +629,7 @@ public class APIHelper {
             volleyerror.printStackTrace();
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "Bearer " + token);
                 return headers;

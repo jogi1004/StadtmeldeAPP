@@ -2,44 +2,28 @@ package com.example.citycare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.activity.EdgeToEdge;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.citycare.Dialogs.PoiDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
@@ -76,9 +60,7 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -171,34 +153,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             ConstraintLayout layout2 = searchDialog.findViewById(R.id.layout2);
             ConstraintLayout layout3 = searchDialog.findViewById(R.id.layout3);
 
-            if (SPLastAdresses.contains("LastAddresses1")){
-                layout1.setVisibility(View.VISIBLE);
-                layout1.setOnClickListener(v ->{
-                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses1", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();
-                });
-            }
-            if (SPLastAdresses.contains("LastAddresses2")){
-                layout2.setVisibility(View.VISIBLE);
-                layout2.setOnClickListener(v ->{
-                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses2", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();
-                });
-            }
-            if (SPLastAdresses.contains("LastAddresses3")){
-                layout3.setVisibility(View.VISIBLE);
-                layout3.setOnClickListener(v -> {
-                    GeoPoint geoPoint = searchDialog.convertText(SPLastAdresses.getString("LastAddresses3", null));
-                    updatePoiMarker(geoPoint);
-                    apiHelper.getIsLocationMember(geoPoint, this, poiInformationDialog);
-                    searchDialog.dismiss();
-                });
-            }
-
             if(!allEntries.isEmpty()){
                 int i = 0;
                 for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
@@ -223,6 +177,26 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     }
                 }
             }
+
+            if (SPLastAdresses.contains("LastAddresses1")){
+                layout1.setVisibility(View.VISIBLE);
+                layout1.setOnClickListener(v ->{
+                    searchDialog.performSearch(address1.getText().toString());
+                });
+            }
+            if (SPLastAdresses.contains("LastAddresses2")){
+                layout2.setVisibility(View.VISIBLE);
+                layout2.setOnClickListener(v ->{
+                    searchDialog.performSearch(address2.getText().toString());
+                });
+            }
+            if (SPLastAdresses.contains("LastAddresses3")){
+                layout3.setVisibility(View.VISIBLE);
+                layout3.setOnClickListener(v -> {
+                    searchDialog.performSearch(address3.getText().toString());
+                });
+            }
+
         });
         new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
         myFloatingActionButtons = new MyFloatingActionButtons(this, this, false, profileDialog, settingDialog, allReportsDialog, poiInformationDialog, searchDialog);
@@ -232,19 +206,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         return myFloatingActionButtons;
     }
 
-    private void setStatusBarTransparent() {
-        Window window = getWindow();
-        WindowInsetsController controller = getWindow().getInsetsController();
-        if (window != null) {
-            // Statusleiste transparent machen
-
-
-            // Navigationsleistenfarbe beibehalten
-            window.setNavigationBarColor(ContextCompat.getColor(this, R.color.black));
-
-
-        }
-    }
 
     protected void initPermissions() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -252,6 +213,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             updateLocation();
         } else {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            initPermissions();
         }
     }
 
@@ -385,6 +347,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
             @Override
             public void onSuccess(List<MainCategoryModel> categoryModels) {
+                mainCategoryList.clear();
                 mainCategoryList = categoryModels;
                 isMember = true;
 
@@ -394,11 +357,10 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 }
 
                 for (MainCategoryModel mainCategory: mainCategoryList) {
-                    apiHelper.getIcon(mainCategory.getIconId(), new APIHelper.BitmapCallback() {
+                    apiHelper.getIcon(mainCategory.getIcon().getId(), new APIHelper.BitmapCallback <Bitmap>() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap) {
-//                            poiDialog.updateImage(bitmap);
-                            mainCategory.setIcon(bitmap);
+                            mainCategory.getIcon().setIcon(bitmap);
                             if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
                                 fragment_damagetype.adapter.notifyDataSetChanged();
                             }
@@ -471,13 +433,13 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         return allReports;
     }
 
-    public void loadExistingMarkers() {
+    public static void loadExistingMarkers() {
         for (ReportModel m : allReports) {
-            setMarker(m, this);
+            setMarker(m);
         }
     }
 
-    public static void setMarker(ReportModel m, Context context) {
+    public static void setMarker(ReportModel m) {
         Marker poi = new Marker(mMap);
         GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
         poi.setPosition(geoP);
@@ -490,11 +452,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if(!markers.contains(marker)) {
                 if(m.getImageId() != null) {
                     poiDialog.existsImage(true);
-                    apiHelper.getReportPic(m.getImageId(), new APIHelper.BitmapCallback() {
+                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
                         @Override
-                        public void onBitmapLoaded(Bitmap bitmap) {
-                            poiDialog.updateImage(bitmap);
-                            m.setImage(bitmap);
+                        public void onBitmapLoaded(ReportModel model) {
+                            poiDialog.updateImage(model.getImage());
+
                         }
 
                         @Override
@@ -533,8 +495,8 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 Type type = new TypeToken<List<ReportModel>>() {
                 }.getType();
                 allReports = gson.fromJson(json, type);
-                Log.d("ReportList", allReports.toString());
                 loadExistingMarkers();
+
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
 
                     @Override
@@ -542,11 +504,28 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReportsUpdated = reports;
                         allReports.clear();
                         allReports = allReportsUpdated;
+
                         adapterReportList.updateList(allReports);
 
                         loadIconsForReports(allReports);
 
                         loadExistingMarkers();
+                        Log.d("updateallReportsLandingSP", String.valueOf(allReports.size()));
+                        adapterReportList.updateList(allReports);
+                        for (ReportModel m: reports) {
+                            if (m.getImageId()!=null){
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
                     }
 
                     @Override
@@ -556,6 +535,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 });
 
             } else {
+
                 apiHelper.getAllReports(cityName, new AllReportsCallback() {
                     @Override
                     public void onSuccess(List<ReportModel> reports) {
@@ -567,6 +547,22 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         editor.apply();
                         alreadyCalled = true;
                         loadExistingMarkers();
+
+                        for (ReportModel m: allReports) {
+                            if (m.getImageId()!=null) {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
                     }
 
                     @Override
@@ -579,14 +575,29 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             throw new RuntimeException(e);
         }
     }
+    private void reportsToMaincatecory(){
+        Log.d("MainCategory", "start");
+        for (ReportModel m : allReports) {
+            for (MainCategoryModel mc : mainCategoryList){
+                if (mc.getIcon()!=null){
+                    Log.d("reportIconID", m.getIcon().getId()+"");
+                    Log.d("MainCategoryIconID", mc.getIcon().getId()+"");
+                    if(m.getIcon().getId() == mc.getIcon().getId()){
+                        Log.d("MainCategory", "zuweisung");
+                        m.setMainCategoryModel(mc);
+                    }
+                }
+            }
+        }
+    }
 
     private void loadIconsForReports(List<ReportModel> allReports) {
         for (ReportModel report: allReports) {
-            apiHelper.getIcon(report.getIconId(), new APIHelper.BitmapCallback() {
+            apiHelper.getIcon(report.getIcon().getId(), new APIHelper.BitmapCallback <Bitmap>() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap) {
                     adapterReportList.notifyDataSetChanged();
-                    report.setIcon(bitmap);
+                    report.getIcon().setIcon(bitmap);
                 }
 
                 @Override
@@ -650,6 +661,11 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     }
 
+    public static void setAllReports(List<ReportModel> allReports) {
+        LandingPage.allReports = allReports;
+        adapterReportList.updateList(allReports);
+        loadExistingMarkers();
+    }
     public static RecyclerViewAdapter_AllReports getAdapterReportList() {
         return adapterReportList;
     }

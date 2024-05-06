@@ -27,6 +27,9 @@ import com.example.citycare.util.CamUtil;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class fragment_report extends Fragment implements View.OnClickListener {
 
     private TextView category, subCategory, koords;
@@ -110,7 +113,8 @@ public class fragment_report extends Fragment implements View.OnClickListener {
             apiHelper.postReport(report);
 
             LandingPage.getAllReportsList().add(report);
-            LandingPage.getAdapterReportList().updateList(LandingPage.getAllReportsList());
+            List<ReportModel> reports = LandingPage.getAllReportsList();
+            LandingPage.getAdapterReportList().updateList(reports);
 
             FragmentDialog fragmentDialog = (FragmentDialog) getActivity().getSupportFragmentManager().findFragmentByTag("fragmentManager");
             if (fragmentDialog != null) {

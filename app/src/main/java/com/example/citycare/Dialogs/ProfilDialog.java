@@ -85,6 +85,7 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
             @Override
             public void onSuccess(List<ReportModel> reports) {
                 recyclerAdapter.updateList(reports);
+                Log.d("updateallReportsProfil", String.valueOf(reports.size()));
                 gifImageView.setVisibility(View.GONE);
                 Log.d("reports", "da");
             }
