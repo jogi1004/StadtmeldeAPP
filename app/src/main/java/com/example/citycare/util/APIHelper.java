@@ -392,7 +392,7 @@ public class APIHelper {
             }
         };
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                5000,
+                100000000,
                 2,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(jsonObjectRequest);
@@ -433,58 +433,31 @@ public class APIHelper {
         }
     }
 
-    public void getIcon(Integer IconId, final BitmapCallback callback) {
-        if(IconId != null && IconId != -1) {
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.GET, getIcon + IconId, null,
-                    response -> {
-                        try {
-                            if (!response.isNull("icon")) {
-                                Bitmap icon = decodeImage(Base64.decode(response.getString("icon"), Base64.DEFAULT));
-                                Log.d("Icon", icon + " ");
-                                callback.onBitmapLoaded(icon);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            callback.onBitmapError(e);
-                        }
-                    },
-                    error -> {
-                        error.printStackTrace();
-                        callback.onBitmapError(new Exception("Error fetching icon"));
-                    }
-            ) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "Bearer " + token);
-                    return headers;
-                }
-            };
-            requestQueue.add(jsonObjectRequest);
-        }
-    }
-
     public void getIconFromLocation(String location, final BitmapCallback callback) {
 
-        List<Bitmap> icons = new ArrayList<>();
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+        Log.d("icons", "Stadt von der die Icons geladen wird: " + location);
+        List<IconModel> icons = new ArrayList<>();
+        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, getIconFromLocation + location, null,
                 response -> {
                     for (int i=0;i<response.length();i++) {
+                        IconModel iconModel = new IconModel(null, null);
                         try {
-                            JSONObject jsonObject = response.getJSONObject(String.valueOf(i));
+                            JSONObject jsonObject = response.getJSONObject(i);
                             if (!jsonObject.isNull("icon")) {
-                                Bitmap icon = decodeImage(Base64.decode(response.getString("icon"), Base64.DEFAULT));
+                                Bitmap icon = decodeImage(Base64.decode(jsonObject.getString("icon"), Base64.DEFAULT));
+                                iconModel = new IconModel(jsonObject.getInt("id"), icon);
                                 Log.d("Icon", icon + " ");
-                                callback.onBitmapLoaded(icon);
                             }
-//                            icons.add()
+                            if(iconModel.getId() != null){
+                                icons.add(iconModel);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                             callback.onBitmapError(e);
                         }
                     }
+                    callback.onBitmapLoaded(icons);
                 },
                 error -> {
                     error.printStackTrace();
@@ -546,7 +519,6 @@ public class APIHelper {
                 return headers;
             }
         };
-        Log.d("Check", "2: " + report.toString());
         requestQueue.add(jsonObjectRequest);
 
     }

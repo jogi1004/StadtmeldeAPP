@@ -109,12 +109,6 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
                 fragmentDialog.dismiss();
             }
 
-            FragmentManager fragmentManager = getParentFragmentManager();
-            if(fragmentManager != null){
-                Log.d("FragmentManager", "nicht null");
-            }else {
-                Log.d("FragmentManager", "null");
-            }
             ddd.show();
             ddd.setOnDismissListener(v -> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));
         }else{

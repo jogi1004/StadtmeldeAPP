@@ -34,6 +34,7 @@ import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -65,6 +66,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
@@ -80,6 +82,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private ReportDialogPage allReportsDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
+    private static List<IconModel> iconsFromLocationList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
     private static List<ReportModel> allReports = new ArrayList<>();
@@ -93,7 +96,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static SharedPreferences sharedPreferences;
     private static Context context;
     private static MyFloatingActionButtons myFloatingActionButtons;
-
     private static RecyclerViewAdapter_AllReports adapterReportList;
 
     @Override
@@ -357,22 +359,16 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 }
 
                 for (MainCategoryModel mainCategory: mainCategoryList) {
-                    apiHelper.getIcon(mainCategory.getIcon().getId(), new APIHelper.BitmapCallback <Bitmap>() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap) {
-                            mainCategory.getIcon().setIcon(bitmap);
-                            if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
-                                fragment_damagetype.adapter.notifyDataSetChanged();
+                    if(mainCategory.getIcon().getId() != null){
+                        for (IconModel iconModel: iconsFromLocationList) {
+                            if (iconModel.getId() == mainCategory.getIcon().getId()){
+                                Log.d("icons", "Ist drin");
+                                mainCategory.getIcon().setIcon(iconModel.getIcon());
                             }
                         }
-
-                        @Override
-                        public void onBitmapError(Exception e) {
-                            Log.e("onBitmapError", e.toString());
-                            Toast.makeText(context, "Icon wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    }
                 }
+                adapterReportList.notifyDataSetChanged();
 
                 apiHelper.putSubCategories(new CategoryListCallback() {
                     @Override
@@ -405,80 +401,43 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         if (!alreadyCalled) {
             alreadyCalled = true;
             Toast.makeText(this, "Aktualisiere Meldungen...", Toast.LENGTH_LONG).show();
+            loadIconsFromLocation(location);
             loadListfromDB(location);
-
         }
     }
 
-    @Override
-    public boolean onScroll(ScrollEvent event) {
-        return true;
-    }
-
-    @Override
-    public boolean onZoom(ZoomEvent event) {
-        return false;
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
-    }
-
-    public static List<MainCategoryModel> getMainCategoryList() {
-        return mainCategoryList;
-    }
-
-    public static List<ReportModel> getAllReportsList() {
-        return allReports;
-    }
-
-    public static void loadExistingMarkers() {
-        for (ReportModel m : allReports) {
-            setMarker(m);
+    public void loadIconsFromLocation(Location location) {
+        Log.d("icons", "loadIconsFromLocation");
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-    }
+        assert addresses != null;
+        String cityName = addresses.get(0).getLocality();
 
-    public static void setMarker(ReportModel m) {
-        Marker poi = new Marker(mMap);
-        GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
-        poi.setPosition(geoP);
-        poi.setIcon(ContextCompat.getDrawable(context, R.drawable.png_poi));
-        List<Marker> markers = new ArrayList<>();
-
-
-        poi.setOnMarkerClickListener((marker, mapView) -> {
-            PoiDialog poiDialog = new PoiDialog(context,m);
-            if(!markers.contains(marker)) {
-                if(m.getImageId() != null) {
-                    poiDialog.existsImage(true);
-                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
-                        @Override
-                        public void onBitmapLoaded(ReportModel model) {
-                            poiDialog.updateImage(model.getImage());
-
-                        }
-
-                        @Override
-                        public void onBitmapError(Exception e) {
-                            Log.e("onBitmapError", e.toString());
-                            Toast.makeText(context, "Bild wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else {
-                    poiDialog.existsImage(false);
-                }
+        apiHelper.getIconFromLocation(cityName, new APIHelper.BitmapCallback <List<IconModel>>() {
+            @Override
+            public void onBitmapLoaded(List<IconModel> icons) {
+                Log.d("icons", "Alle icons: " + icons.toString());
+                iconsFromLocationList = icons;
             }
-            poiDialog.show();
-            markers.add(marker);
-            myFloatingActionButtons.hideFABS();
-            return true;
-        });
 
-        mMap.getOverlays().add(poi);
+            @Override
+            public void onBitmapError(Exception e) {
+            }
+        });
     }
 
+    public static List<IconModel> getIconsFromLocationList() {
+        return iconsFromLocationList;
+    }
 
+    public static void setIconsFromLocationList(List<IconModel> iconsFromLocationList) {
+        LandingPage.iconsFromLocationList = iconsFromLocationList;
+    }
 
     protected void loadListfromDB(Location location) {
         Geocoder geocoder = new Geocoder(this);
@@ -578,21 +537,83 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
     private void loadIconsForReports(List<ReportModel> allReports) {
         for (ReportModel report: allReports) {
-            apiHelper.getIcon(report.getIcon().getId(), new APIHelper.BitmapCallback <Bitmap>() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap) {
-                    adapterReportList.notifyDataSetChanged();
-                    report.getIcon().setIcon(bitmap);
+            for (IconModel iconModel: iconsFromLocationList) {
+                if (Objects.equals(iconModel.getId(), report.getIcon().getId())){
+                    report.getIcon().setIcon(iconModel.getIcon());
                 }
-
-                @Override
-                public void onBitmapError(Exception e) {
-                    Log.e("onBitmapError", e.toString());
-                    Toast.makeText(context, "Icon wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
-                }
-            });
+            }
         }
     }
+
+    @Override
+    public boolean onScroll(ScrollEvent event) {
+        return true;
+    }
+
+    @Override
+    public boolean onZoom(ZoomEvent event) {
+        return false;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
+    public static List<MainCategoryModel> getMainCategoryList() {
+        return mainCategoryList;
+    }
+
+    public static List<ReportModel> getAllReportsList() {
+        return allReports;
+    }
+
+    public static void loadExistingMarkers() {
+        for (ReportModel m : allReports) {
+            setMarker(m);
+        }
+    }
+
+    public static void setMarker(ReportModel m) {
+        Marker poi = new Marker(mMap);
+        GeoPoint geoP = new GeoPoint(m.getLatitude(), m.getLongitude());
+        poi.setPosition(geoP);
+        poi.setIcon(ContextCompat.getDrawable(context, R.drawable.png_poi));
+        List<Marker> markers = new ArrayList<>();
+
+
+        poi.setOnMarkerClickListener((marker, mapView) -> {
+            PoiDialog poiDialog = new PoiDialog(context,m);
+            if(!markers.contains(marker)) {
+                if(m.getImageId() != null) {
+                    poiDialog.existsImage(true);
+                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                        @Override
+                        public void onBitmapLoaded(ReportModel model) {
+                            poiDialog.updateImage(model.getImage());
+
+                        }
+
+                        @Override
+                        public void onBitmapError(Exception e) {
+                            Log.e("onBitmapError", e.toString());
+                            Toast.makeText(context, "Bild wurde nicht korrekt geladen", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    poiDialog.existsImage(false);
+                }
+            }
+            poiDialog.show();
+            markers.add(marker);
+            myFloatingActionButtons.hideFABS();
+            return true;
+        });
+
+        mMap.getOverlays().add(poi);
+    }
+
+
 
 
     @Override
