@@ -11,11 +11,9 @@ import java.util.Objects;
 
 public class ReportModel {
     private String title, description, subCategory, mainCategory, locationName, timestamp;
-
-    private int iconID;
+    private IconModel icon;
     private double longitude, latitude;
     private Bitmap image;
-    private MainCategoryModel mainCategoryModel;
     private Integer imageId;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
@@ -30,9 +28,10 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, int icon, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude, String description) {
+
+    public ReportModel(String title, IconModel icon, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude, String description) {
         this.title = title;
-        this.iconID = icon;
+        this.icon = icon;
         this.timestamp = timestamp;
         this.image = image;
         this.imageId = imageId;
@@ -41,10 +40,17 @@ public class ReportModel {
         this.description = description;
     }
 
+    public IconModel getIcon() {
+        return icon;
+    }
+
+    public void setIcon(IconModel icon) {
+        this.icon = icon;
+    }
+
     public Integer getImageId() {
         return imageId;
     }
-
     public void setImageId(Integer imageId) {
         this.imageId = imageId;
     }
@@ -57,15 +63,6 @@ public class ReportModel {
     public double getLongitude(){ return longitude;}
     public double getLatitude(){ return latitude;}
     public String getLocationName() {return locationName;}
-
-    public int getIconID() {
-        return iconID;
-    }
-
-    public void setIconID(int iconID) {
-        this.iconID = iconID;
-    }
-
     public void setTitle(String title) {this.title = title;}
     public void setImage(Bitmap image) {this.image = image;}
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
@@ -76,19 +73,13 @@ public class ReportModel {
     public void setLatitude(double latitude) {this.latitude = latitude;}
     public void setLocationName(String locationName) {this.locationName = locationName;}
 
-    public MainCategoryModel getMainCategoryModel() {
-        return mainCategoryModel;
-    }
-    public void setMainCategoryModel(MainCategoryModel mainCategoryModel) {
-        this.mainCategoryModel = mainCategoryModel;
-    }
-
     @Override
     public String toString() {
         return "ReportModel{" +
                 "title='" + title + '\'' +
                 ", image='" + image + '\'' +
                 ", imageId='" + imageId + '\'' +
+                ", iconId='" + icon + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +

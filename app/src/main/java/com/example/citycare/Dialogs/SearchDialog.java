@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.AllReportsCallback;
@@ -121,7 +123,6 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
 
     public void performSearch(String query) {
         //TODO Maybe noch auswahlmöglichkeiten geben falls mehrere Mögliche Results
-        Log.d("search", query);
         try {
             List<Address> addresses = geocoder.getFromLocationName(query, 1);
             if (addresses != null && addresses.size() > 0) {
@@ -134,6 +135,14 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                 landingPage.updatePoiMarker(new GeoPoint(address.getLatitude(), address.getLongitude()));
                 apiHelper.getIsLocationMember(new GeoPoint(address.getLatitude(), address.getLongitude()), landingPage, poiInformationDialog);
                 Log.d("adress", address.getLocality());
+
+
+                Location location = new Location("converted_location");
+                location.setLatitude(address.getLatitude());
+                location.setLongitude(address.getLongitude());
+                landingPage.loadIconsFromLocation(location);
+
+
                 apiHelper.getAllReports(address.getLocality(), new AllReportsCallback(){
                     @Override
                     public void onSuccess(List<ReportModel> reportModels) {
@@ -141,7 +150,7 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                         for (ReportModel m: reportModels) {
 
                             if (m.getImageId()!=null) {
-                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
                                     @Override
                                     public void onBitmapLoaded(ReportModel model) {
 
@@ -153,6 +162,16 @@ public class SearchDialog extends Dialog implements View.OnClickListener {
                                     }
                                 });
                             }
+                            
+                            if(m.getIcon().getId() != null){
+                                for (IconModel iconModel: landingPage.getIconsFromLocationList()) {
+                                    if (iconModel.getId() == m.getIcon().getId()){
+                                        Log.d("icons", "Ist drin");
+                                        m.getIcon().setIcon(iconModel.getIcon());
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                     @Override

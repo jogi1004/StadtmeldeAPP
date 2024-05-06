@@ -2,44 +2,28 @@ package com.example.citycare;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.activity.EdgeToEdge;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.example.citycare.Dialogs.PoiDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
@@ -50,6 +34,7 @@ import com.example.citycare.Dialogs.ReportDialogPage;
 import com.example.citycare.Dialogs.SettingDialog;
 import com.example.citycare.FAB.MyFloatingActionButtons;
 import com.example.citycare.adapter.RecyclerViewAdapter_AllReports;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
@@ -76,13 +61,12 @@ import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class LandingPage extends AppCompatActivity implements MapListener, View.OnClickListener {
 
@@ -95,9 +79,10 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     public ProfilDialog profileDialog;
     public PoiInformationDialog poiInformationDialog;
     private SearchDialog searchDialog;
-
+    private ReportDialogPage allReportsDialog;
     private static APIHelper apiHelper;
     private static List<MainCategoryModel> mainCategoryList = new ArrayList<>();
+    private static List<IconModel> iconsFromLocationList = new ArrayList<>();
     private List<MainCategoryModel> fullList = new ArrayList<>();
     boolean alreadyCalled = false, isMember = false;
     private static List<ReportModel> allReports = new ArrayList<>();
@@ -111,7 +96,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     private static SharedPreferences sharedPreferences;
     private static Context context;
     private static MyFloatingActionButtons myFloatingActionButtons;
-
     private static RecyclerViewAdapter_AllReports adapterReportList;
 
     @Override
@@ -153,7 +137,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiInformationDialog = new PoiInformationDialog(this, this, getSupportFragmentManager());
 
         profileDialog = new ProfilDialog(this, this, camUtil);
-        ReportDialogPage allReportsDialog = new ReportDialogPage(this, this, adapterReportList);
+        allReportsDialog = new ReportDialogPage(this, this,adapterReportList );
         SettingDialog settingDialog = new SettingDialog(this);
         searchDialog = new SearchDialog(this, this, poiInformationDialog);
 
@@ -305,8 +289,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     @SuppressLint("SetTextI18n")
     public void updatePoiMarker(GeoPoint geoPoint) {
 
-        Log.d("lastAddresses", "geopoint: " + geoPoint);
-
         Geocoder geocoder = new Geocoder(this);
         try {
             List<Address> addresses = geocoder.getFromLocation(geoPoint.getLatitude(), geoPoint.getLongitude(), 1);
@@ -329,7 +311,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         poiMarker.setIcon(ContextCompat.getDrawable(this, R.drawable.png_poi_dark));
 
         mMap.getOverlays().add(poiMarker);
-
 
         poiInformationDialog.setOnDismissListener(dialog -> {
             mMap.getOverlays().remove(poiMarker);
@@ -371,9 +352,24 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                 mainCategoryList.clear();
                 mainCategoryList = categoryModels;
                 isMember = true;
+
+
                 if (fragment_damagetype.adapter != null && !categoryModels.isEmpty()) {
                     fragment_damagetype.adapter.setData(mainCategoryList);
                 }
+
+                for (MainCategoryModel mainCategory: mainCategoryList) {
+                    if(mainCategory.getIcon().getId() != null){
+                        for (IconModel iconModel: iconsFromLocationList) {
+                            if (iconModel.getId() == mainCategory.getIcon().getId()){
+                                Log.d("icons", "Ist drin");
+                                mainCategory.getIcon().setIcon(iconModel.getIcon());
+                            }
+                        }
+                    }
+                }
+                adapterReportList.notifyDataSetChanged();
+
                 apiHelper.putSubCategories(new CategoryListCallback() {
                     @Override
                     public void onSuccess(List<MainCategoryModel> categoryModels) {
@@ -405,8 +401,147 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         if (!alreadyCalled) {
             alreadyCalled = true;
             Toast.makeText(this, "Aktualisiere Meldungen...", Toast.LENGTH_LONG).show();
+            loadIconsFromLocation(location);
             loadListfromDB(location);
+        }
+    }
 
+    public void loadIconsFromLocation(Location location) {
+        Log.d("icons", "loadIconsFromLocation");
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        assert addresses != null;
+        String cityName = addresses.get(0).getLocality();
+
+        apiHelper.getIconFromLocation(cityName, new APIHelper.BitmapCallback <List<IconModel>>() {
+            @Override
+            public void onBitmapLoaded(List<IconModel> icons) {
+                Log.d("icons", "Alle icons: " + icons.toString());
+                iconsFromLocationList = icons;
+            }
+
+            @Override
+            public void onBitmapError(Exception e) {
+            }
+        });
+    }
+
+    public static List<IconModel> getIconsFromLocationList() {
+        return iconsFromLocationList;
+    }
+
+    public static void setIconsFromLocationList(List<IconModel> iconsFromLocationList) {
+        LandingPage.iconsFromLocationList = iconsFromLocationList;
+    }
+
+    protected void loadListfromDB(Location location) {
+        Geocoder geocoder = new Geocoder(this);
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            assert addresses != null;
+            String cityName = addresses.get(0).getLocality();
+            sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+            if (sharedPreferences.contains(KEY_REPORT_LIST)) {
+                Gson gson = new Gson();
+                String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
+                Type type = new TypeToken<List<ReportModel>>() {
+                }.getType();
+                allReports = gson.fromJson(json, type);
+                loadExistingMarkers();
+
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        allReportsUpdated = reports;
+                        allReports.clear();
+                        allReports = allReportsUpdated;
+
+                        adapterReportList.updateList(allReports);
+
+                        loadIconsForReports(allReports);
+
+                        loadExistingMarkers();
+                        Log.d("updateallReportsLandingSP", String.valueOf(allReports.size()));
+                        adapterReportList.updateList(allReports);
+                        for (ReportModel m: reports) {
+                            if (m.getImageId()!=null){
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in checkingListsOfEquality: ", errorMessage);
+                    }
+                });
+
+            } else {
+
+                apiHelper.getAllReports(cityName, new AllReportsCallback() {
+                    @Override
+                    public void onSuccess(List<ReportModel> reports) {
+                        allReports = reports;
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        Gson gson = new Gson();
+                        String json = gson.toJson(allReports);
+                        editor.putString(KEY_REPORT_LIST, json);
+                        editor.apply();
+                        alreadyCalled = true;
+                        loadExistingMarkers();
+
+                        for (ReportModel m: allReports) {
+                            if (m.getImageId()!=null) {
+                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                                    @Override
+                                    public void onBitmapLoaded(ReportModel model) {
+
+                                    }
+
+                                    @Override
+                                    public void onBitmapError(Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Log.e("Error in onLocationReceived: ", errorMessage);
+                    }
+                });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void loadIconsForReports(List<ReportModel> allReports) {
+        for (ReportModel report: allReports) {
+            for (IconModel iconModel: iconsFromLocationList) {
+                if (Objects.equals(iconModel.getId(), report.getIcon().getId())){
+                    report.getIcon().setIcon(iconModel.getIcon());
+                }
+            }
         }
     }
 
@@ -452,7 +587,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             if(!markers.contains(marker)) {
                 if(m.getImageId() != null) {
                     poiDialog.existsImage(true);
-                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
+                    apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
                         @Override
                         public void onBitmapLoaded(ReportModel model) {
                             poiDialog.updateImage(model.getImage());
@@ -477,116 +612,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
 
         mMap.getOverlays().add(poi);
     }
-
-
-
-    protected void loadListfromDB(Location location) {
-        Geocoder geocoder = new Geocoder(this);
-        double latitude = location.getLatitude();
-        double longitude = location.getLongitude();
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            assert addresses != null;
-            String cityName = addresses.get(0).getLocality();
-            sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-            if (sharedPreferences.contains(KEY_REPORT_LIST)) {
-                Gson gson = new Gson();
-                String json = sharedPreferences.getString(KEY_REPORT_LIST, null);
-                Type type = new TypeToken<List<ReportModel>>() {
-                }.getType();
-                allReports = gson.fromJson(json, type);
-                loadExistingMarkers();
-
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
-
-                    @Override
-                    public void onSuccess(List<ReportModel> reports) {
-                        allReportsUpdated = reports;
-                        allReports.clear();
-                        allReports = allReportsUpdated;
-                        loadExistingMarkers();
-                        Log.d("updateallReportsLandingSP", String.valueOf(allReports.size()));
-                        adapterReportList.updateList(allReports);
-                        for (ReportModel m: reports) {
-                            if (m.getImageId()!=null){
-                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
-                                    @Override
-                                    public void onBitmapLoaded(ReportModel model) {
-                                    }
-
-                                    @Override
-                                    public void onBitmapError(Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in checkingListsOfEquality: ", errorMessage);
-                    }
-                });
-
-            } else {
-
-                apiHelper.getAllReports(cityName, new AllReportsCallback() {
-                    @Override
-                    public void onSuccess(List<ReportModel> reports) {
-                        allReports = reports;
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(allReports);
-                        editor.putString(KEY_REPORT_LIST, json);
-                        editor.apply();
-                        alreadyCalled = true;
-                        loadExistingMarkers();
-
-                        for (ReportModel m: allReports) {
-                            if (m.getImageId()!=null) {
-                                apiHelper.getReportPic(m, new APIHelper.BitmapCallback() {
-                                    @Override
-                                    public void onBitmapLoaded(ReportModel model) {
-
-                                    }
-
-                                    @Override
-                                    public void onBitmapError(Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        Log.e("Error in onLocationReceived: ", errorMessage);
-                    }
-                });
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private void reportsToMaincatecory(){
-        Log.d("MainCategory", "start");
-        for (ReportModel m : allReports) {
-            for (MainCategoryModel mc : mainCategoryList){
-                if (mc.getIconModel()!=null){
-                    Log.d("reportIconID", m.getIconID()+"");
-                    Log.d("MainCategoryIconID", mc.getIconModel().getId()+"");
-                    if(m.getIconID() == mc.getIconModel().getId()){
-                        Log.d("MainCategory", "zuweisung");
-                        m.setMainCategoryModel(mc);
-                    }
-                }
-            }
-        }
-    }
-
+    
     @Override
     public void onClick(View view) {
         mMyLocationOverlay.runOnFirstFix(() -> runOnUiThread(() -> {

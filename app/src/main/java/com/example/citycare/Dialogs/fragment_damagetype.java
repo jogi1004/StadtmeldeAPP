@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.citycare.LandingPage;
 import com.example.citycare.R;
+import com.example.citycare.model.IconModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.util.APIHelper;
@@ -64,9 +65,6 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
         GridLayoutManager manager = new GridLayoutManager(rootView.getContext(), 2);
         recyclerView.setLayoutManager(manager);
 
-//        gifImageView = rootView.findViewById(R.id.gifMainCategories);
-//        Glide.with(rootView).asGif().load(R.drawable.gif_load_kreis).into(gifImageView);
-
         adapter.setOnItemClickListener(this);
         recyclerView.setAdapter(adapter);
 
@@ -102,6 +100,7 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
 
             String category = getMainCategoryList().get(position).getTitle();
             report.setMainCategory(category);
+            report.setIcon(new IconModel(getMainCategoryList().get(position).getIcon().getId(), getMainCategoryList().get(position).getIcon().getIcon()));
 
             ddd.prepList(position, report, gifImageView);
 
@@ -110,12 +109,6 @@ public class fragment_damagetype extends Fragment implements OnItemClickListener
                 fragmentDialog.dismiss();
             }
 
-            FragmentManager fragmentManager = getParentFragmentManager();
-            if(fragmentManager != null){
-                Log.d("FragmentManager", "nicht null");
-            }else {
-                Log.d("FragmentManager", "null");
-            }
             ddd.show();
             ddd.setOnDismissListener(v -> field.setBackground(ContextCompat.getDrawable(rootView.getContext(), R.drawable.bg_report)));
         }else{

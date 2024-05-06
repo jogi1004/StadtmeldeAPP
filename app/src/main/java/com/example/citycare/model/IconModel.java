@@ -3,36 +3,23 @@ package com.example.citycare.model;
 import android.graphics.Bitmap;
 
 public class IconModel {
-    private int id;
-    private String name;
+    private Integer id;
     private Bitmap icon;
 
-    public IconModel(int id, String name, Bitmap icon) {
+    public IconModel(Integer id, Bitmap icon) {
         this.id = id;
-        this.name = name;
         this.icon = icon;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
-
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Bitmap getIcon() {
         return icon;
     }
-
     public void setIcon(Bitmap icon) {
         this.icon = icon;
     }
@@ -41,7 +28,6 @@ public class IconModel {
     public String toString() {
         return "IconModel{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", icon=" + icon +
                 '}';
     }

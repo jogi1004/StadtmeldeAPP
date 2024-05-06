@@ -16,7 +16,6 @@ import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.RecyclerViewInterface;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -68,12 +67,12 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             holder.image.setImageResource(R.drawable.png_dummy);
         }
 
-        if(allReports.get(position).getMainCategoryModel()!=null){
-            Log.d("icon", allReports.get(position).toString());
-            holder.icon.setImageBitmap(allReports.get(position).getMainCategoryModel().getIconModel().getIcon());
-        } else {
+        if(allReports.get(position).getIcon().getId() != -1) {
+            holder.icon.setImageBitmap(allReports.get(position).getIcon().getIcon());
+        }else{
             holder.icon.setImageResource(android.R.drawable.ic_dialog_alert);
         }
+
     }
 
     @Override
@@ -81,9 +80,10 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         return allReports.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView image, icon;
-        TextView reportName,reportDate ;
+        TextView reportName, reportDate;
+
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
