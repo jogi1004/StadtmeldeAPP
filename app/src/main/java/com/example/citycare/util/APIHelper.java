@@ -327,7 +327,7 @@ public class APIHelper {
                                 if(!jsonObject.getString("title").equals("Sonstiges")){
 
                                     SubCategoryModel subCategoryModel = new SubCategoryModel(
-                                            jsonObject.getInt("id"),
+                                            jsonObject.getInt("maincategoryId"),
                                             jsonObject.getString("title")
                                     );
                                     allSubCategories.add(subCategoryModel);
