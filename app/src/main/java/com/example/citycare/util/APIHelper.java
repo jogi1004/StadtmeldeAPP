@@ -62,6 +62,7 @@ public class APIHelper {
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
     private final String getIsLocationMember = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/location/";
     private final String getUserReports = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/user/";
+    private final String getProfilePic = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/profilePicture/";
     private Context context;
     private RequestQueue requestQueue;
     private Timer timer;
@@ -590,6 +591,9 @@ public class APIHelper {
                                 report.getIcon().setId(jsonObject.getInt("iconId"));
                             }
 
+                            if (!jsonObject.isNull("reportPictureId")){
+                                report.setImageId(jsonObject.getInt("reportPictureId"));
+                            }
                             Log.d("reportModel", report.toString());
                             userReports.add(report);
                         } catch (Exception e) {
@@ -616,6 +620,37 @@ public class APIHelper {
 
     }
 
+    public void getProfilePic(PicCallback picCallback){
+        JSONObject body = new JSONObject();
+        try {
+            body.put("id", currentUser.getPicID());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getProfilePic+currentUser.getPicID(),body,
+                response->{
+                    try {
+                        currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("image"), Base64.DEFAULT)));
+                        picCallback.onSuccess();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                },volleyError -> {
+
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        requestQueue.add(jsonObjectRequest);
+
+
+    }
     public List<String> getMembers() {
         return members;
     }

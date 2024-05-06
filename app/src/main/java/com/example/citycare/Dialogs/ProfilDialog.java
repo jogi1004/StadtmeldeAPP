@@ -32,6 +32,7 @@ import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.APIHelper;
 import com.example.citycare.util.AllReportsCallback;
 import com.example.citycare.util.CamUtil;
+import com.example.citycare.util.PicCallback;
 import com.example.citycare.util.RecyclerViewInterface;
 
 import java.io.File;
@@ -50,8 +51,10 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
     public Activity landingPage;
     private CamUtil camUtil;
     private TextView username;
-    private ImageView gifImageView;
+    private ImageView gifImageView, profilPicGIF;
     private List<ReportModel> userReports = new ArrayList<>();
+    private int i = 1;
+
     public ProfilDialog(@NonNull Context context, Activity landingPage, CamUtil camUtil) {
         super(context);
         this.context = context;
@@ -72,7 +75,8 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
         username.setText(apiHelper.getCurrentUser().getUsername());
 
         gifImageView = findViewById(R.id.gifProfil);
-        Glide.with(context).asGif().load(R.drawable.gif_punkte_laden).into(gifImageView);
+        profilPicGIF = findViewById(R.id.profilPicGif);
+        Glide.with(context).asGif().load(R.drawable.gif_load_pic_green).into(gifImageView);
 
 
         RecyclerView recyclerView = findViewById(R.id.personalReportsView);
@@ -84,10 +88,29 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
         apiHelper.getUserReports(new AllReportsCallback() {
             @Override
             public void onSuccess(List<ReportModel> reports) {
-                recyclerAdapter.updateList(reports);
+                userReports = reports;
+                recyclerAdapter.updateList(userReports);
                 Log.d("updateallReportsProfil", String.valueOf(reports.size()));
                 gifImageView.setVisibility(View.GONE);
                 Log.d("reports", "da");
+
+                for (ReportModel m: userReports) {
+                    if (m.getImageId()!=null) {
+                        apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
+                            @Override
+                            public void onBitmapLoaded(ReportModel model) {
+                                recyclerAdapter.updateList(userReports);
+                                Log.d("updateallReportsProfil", "da " + i);
+                                i++;
+                            }
+
+                            @Override
+                            public void onBitmapError(Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                }
             }
 
             @Override
@@ -110,9 +133,22 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
         });
 
         picture = findViewById(R.id.circleImageView);
-        if (apiHelper.getCurrentUser().getProfilePicture()!=null){
-            picture.setImageBitmap(apiHelper.getCurrentUser().getProfilePicture());
-            picture.setRotation(camUtil.showImage());
+        if (apiHelper.getCurrentUser().getPicID()!=null){
+            Glide.with(context).asGif().load(R.drawable.gif_load_pic_green).into(profilPicGIF);
+            apiHelper.getProfilePic(new PicCallback() {
+                @Override
+                public void onSuccess() {
+                    profilPicGIF.setVisibility(View.GONE);
+                    picture.setImageBitmap(apiHelper.getCurrentUser().getProfilePicture());
+                }
+
+                @Override
+                public void onError(String errorMessage) {
+                    Log.e("getProfilePicError", errorMessage);
+                }
+            });
+
+
         }else {
             picture.setImageResource(R.drawable.png_dummy);
         }
