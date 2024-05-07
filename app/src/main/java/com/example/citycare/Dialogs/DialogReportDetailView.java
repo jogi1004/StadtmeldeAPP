@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -24,7 +25,7 @@ public class DialogReportDetailView extends Dialog {
     private ImageView imageReport;
     private Bitmap imageBitmap;
     private ReportModel reportModel;
-
+    private boolean existingPic = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,8 @@ public class DialogReportDetailView extends Dialog {
         imageReport = findViewById(R.id.reportImage);
         descriptionReport = findViewById(R.id.descriptionDetail);
         cityTextView = findViewById(R.id.city);
+
+
 
     }
 
@@ -50,7 +53,11 @@ public class DialogReportDetailView extends Dialog {
      * fills DetailView with data
      */
     public void setData(){
-        headline.setText(reportModel.getTitle());
+        if (reportModel.getTitle()!=null){
+            headline.setText(reportModel.getTitle());
+        } else {
+            headline.setText(reportModel.getSubCategory());
+        }
         if(reportModel.getImage() != null){
             imageReport.setImageBitmap(reportModel.getImage());
         }else {

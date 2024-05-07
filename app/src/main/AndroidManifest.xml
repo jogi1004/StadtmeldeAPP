@@ -38,18 +38,22 @@
                 android:resource="@xml/fileprovider"/>
         </provider>
         <activity android:name=".SignInPage"
-            android:exported="false"/>
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".RegisterPage"
             android:exported="false"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".LandingPage"
             android:exported="false"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".WelcomePage"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 

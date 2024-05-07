@@ -1,6 +1,7 @@
 package com.example.citycare.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import com.example.citycare.model.ReportModel;
 import com.example.citycare.util.RecyclerViewInterface;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +39,8 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
     }
 
     public void updateList(List<ReportModel> reports){
-        allReports = reports;
+        Log.d("updateallReports", String.valueOf(reports.size()));
+        this.allReports = reports;
         notifyDataSetChanged();
     }
 
@@ -50,6 +51,7 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         } else {
             holder.reportName.setText(allReports.get(position).getSubCategory());
         }
+
         if (allReports.get(position).getTimestamp()!=null){
             holder.reportDate.setText(allReports.get(position).getTimestamp());
         } else {
@@ -58,11 +60,19 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
             String formattedDate = sdf.format(date);
             holder.reportDate.setText(formattedDate);
         }
+
         if (allReports.get(position).getImage()!=null){
             holder.image.setImageBitmap(allReports.get(position).getImage());
-        } else {
+        }else {
             holder.image.setImageResource(R.drawable.png_dummy);
         }
+
+        if(allReports.get(position).getIcon().getId() != -1) {
+            holder.icon.setImageBitmap(allReports.get(position).getIcon().getIcon());
+        }else{
+            holder.icon.setImageResource(android.R.drawable.ic_dialog_alert);
+        }
+
     }
 
     @Override
@@ -70,15 +80,22 @@ public class RecyclerViewAdapter_AllReports extends RecyclerView.Adapter<Recycle
         return allReports.size();
     }
 
+    public void clear() {
+        allReports.clear();
+        notifyDataSetChanged();
+    }
+
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        ImageView image;
+        ImageView image, icon;
         TextView reportName, reportDate;
+
 
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
             image = itemView.findViewById(R.id.reportImage);
             reportName = itemView.findViewById(R.id.reportName);
             reportDate = itemView.findViewById(R.id.reportDate);
+            icon = itemView.findViewById(R.id.categoryIcon);
             itemView.setOnClickListener(v -> {
                 if (recyclerViewInterface != null) {
                     int pos = getAdapterPosition();

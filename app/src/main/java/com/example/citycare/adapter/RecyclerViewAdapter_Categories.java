@@ -51,7 +51,11 @@ public class RecyclerViewAdapter_Categories extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter_Categories.MyViewHolder holder, int position) {
         MainCategoryModel daten = allDamagetypes.get(position);
-        holder.icon.setImageBitmap(daten.getIcon());
+        if (daten.getIcon() != null){
+            holder.icon.setImageBitmap(daten.getIcon().getIcon());
+        }else {
+            holder.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.png_placeholder, null));
+        }
         holder.title.setText(daten.getTitle());
         holder.field.setOnClickListener(v -> {
             if(mListener != null){

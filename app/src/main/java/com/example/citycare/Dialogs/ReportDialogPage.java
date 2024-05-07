@@ -7,6 +7,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -52,12 +54,13 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_reports);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        initAllReports();
 
         adapter.setRecyclerViewInterface(this);
         RecyclerView recyclerView = findViewById(R.id.reportsrecyclerview);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        initAllReports();
         DisplayMetrics displayMetrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (windowManager != null) {
@@ -69,7 +72,7 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
 
     private void initAllReports() {
         allReports = LandingPage.getAllReportsList();
-
+        LandingPage.getAdapterReportList().updateList(allReports);
     }
 
     @Override
@@ -89,4 +92,5 @@ public class ReportDialogPage extends Dialog implements RecyclerViewInterface {
     public DialogReportDetailView getDetailView() {
         return detailView;
     }
+
 }
