@@ -62,7 +62,8 @@ public class SignInPage extends AppCompatActivity implements View.OnClickListene
                     apiHelper.loginUser(usernameContent.trim(), passwordContent.trim(), new Callback() {
                         @Override
                         public void onSuccess() {
-
+                            Intent i = new Intent(getBaseContext(), LandingPage.class);
+                            startActivity(i);
                         }
 
                         @Override

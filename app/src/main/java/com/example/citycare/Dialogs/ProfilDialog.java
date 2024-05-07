@@ -42,7 +42,6 @@ public class ProfilDialog extends Dialog implements RecyclerViewInterface {
     public Activity landingPage;
     private CamUtil camUtil;
     private TextView username;
-    private ImageView gifImageView;
     private ImageView gifImageView, profilPicGIF;
     private List<ReportModel> userReports = new ArrayList<>();
     private int i = 1;

@@ -623,25 +623,25 @@ public class APIHelper {
 
     }
 
-    public void getProfilePic(Callback picCallback){
+    public void getProfilePic(Callback picCallback) {
         JSONObject body = new JSONObject();
         try {
             body.put("id", currentUser.getPicID());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,getProfilePic+currentUser.getPicID(),body,
-                response->{
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, getProfilePic + currentUser.getPicID(), body,
+                response -> {
                     try {
                         currentUser.setProfilePicture(decodeImage(Base64.decode(response.getString("profilePicture"), Base64.DEFAULT)));
                         picCallback.onSuccess();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                },volleyError -> {
+                }, volleyError -> {
 
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
@@ -651,6 +651,7 @@ public class APIHelper {
         };
 
         requestQueue.add(jsonObjectRequest);
+    }
 
 
     public void setEmailNotification(boolean enable){
@@ -674,7 +675,7 @@ public class APIHelper {
         requestQueue.add(jOr);
     }
 
-    }
+
     public List<String> getMembers() {
         return members;
     }
