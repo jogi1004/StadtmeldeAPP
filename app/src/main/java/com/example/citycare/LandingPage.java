@@ -18,13 +18,11 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
-
 import com.example.citycare.Dialogs.PoiDialog;
 import com.example.citycare.Dialogs.PoiInformationDialog;
 import com.example.citycare.Dialogs.ProfilDialog;
@@ -45,7 +43,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.events.MapEventsReceiver;
@@ -107,10 +104,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         camUtil = new CamUtil(this, this
         );
         context = this;
-        Log.d("token", apiHelper.getToken() + "");
-
-        //um status und navbar komplett transparent zu machen
-        /*getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);*/
 
         adapterReportList = new RecyclerViewAdapter_AllReports(context, allReports);
 
@@ -125,7 +118,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Log.d("BackPressed", "drin");
                 if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
                     getSupportFragmentManager().popBackStack();
                 }
@@ -362,7 +354,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                     if(mainCategory.getIcon().getId() != null){
                         for (IconModel iconModel: iconsFromLocationList) {
                             if (iconModel.getId() == mainCategory.getIcon().getId()){
-                                Log.d("icons", "Ist drin");
                                 mainCategory.getIcon().setIcon(iconModel.getIcon());
                             }
                         }
@@ -407,7 +398,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
     }
 
     public void loadIconsFromLocation(Location location) {
-        Log.d("icons", "loadIconsFromLocation");
         Geocoder geocoder = new Geocoder(this);
         List<Address> addresses = null;
         try {
@@ -421,7 +411,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
         apiHelper.getIconFromLocation(cityName, new APIHelper.BitmapCallback <List<IconModel>>() {
             @Override
             public void onBitmapLoaded(List<IconModel> icons) {
-                Log.d("icons", "Alle icons: " + icons.toString());
                 iconsFromLocationList = icons;
             }
 
@@ -465,11 +454,9 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         allReports = allReportsUpdated;
 
                         adapterReportList.updateList(allReports);
-
                         loadIconsForReports(allReports);
-
                         loadExistingMarkers();
-                        Log.d("updateallReportsLandingSP", String.valueOf(allReports.size()));
+                        Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
                         adapterReportList.updateList(allReports);
                         for (ReportModel m: reports) {
                             if (m.getImageId()!=null){
@@ -506,7 +493,7 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
                         editor.apply();
                         alreadyCalled = true;
                         loadExistingMarkers();
-
+                        Toast.makeText(LandingPage.this, "Meldungen aktualisiert!", Toast.LENGTH_SHORT).show();
                         for (ReportModel m: allReports) {
                             if (m.getImageId()!=null) {
                                 apiHelper.getReportPic(m, new APIHelper.BitmapCallback <ReportModel>() {
@@ -629,8 +616,6 @@ public class LandingPage extends AppCompatActivity implements MapListener, View.
             Uri selectedImageUri = data.getData();
             Bitmap bitmap = camUtil.getBitmapFromUri(selectedImageUri);
 
-            // Speichern Sie das Bild im internen Speicher
-            /*camUtil.saveImageToInternalStorage(bitmap);*/
             profileDialog.getPicture().setImageBitmap(bitmap);
             apiHelper.putProfilePicture(bitmap);
 

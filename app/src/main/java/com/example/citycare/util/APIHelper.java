@@ -1,6 +1,5 @@
 package com.example.citycare.util;
 
-//import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources; ????????????
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,10 +9,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
@@ -29,21 +26,17 @@ import com.example.citycare.model.MainCategoryModel;
 import com.example.citycare.model.ReportModel;
 import com.example.citycare.model.SubCategoryModel;
 import com.example.citycare.model.UserModel;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osmdroid.util.GeoPoint;
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.concurrent.atomic.AtomicBoolean;
+
 
 
 import android.location.Address;
@@ -58,7 +51,6 @@ public class APIHelper {
     private final String allReportsURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/location/name/";
     private final String reportPostURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports";
     private final String getReportPicture = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/reports/reportPicture/";
-    private final String getIcon = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/icons/";
     private final String getIconFromLocation = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/icons/location/";
     private final String putProfilPictureURL = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/addProfilePicture";
     private final String getUserInfo = "https://backendservice-dev-5rt6jcn4da-uc.a.run.app/user/info";
@@ -76,7 +68,6 @@ public class APIHelper {
     private UserModel currentUser;
     private final ArrayList<ReportModel> allReports = new ArrayList<>();
     private List<ReportModel> userReports = new ArrayList<>();
-    private int i=1;
 
 
     private APIHelper(Context context){
@@ -151,8 +142,6 @@ public class APIHelper {
 
                     KeyStoreManager.savePassword(context, username, password);
 
-                    /*Intent i = new Intent(context, LandingPage.class);
-                    context.startActivity(i);*/
                     callback.onSuccess();
 
                 }, volleyError -> {
@@ -230,14 +219,12 @@ public class APIHelper {
                         }
 
                         if (!response.isNull("profilePictureId")) {
-                            Log.d("profilePictureId", "ist nicht Null");
                             currentUser.setPicID(response.getInt("profilePictureId"));
 
                         }
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
-                    Log.d("userDATA", currentUser.toString());
                 }, volleyError -> volleyError.printStackTrace())
         {
             @Override
@@ -277,7 +264,6 @@ public class APIHelper {
                             }
 
                             categoryModelList.add(categoryModel);
-                            Log.d("Maincategorys", categoryModel.toString());
 
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
@@ -323,7 +309,6 @@ public class APIHelper {
                             throw new RuntimeException(e);
                         }
                         model.setSubCategorys(allSubCategories);
-                        Log.d("Subs", "Ganzes Model " + model);
 
 
                         if (finalI == mainCategories.size() - 1) {
@@ -351,7 +336,6 @@ public class APIHelper {
     }
 
     public void getAllReports(String cityName, AllReportsCallback callback) {
-        Log.d("getAllReports", cityName + i);
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, allReportsURL + cityName, null,
@@ -379,7 +363,6 @@ public class APIHelper {
                             }
 
                             allReports.add(reportModel);
-                            Log.d("allReportsALL", reportModel+"");
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -439,7 +422,6 @@ public class APIHelper {
 
     public void getIconFromLocation(String location, final BitmapCallback callback) {
 
-        Log.d("icons", "Stadt von der die Icons geladen wird: " + location);
         List<IconModel> icons = new ArrayList<>();
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(
                 Request.Method.GET, getIconFromLocation + location, null,
@@ -451,7 +433,6 @@ public class APIHelper {
                             if (!jsonObject.isNull("icon")) {
                                 Bitmap icon = decodeImage(Base64.decode(jsonObject.getString("icon"), Base64.DEFAULT));
                                 iconModel = new IconModel(jsonObject.getInt("id"), icon);
-                                Log.d("Icon", icon + " ");
                             }
                             if(iconModel.getId() != null){
                                 icons.add(iconModel);
@@ -480,14 +461,11 @@ public class APIHelper {
 
     public interface BitmapCallback <T>{
         void onBitmapLoaded(T model);
-//        void onBitmapLoaded(Bitmap bitmap);
         void onBitmapError(Exception e);
     }
 
 
     public void postReport(ReportModel report) throws JSONException {
-
-        Log.d("Check", report.toString());
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("title", report.getTitle());
@@ -510,12 +488,6 @@ public class APIHelper {
                     LandingPage.setMarker(report);
                 }, volleyError -> {
                     volleyError.printStackTrace();
-                    /*int statuscode = volleyError.networkResponse.statusCode;
-
-                    if (statuscode == 404) {
-                        Log.d("reportDBFehler", report.toString());
-                        Toast.makeText(context, "Fehler bei den Daten!", Toast.LENGTH_LONG).show();
-                    }*/
                 }){
             @Override
             public Map<String, String> getHeaders() {
@@ -558,7 +530,6 @@ public class APIHelper {
                 },
                 volleyError -> {
                     volleyError.printStackTrace();
-                    Log.d("Member", "Volley Error");
                 }
         ) {
             @Override
@@ -661,7 +632,6 @@ public class APIHelper {
         }catch(JSONException e){
             Log.e("JSON", "Error", e);
         }
-        Log.d("Enable: ", enable + "");
         JsonObjectRequest jOr = new JsonObjectRequest(
                 Request.Method.PUT, notificationURL,j,null, volleyError -> volleyError.printStackTrace()
         ) {
