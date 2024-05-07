@@ -13,10 +13,11 @@ import java.util.Objects;
  */
 
 public class ReportModel {
-    private String title, description, subCategory, mainCategory, locationName, icon;
-    String timestamp;
+    private String title, description, subCategory, mainCategory, locationName, timestamp;
+    private IconModel icon;
     private double longitude, latitude;
     private Bitmap image;
+    private Integer imageId;
 
     public ReportModel(String title, String timestamp, Bitmap image, String mainCategory, String subCategory, double longitude, double latitude, String description, String locationName) {
         this.title = title;
@@ -30,20 +31,36 @@ public class ReportModel {
         this.locationName = locationName;
     }
 
-    public ReportModel(String title, String icon, String timestamp, Bitmap image, double longitude, double latitude) {
+
+    public ReportModel(String title, IconModel icon, String timestamp, Bitmap image, Integer imageId, double longitude, double latitude, String description) {
         this.title = title;
         this.icon = icon;
         this.timestamp = timestamp;
         this.image = image;
+        this.imageId = imageId;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.description = description;
     }
 
+    public IconModel getIcon() {
+        return icon;
+    }
     /**
      * setter und getter for Report Model
      * @return
      */
 
+    public void setIcon(IconModel icon) {
+        this.icon = icon;
+    }
+
+    public Integer getImageId() {
+        return imageId;
+    }
+    public void setImageId(Integer imageId) {
+        this.imageId = imageId;
+    }
     public String getDescription() {return description;}
     public String getTitle() {return title;}
     public Bitmap getImage() {return image;}
@@ -53,7 +70,6 @@ public class ReportModel {
     public double getLongitude(){ return longitude;}
     public double getLatitude(){ return latitude;}
     public String getLocationName() {return locationName;}
-
     public void setTitle(String title) {this.title = title;}
     public void setImage(Bitmap image) {this.image = image;}
     public void setTimestamp(String timestamp) {this.timestamp = timestamp;}
@@ -69,6 +85,8 @@ public class ReportModel {
         return "ReportModel{" +
                 "title='" + title + '\'' +
                 ", image='" + image + '\'' +
+                ", imageId='" + imageId + '\'' +
+                ", iconId='" + icon + '\'' +
                 ", date='" + timestamp + '\'' +
                 ", mainCategory='" + mainCategory +'\'' +
                 ", subCategory='" + subCategory +'\'' +
@@ -94,7 +112,6 @@ public class ReportModel {
                     Objects.equals(mainCategory, other.mainCategory) &&
                     Objects.equals(subCategory, other.subCategory) &&
                     Objects.equals(locationName, other.locationName) &&
-                    Objects.equals(icon, other.icon) &&
                     Objects.equals(image, other.image) &&
                     Double.compare(other.longitude, longitude) == 0 &&
                     Double.compare(other.latitude, latitude) == 0;

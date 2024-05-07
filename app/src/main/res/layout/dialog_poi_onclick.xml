@@ -25,8 +25,17 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:src="@drawable/png_dummy"
-
              />
+
+        <ImageView
+            android:id="@+id/gif"
+            android:layout_gravity="center"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="40dp"
+            app:srcCompat="@drawable/gif_load_pic"
+            android:visibility="invisible"/>
 
     </androidx.cardview.widget.CardView>
 

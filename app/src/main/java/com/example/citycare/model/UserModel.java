@@ -9,7 +9,7 @@ public class UserModel {
     private String email;
     private Bitmap profilePicture;
     private Boolean notificationsEnabled;
-    private int picID;
+    private Integer picID;
 
     public UserModel(int id, String username, String email, Bitmap profilePicture, Boolean notificationsEnabled) {
         this.id = id;
@@ -25,7 +25,7 @@ public class UserModel {
         this.notificationsEnabled = notificationsEnabled;
     }
 
-    public UserModel(int id, String username, String email, Boolean notificationsEnabled, int picID) {
+    public UserModel(int id, String username, String email, Boolean notificationsEnabled, Integer picID) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -73,11 +73,11 @@ public class UserModel {
         this.notificationsEnabled = notificationsEnabled;
     }
 
-    public int getPicID() {
+    public Integer getPicID() {
         return picID;
     }
 
-    public void setPicID(int picID) {
+    public void setPicID(Integer picID) {
         this.picID = picID;
     }
 
@@ -88,6 +88,7 @@ public class UserModel {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", profilePicture=" + profilePicture +
+                ", profilePictureID=" + picID +
                 ", notificationsEnabled=" + notificationsEnabled +
                 '}';
     }
