@@ -18,6 +18,12 @@ public class UserModel {
         this.profilePicture = profilePicture;
         this.notificationsEnabled = notificationsEnabled;
     }
+    public UserModel(int id, String username, String email, Boolean notificationsEnabled) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.notificationsEnabled = notificationsEnabled;
+    }
 
     public UserModel(int id, String username, String email, Boolean notificationsEnabled, Integer picID) {
         this.id = id;

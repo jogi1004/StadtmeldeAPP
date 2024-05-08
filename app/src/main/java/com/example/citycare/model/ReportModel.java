@@ -5,9 +5,12 @@ import android.graphics.Bitmap;
 
 import androidx.annotation.Nullable;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 
+/**
+ * Model for database connection that has title,image,description,longitude,latitude,
+ * sub and maincategory, timestamp and icon in it
+ */
 
 public class ReportModel {
     private String title, description, subCategory, mainCategory, locationName, timestamp;
@@ -43,6 +46,10 @@ public class ReportModel {
     public IconModel getIcon() {
         return icon;
     }
+    /**
+     * setter und getter for Report Model
+     * @return
+     */
 
     public void setIcon(IconModel icon) {
         this.icon = icon;

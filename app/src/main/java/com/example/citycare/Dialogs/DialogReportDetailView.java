@@ -16,7 +16,10 @@ import androidx.annotation.NonNull;
 import com.example.citycare.R;
 import com.example.citycare.model.ReportModel;
 
-
+/**
+ * gets started when user clicks on report in recycler view and shows the report in
+ * detail with location, user who reported,report title,image and description
+ */
 public class DialogReportDetailView extends Dialog {
     private TextView headline,descriptionReport,cityTextView;
     private ImageView imageReport;
@@ -45,6 +48,10 @@ public class DialogReportDetailView extends Dialog {
         this.reportModel=reportModel;
 
     }
+
+    /**
+     * fills DetailView with data
+     */
     public void setData(){
         if (reportModel.getTitle()!=null){
             headline.setText(reportModel.getTitle());
@@ -56,6 +63,7 @@ public class DialogReportDetailView extends Dialog {
         }else {
             imageReport.setImageResource(R.drawable.png_dummy);
         }
+        Log.d("Description",reportModel.getDescription() + "");
         descriptionReport.setText(reportModel.getDescription());
         cityTextView.setText(reportModel.getLocationName());
     }
