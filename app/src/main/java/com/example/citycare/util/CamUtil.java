@@ -71,6 +71,9 @@ public class CamUtil {
     }
     public Bitmap getBitmapFromUri(Uri uri) {
 
+        File file = new File(uri.getPath());
+        imageFile = file;
+
         try {
             bitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri));
         } catch (IOException e) {
